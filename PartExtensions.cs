@@ -21,6 +21,22 @@ namespace ToadicusTools
 				);
 			}
 
+			#if MODULE_DB_AVAILABLE
+			if (ModuleDB<T>.Instance.inDeepCache(part))
+			{
+				return ModuleDB<T>.Instance.getModules(part).Count > 0;
+			}
+			else
+			{
+				PostDebugMessage(
+					string.Format("Part.hasModuleType<{0}>: Queuing deferred getModules for part {1}",
+						typeof(T).Name, part.partInfo.name)
+				);
+				System.Threading.ThreadPool.QueueUserWorkItem(delegate {
+					ModuleDB<T>.Instance.getModules(part);
+				});
+			}
+			#endif
 			foreach (PartModule module in part.Modules)
 			{
 				if (module is T)
@@ -32,7 +48,7 @@ namespace ToadicusTools
 			return false;
 		}
 
-		public static IEnumerable<T> getModulesOfType<T>(this Part part) where T : PartModule
+		public static List<T> getModulesOfType<T>(this Part part) where T : PartModule
 		{
 			if (part == null)
 			{
@@ -41,6 +57,9 @@ namespace ToadicusTools
 				);
 			}
 
+			#if MODULE_DB_AVAILABLE
+			return ModuleDB<T>.Instance.getModules(part);
+			#else
 			List<T> returnList = new List<T>();
 
 			foreach (PartModule module in part.Modules)
@@ -51,7 +70,8 @@ namespace ToadicusTools
 				}
 			}
 
-			return returnList as IEnumerable<T>;
+			return returnList;
+			#endif
 		}
 
 		public static T getFirstModuleOfType<T>(this Part part) where T: PartModule
@@ -62,6 +82,30 @@ namespace ToadicusTools
 					string.Format("Part.getFirstModuleOfType<{0}>: 'part' argument must not be null", typeof(T).Name)
 				);
 			}
+
+			#if MODULE_DB_AVAILABLE
+			if (ModuleDB<T>.Instance.inDeepCache(part))
+			{
+				try
+				{
+					return ModuleDB<T>.Instance.getModules(part)[0];
+				}
+				catch (IndexOutOfRangeException)
+				{
+					return null;
+				}
+			}
+			else
+			{
+				PostDebugMessage(
+					string.Format("Part.getFirstModuleOfType<{0}>: Queuing deferred getModules for part {1}",
+						typeof(T).Name, part.partInfo.name)
+				);
+				System.Threading.ThreadPool.QueueUserWorkItem(delegate {
+					ModuleDB<T>.Instance.getModules(part);
+				});
+			}
+			#endif
 
 			foreach (PartModule module in part.Modules)
 			{
