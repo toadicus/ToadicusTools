@@ -6,12 +6,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace ToadicusTools
 {
 	public static partial class Tools
 	{
+		#region DEBUG_TOOLS
 		private static ScreenMessage debugmsg = new ScreenMessage("", 4f, ScreenMessageStyle.UPPER_RIGHT);
 
 		[System.Diagnostics.Conditional("DEBUG")]
@@ -54,5 +56,57 @@ namespace ToadicusTools
 				field.guiActive = field.guiActiveEditor = true;
 			}
 		}
+
+		public class DebugLogger
+		{
+			public static DebugLogger New(object caller)
+			{
+				#if DEBUG
+				return new DebugLogger(caller.GetType());
+				#else
+				return null;
+				#endif
+			}
+
+			public static DebugLogger New(Type callingType)
+			{
+				return new DebugLogger(callingType);
+			}
+
+			private StringBuilder stringBuilder;
+
+			private DebugLogger() {}
+
+			private DebugLogger(Type caller)
+			{
+				this.stringBuilder = new StringBuilder(caller.Name);
+				this.stringBuilder.Append(": ");
+			}
+
+			[System.Diagnostics.Conditional("DEBUG")]
+			public void Append(object value)
+			{
+				this.stringBuilder.Append(value);
+			}
+
+			[System.Diagnostics.Conditional("DEBUG")]
+			public void AppendFormat(string format, params object[] args)
+			{
+				this.stringBuilder.AppendFormat(format, args);
+			}
+
+			[System.Diagnostics.Conditional("DEBUG")]
+			public void AppendFormat(string value)
+			{
+				this.stringBuilder.AppendLine(value);
+			}
+
+			[System.Diagnostics.Conditional("DEBUG")]
+			public void Print()
+			{
+				PostDebugMessage(this.stringBuilder.ToString());
+			}
+		}
+		#endregion
 	}
 }
