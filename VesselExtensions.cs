@@ -14,6 +14,16 @@ namespace ToadicusTools
 	{
 		public static List<T> getModulesOfType<T>(this Vessel vessel) where T : PartModule
 		{
+			if (vessel == null)
+			{
+				throw new ArgumentNullException(
+					string.Format(
+						"Vessel.getModulesOfType<{0}>: 'vessel' argument cannot be null.",
+						typeof(T).Name
+					)
+				);
+			}
+
 			#if MODULE_DB_AVAILABLE
 			return ModuleDB<T>.Instance.getModules(vessel);
 			#else
