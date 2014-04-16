@@ -27,8 +27,13 @@ using System;
 
 namespace ToadicusTools
 {
+	/// <summary>
+	/// A collection of small, unsigned integers stored in a single, 64-bit signed container.  This is useful for saving
+	/// sets of small numbers as a single large number in the KSP IConfigValue system.
+	/// </summary>
 	public class IntCollection
 	{
+		/// <param name="c">The IntCollection object to be returned as a long.</param>
 		public static implicit operator long(IntCollection c)
 		{
 			return c.collection;
@@ -36,10 +41,29 @@ namespace ToadicusTools
 
 		protected long mask;
 
+		/// <summary>
+		/// Gets the collection container
+		/// </summary>
+		/// <value>The collection container</value>
 		public long collection { get; protected set; }
+
+		/// <summary>
+		/// Gets the maximum number of indexes in the collection
+		/// </summary>
+		/// <value>the maximum number of indexes in the collection</value>
 		public ushort maxCount { get; protected set; }
+
+		/// <summary>
+		/// Gets the bit length of unsigned integer members of the collection
+		/// </summary>
+		/// <value>The bit length of the members</value>
 		public ushort wordLength { get; protected set; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ToadicusTools.IntCollection"/> class.
+		/// </summary>
+		/// <param name="wordLength">Bit length of the individual members to be stored</param>
+		/// <param name="initialCollection">Optional initial collection set for loading existing collections</param>
 		public IntCollection (ushort wordLength = 4, long initialCollection = 0)
 		{
 			this.collection = initialCollection;
@@ -48,6 +72,10 @@ namespace ToadicusTools
 			this.mask = ((1 << this.wordLength) - 1);
 		}
 
+		/// <summary>
+		/// Gets or sets the <see cref="ToadicusTools.IntCollection"/> member with the specified index.
+		/// </summary>
+		/// <param name="idx">Index</param>
 		public ushort this[int idx]
 		{
 			get {
@@ -63,7 +91,8 @@ namespace ToadicusTools
 
 				return (ushort)((this.collection & (this.mask << idx)) >> idx);
 			}
-			set {
+			set
+			{
 				if (idx < 0) {
 					idx += this.maxCount;
 				}

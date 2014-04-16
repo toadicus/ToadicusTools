@@ -30,7 +30,14 @@ namespace ToadicusTools
 {
 	public static partial class Tools
 	{
-
+		/// <summary>
+		/// Gets the value of key "name" in ConfigNode "node" as a double, or returns a given default value if the key
+		/// does not exist or cannot be parsed to a double.
+		/// </summary>
+		/// <returns>The value as a double</returns>
+		/// <param name="node">The ConfigNode being referenced</param>
+		/// <param name="name">The name of the key being referenced</param>
+		/// <param name="defaultValue">The default value to return in fallback conditions</param>
 		public static double GetValue(this ConfigNode node, string name, double defaultValue)
 		{
 			if (node.HasValue(name))
@@ -44,6 +51,14 @@ namespace ToadicusTools
 			return defaultValue;
 		}
 
+		/// <summary>
+		/// Gets the value of key "name" in ConfigNode "node" as a float, or returns a given default value if the key
+		/// does not exist or cannot be parsed to a double.
+		/// </summary>
+		/// <returns>The value as a float</returns>
+		/// <param name="node">The ConfigNode being referenced</param>
+		/// <param name="name">The name of the key being referenced</param>
+		/// <param name="defaultValue">The default value to return in fallback conditions</param>
 		public static float GetValue(this ConfigNode node, string name, float defaultValue)
 		{
 			if (node.HasValue(name))
@@ -57,6 +72,14 @@ namespace ToadicusTools
 			return defaultValue;
 		}
 
+		/// <summary>
+		/// Gets the value of key "name" in ConfigNode "node" as an int, or returns a given default value if the key
+		/// does not exist or cannot be parsed to a double.
+		/// </summary>
+		/// <returns>The value as an int</returns>
+		/// <param name="node">The ConfigNode being referenced</param>
+		/// <param name="name">The name of the key being referenced</param>
+		/// <param name="defaultValue">The default value to return in fallback conditions</param>
 		public static int GetValue(this ConfigNode node, string name, int defaultValue)
 		{
 			if (node.HasValue(name))

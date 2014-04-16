@@ -30,11 +30,18 @@ using UnityEngine;
 
 namespace ToadicusTools
 {
+	/// <summary>
+	/// A generic, caching database of PartModule derivatives keyed by Vessel and Part.
+	/// </summary>
 	public class ModuleDB<T>
 		where T : PartModule
 	{
 		private static ModuleDB<T> _instance;
 
+		/// <summary>
+		/// Gets the ModuleDB instance for the specified type
+		/// </summary>
+		/// <value>The ModuleDB instance for the specified type</value>
 		public static ModuleDB<T> Instance
 		{
 			get
@@ -54,9 +61,11 @@ namespace ToadicusTools
 
 		private ModuleDB()
 		{
+			// Initialize the caches.
 			vesselPartModuleDB = new Dictionary<Guid, Dictionary<uint, List<T>>>();
 			vesselModuleTable = new Dictionary<Guid, List<T>>();
 
+			// Subscribe to events to keep the cache fresh.
 			GameEvents.onVesselWasModified.Add(onVesselEvent);
 			GameEvents.onVesselChange.Add(onVesselEvent);
 			GameEvents.onVesselDestroy.Add(onVesselEvent);
@@ -65,61 +74,86 @@ namespace ToadicusTools
 			GameEvents.onPartCouple.Add(onFromPartToPartEvent);
 		}
 
+		// Called for a subject Vessel when destroyed, changed, or modified
 		private void onVesselEvent(Vessel vessel)
 		{
+			// If the deep cache contains the Vessel...
 			if (vesselPartModuleDB.ContainsKey(vessel.id))
 			{
+				// ...remove it from the deep cache.
 				vesselPartModuleDB.Remove(vessel.id);
 			}
 
+			// If the shallow cache contains the Vessel...
 			if (vesselModuleTable.ContainsKey(vessel.id))
 			{
+				// ..remove it fromt he shallow cache.
 				vesselModuleTable.Remove(vessel.id);
 			}
 		}
 
+		// Called when a scene changed is requested
 		private void onSceneChange(GameScenes scene)
 		{
+			// If there is an active vessel when changing scenes...
 			if (FlightGlobals.ActiveVessel != null)
 			{
+				// ...remove it from the caches.
 				onVesselEvent(FlightGlobals.ActiveVessel);
 			}
 		}
 
+		// Called for a subject Part when undocked
 		private void onPartEvent(Part part)
 		{
+			// If the Part's Vessel is defined...
 			if (part.vessel != null)
 			{
+				// ...remove it from the caches.
 				onVesselEvent(part.vessel);
 			}
 		}
 
+		// Called for two subject Parts when coupled
 		private void onFromPartToPartEvent(GameEvents.FromToAction<Part, Part> data)
 		{
+			// Remove both the from and the to Parts fromt he caches.
 			onPartEvent(data.from);
 			onPartEvent(data.to);
 		}
 
+		/// <summary>
+		/// Gets a flat list of all modules of type T in the given Vessel.  Returns an empty list if none exist.
+		/// </summary>
+		/// <returns>The list modules of type T</returns>
+		/// <param name="vessel">The Vessel being queried</param>
 		public List<T> getModules(Vessel vessel)
 		{
 			Tools.DebugLogger log = Tools.DebugLogger.New(typeof(ModuleDB<T>));
 
+			// If the vessel's Parts list is defined and includes any Parts...
 			if (vessel.Parts != null && vessel.Parts.Count > 0)
 			{
+				// ...and if the vessel is not in the shallow cache...
 				if (!vesselModuleTable.ContainsKey(vessel.id))
 				{
 					log.AppendFormat("Vessel '{0}' not in shallow cache, building new entry.", vessel);
 
+					// ...create a list flat list of modules
 					List<T> modulesInVessel = new List<T>();
 
+					// ...loop through the Vessel's Parts...
 					foreach (Part part in vessel.Parts)
 					{
+						// ...loop through each Part's Modules...
 						foreach (T module in getModules(part))
 						{
+							// ...and add each matching Module to the new list
 							modulesInVessel.Add(module);
 						}
 					}
 
+					// ...set the shallow cache entry to the new list
 					vesselModuleTable[vessel.id] = modulesInVessel;
 				}
 
@@ -128,40 +162,56 @@ namespace ToadicusTools
 
 				log.Print();
 
+				// ...return the shallow cache for the queried Vessel
 				return vesselModuleTable[vessel.id];
 			}
 
+			// Otherwise, return an empty list.
 			return new List<T>();
 		}
 
+		/// <summary>
+		/// Gets a flat list of all modules of type T in the given Part.  Returns an empty list if none exist.
+		/// </summary>
+		/// <returns>The list of modules of type T</returns>
+		/// <param name="part">The Part being queried</param>
 		public List<T> getModules(Part part)
 		{
 			Tools.DebugLogger log = Tools.DebugLogger.New(typeof(ModuleDB<T>));
 
+			// If the Part's Vessel is defined...
 			if (part.vessel != null)
 			{
+				// ...and if the Vessel is not in the deep cache...
 				if (!vesselPartModuleDB.ContainsKey(part.vessel.id))
 				{
 					log.AppendFormat("Vessel '{0}' not in deep cache, building new entry.", part.vessel);
 
+					// ...create a new table for the Vessel in the deep cache.
 					vesselPartModuleDB[part.vessel.id] = new Dictionary<uint, List<T>>();
 				}
 
+				// ...and if the Part is not in the Vessel's table in the deep cache...
 				if (!vesselPartModuleDB[part.vessel.id].ContainsKey(part.uid))
 				{
 					log.AppendFormat("Part '{0}' not in cache for Vessel '{1}', building new entry.",
 						part, part.vessel);
 
+					// ...create a flat list of modules
 					List<T> modulesInPart = new List<T>();
 
+					// ...loop through the Part's modules...
 					foreach (PartModule module in part.Modules)
 					{
+						// ...if any module matches...
 						if (module is T)
 						{
+							// ...add it to the list
 							modulesInPart.Add((T)module);
 						}
 					}
 
+					// ...set the deep cache entry to the new list
 					vesselPartModuleDB[part.vessel.id][part.uid] = modulesInPart;
 				}
 
@@ -170,17 +220,29 @@ namespace ToadicusTools
 
 				log.Print();
 
+				// ...return the deep cache entry for the queried Part.
 				return vesselPartModuleDB[part.vessel.id][part.uid];
 			}
 
+			// Otherwise, return an empty list
 			return new List<T>();
 		}
 
+		/// <summary>
+		/// Returns true if the given Vessel exists in the deep cache, false otherwise.
+		/// </summary>
+		/// <returns>true if the given Vessel exists in the deep cache, false otherwise</returns>
+		/// <param name="vessel">The Vessel being queried</param>
 		public bool inDeepCache(Vessel vessel)
 		{
 			return vesselPartModuleDB.ContainsKey(vessel.id);
 		}
 
+		/// <summary>
+		/// Returns true if the given Part exists in the deep cache, false otherwise.
+		/// </summary>
+		/// <returns>true if the given Part exists in the deep cache, false otherwise</returns>
+		/// <param name="part">The Part being queried</param>
 		public bool inDeepCache(Part part)
 		{
 			if (part.vessel == null)
@@ -191,6 +253,11 @@ namespace ToadicusTools
 			return inDeepCache(part.vessel) && vesselPartModuleDB[part.vessel.id].ContainsKey(part.uid);
 		}
 
+		/// <summary>
+		/// Returns true if the given Vessel exists in the shallow cache, false otherwise.
+		/// </summary>
+		/// <returns>true if the given Vessel exists in the shallow cache, false otherwise</returns>
+		/// <param name="vessel">The Vessel being queried</param>
 		public bool inShallowCache(Vessel vessel)
 		{
 			return vesselModuleTable.ContainsKey(vessel.id);
