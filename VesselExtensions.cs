@@ -32,6 +32,26 @@ namespace ToadicusTools
 {
 	public static partial class Tools
 	{
+		/// <summary>
+		/// Returns the distance between this Vessel and another Vessel.
+		/// </summary>
+		/// <param name="vesselOne">This <see cref="Vessel"/><see ></param>
+		/// <param name="vesselTwo">Another <see cref="Vessel"/></param>
+		public static double DistanceTo(this Vessel vesselOne, Vessel vesselTwo)
+		{
+			return (vesselOne.GetWorldPos3D() - vesselTwo.GetWorldPos3D()).magnitude;
+		}
+
+		/// <summary>
+		/// Returns the distance between this Vessel and a CelestialBody
+		/// </summary>
+		/// <param name="vessel">This Vessel</param>
+		/// <param name="body">A <see cref="CelestialBody"/></param>
+		public static double DistanceTo(this Vessel vessel, CelestialBody body)
+		{
+			return (vessel.GetWorldPos3D() - body.position).magnitude;
+		}
+
 		public static List<T> getModulesOfType<T>(this Vessel vessel) where T : PartModule
 		{
 			if (vessel == null)

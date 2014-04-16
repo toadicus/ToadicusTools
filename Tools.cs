@@ -128,7 +128,22 @@ namespace ToadicusTools
 			}
 		}
 		#endregion
-	
+
+		#region Array_Tools
+		public static bool Contains(this GameScenes[] haystack, GameScenes needle)
+		{
+			foreach (GameScenes item in haystack)
+			{
+				if (item == needle)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+		#endregion
+
 		#region Enum_Tools
 		public static bool TryParse<enumType>(string value, out enumType result)
 			where enumType : struct, IConvertible, IComparable, IFormattable
@@ -157,18 +172,35 @@ namespace ToadicusTools
 		}
 		#endregion
 
-		#region Array_Tools
-		public static bool Contains(this GameScenes[] haystack, GameScenes needle)
+		#region IComparable Extensions
+		public static T Min<T>(params T[] values) where T : IComparable<T>
 		{
-			foreach (GameScenes item in haystack)
+			if (values.Length < 2)
 			{
-				if (item == needle)
+				throw new ArgumentException("Min must be called with at least two arguments.");
+			}
+
+			IComparable<T> minValue = values[0];
+
+			for (long i = 1; i < values.LongLength; i++)
+			{
+				IComparable<T> value = values[i];
+
+				if (value.CompareTo((T)minValue) < 0)
 				{
-					return true;
+					minValue = value;
 				}
 			}
 
-			return false;
+			return (T)minValue;
+		}
+		#endregion
+
+		#region Stopwatch Extensions
+		public static void Restart(this System.Diagnostics.Stopwatch stopwatch)
+		{
+			stopwatch.Reset();
+			stopwatch.Start();
 		}
 		#endregion
 
