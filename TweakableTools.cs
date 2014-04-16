@@ -30,7 +30,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TweakableEverything
+namespace ToadicusTools
 {
 	public static partial class Tools
 	{

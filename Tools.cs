@@ -128,5 +128,66 @@ namespace ToadicusTools
 			}
 		}
 		#endregion
+	
+		#region Enum_Tools
+		public static bool TryParse<enumType>(string value, out enumType result)
+			where enumType : struct, IConvertible, IComparable, IFormattable
+		{
+			try
+			{
+				if (!typeof(enumType).IsEnum)
+				{
+					throw new ArgumentException("result must be of an enum type");
+				}
+
+				result = (enumType)Enum.Parse(typeof(enumType), value);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Debug.LogWarning(string.Format("[{0}] failed to parse value '{1}': {2}",
+					typeof(enumType).Name,
+					value,
+					e.Message
+				));
+
+				result = (enumType)Enum.GetValues(typeof(enumType)).GetValue(0);
+				return false;
+			}
+		}
+		#endregion
+
+		#region Array_Tools
+		public static bool Contains(this GameScenes[] haystack, GameScenes needle)
+		{
+			foreach (GameScenes item in haystack)
+			{
+				if (item == needle)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+		#endregion
+
+		#region UI_Control Extensions
+		public static UI_Control uiControlCurrent(this BaseField field)
+		{
+			if (HighLogic.LoadedSceneIsFlight)
+			{
+				return field.uiControlFlight;
+			}
+			else if (HighLogic.LoadedSceneIsEditor)
+			{
+				return field.uiControlEditor;
+			}
+			else
+			{
+				return null;
+			}
+		}
+		#endregion
 	}
 }

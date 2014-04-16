@@ -1,4 +1,4 @@
-﻿// CommonTools, a TweakableEverything module
+﻿// ToadicusTools
 //
 // TweakableAnimationWrapper.cs
 //
