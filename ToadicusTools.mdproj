@@ -15,6 +15,7 @@
     <Compile Include="Tools.cs" />
     <Compile Include="IntCollection.cs" />
     <Compile Include="EventSniffer.cs" />
+    <Compile Include="Wrapper\ToolbarWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MuMech_Tools.cs" />
