@@ -138,6 +138,41 @@ namespace ToadicusTools
 			return null;
 		}
 
+		public static bool tryGetFirstModuleOfType<T>(this Part part, out T module) where T : PartModule
+		{
+			module = part.getFirstModuleOfType<T>();
+
+			if (module == null)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		public static bool hasAncestorPart(this Part part, Part checkPart)
+		{
+			Part ancestorPart = part;
+
+			do
+			{
+				if (ancestorPart == checkPart)
+				{
+					return true;
+				}
+
+				ancestorPart = ancestorPart.parent;
+			}
+			while (ancestorPart != null);
+
+			return false;
+		}
+
+		public static bool isDecoupler(this Part part)
+		{
+			return part.hasModuleType<ModuleDecouple>() | part.hasModuleType<ModuleAnchoredDecoupler>();
+		}
+
 		public static bool isDockingNode(this Part part)
 		{
 			return hasModuleType<ModuleDockingNode>(part);

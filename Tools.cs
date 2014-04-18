@@ -62,6 +62,18 @@ namespace ToadicusTools
 			PostDebugMessage(Msg);
 		}
 
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void PostDebugMessage(object Sender, string Format, params object[] args)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.Append(Sender.GetType().Name);
+			sb.Append(": ");
+			sb.AppendFormat(Format, args);
+
+			PostDebugMessage(sb.ToString());
+		}
+
 		[System.Diagnostics.Conditional("VERBOSE")]
 		public static void PostVerboseMessage(object Sender, params object[] args)
 		{
