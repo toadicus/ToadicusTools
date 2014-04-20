@@ -106,13 +106,11 @@ namespace ToadicusTools
 			#if MODULE_DB_AVAILABLE
 			if (ModuleDB<T>.Instance.inDeepCache(part))
 			{
-				try
+				List<T> partModulesList = ModuleDB<T>.Instance.getModules(part);
+
+				if (partModulesList.Count > 0)
 				{
-					return ModuleDB<T>.Instance.getModules(part)[0];
-				}
-				catch (IndexOutOfRangeException)
-				{
-					return null;
+					return partModulesList[0];
 				}
 			}
 			else
