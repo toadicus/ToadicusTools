@@ -42,16 +42,19 @@ namespace ToadicusTools
 			}
 
 			#if MODULE_DB_AVAILABLE
+			#if DEBUG
+			Debug.Log(string.Format("Checking Part {0} for modules of type {1}.",
+				part,
+				typeof(T).Name
+			));
+			#endif
+
 			if (ModuleDB<T>.Instance.inDeepCache(part))
 			{
 				return ModuleDB<T>.Instance.getModules(part).Count > 0;
 			}
 			else
 			{
-				PostDebugMessage(
-					string.Format("Part.hasModuleType<{0}>: Queuing deferred getModules for part {1}",
-						typeof(T).Name, part.partInfo.name)
-				);
 				System.Threading.ThreadPool.QueueUserWorkItem(delegate {
 					ModuleDB<T>.Instance.getModules(part);
 				});
@@ -66,6 +69,18 @@ namespace ToadicusTools
 			}
 
 			return false;
+		}
+
+		public static bool hasModuleByName(this Part part, string moduleName)
+		{
+			#if DEBUG
+			Debug.Log(string.Format("Checking if part {0} has module(s) named {1}", part.partInfo.name, moduleName));
+			#endif
+			#if PREFAB_DB_AVAILABLE
+			return PrefabPartDB.Instance.getPrefabModuleDB(part.partInfo.name).ContainsKey(moduleName);
+			#else
+			return part.Modules.Contains(moduleName);
+			#endif
 		}
 
 		public static List<T> getModulesOfType<T>(this Part part) where T : PartModule
@@ -115,10 +130,6 @@ namespace ToadicusTools
 			}
 			else
 			{
-				PostDebugMessage(
-					string.Format("Part.getFirstModuleOfType<{0}>: Queuing deferred getModules for part {1}",
-						typeof(T).Name, part.partInfo.name)
-				);
 				System.Threading.ThreadPool.QueueUserWorkItem(delegate {
 					ModuleDB<T>.Instance.getModules(part);
 				});
