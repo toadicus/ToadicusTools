@@ -52,6 +52,26 @@ namespace ToadicusTools
 			return (vessel.GetWorldPos3D() - body.position).magnitude;
 		}
 
+		/// <summary>
+		/// Returns the square of the distance between this Vessel and another Vessel.
+		/// </summary>
+		/// <param name="vesselOne">This <see cref="Vessel"/><see ></param>
+		/// <param name="vesselTwo">Another <see cref="Vessel"/></param>
+		public static double sqrDistanceTo(this Vessel vesselOne, Vessel vesselTwo)
+		{
+			return (vesselOne.GetWorldPos3D() - vesselTwo.GetWorldPos3D()).sqrMagnitude;
+		}
+
+		/// <summary>
+		/// Returns the square of the distance between this Vessel and a CelestialBody
+		/// </summary>
+		/// <param name="vessel">This Vessel</param>
+		/// <param name="body">A <see cref="CelestialBody"/></param>
+		public static double sqrDistanceTo(this Vessel vessel, CelestialBody body)
+		{
+			return (vessel.GetWorldPos3D() - body.position).sqrMagnitude;
+		}
+
 		public static List<T> getModulesOfType<T>(this Vessel vessel) where T : PartModule
 		{
 			if (vessel == null)
