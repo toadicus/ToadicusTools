@@ -128,7 +128,7 @@ namespace ToadicusTools
 			}
 
 			[System.Diagnostics.Conditional("DEBUG")]
-			public void AppendFormat(string value)
+			public void AppendLine(string value)
 			{
 				this.stringBuilder.AppendLine(value);
 			}
