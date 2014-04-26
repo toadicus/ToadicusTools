@@ -7,7 +7,6 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{191248A4-8F80-4024-9F19-9957A1BC003C}</ProjectGuid>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Default|AnyCPU' ">
     <OutputPath>.</OutputPath>
@@ -27,6 +26,7 @@
     <None Include="ConfigNodeExtensions.cs" />
     <None Include="TweakableTools.cs" />
     <None Include="TweakableAnimationWrapper.cs" />
+    <None Include="PrefabPartDB.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
