@@ -59,11 +59,17 @@ namespace ToadicusTools
 
 		private Dictionary<Guid, List<T>> vesselModuleTable;
 
+		private Guid editorVesselID;
+
 		private ModuleDB()
 		{
 			// Initialize the caches.
 			vesselPartModuleDB = new Dictionary<Guid, Dictionary<uint, List<T>>>();
 			vesselModuleTable = new Dictionary<Guid, List<T>>();
+
+			editorVesselID = new Guid(
+				new byte[] { 209, 101, 40, 249, 114, 36, 27, 95, 191, 207, 7, 197, 51, 109, 223, 212 }
+			);
 
 			// Subscribe to events to keep the cache fresh.
 			GameEvents.onVesselWasModified.Add(onVesselEvent);
@@ -101,6 +107,19 @@ namespace ToadicusTools
 				// ...remove it from the caches.
 				onVesselEvent(FlightGlobals.ActiveVessel);
 			}
+
+			if (HighLogic.LoadedSceneIsEditor)
+			{
+				if (vesselPartModuleDB.ContainsKey(this.editorVesselID))
+				{
+					vesselPartModuleDB.Remove(this.editorVesselID);
+				}
+
+				if (vesselModuleTable.ContainsKey(this.editorVesselID))
+				{
+					vesselModuleTable.Remove(this.editorVesselID);
+				}
+			}
 		}
 
 		// Called for a subject Part when undocked
@@ -129,16 +148,12 @@ namespace ToadicusTools
 		/// <param name="vessel">The Vessel being queried</param>
 		public List<T> getModules(Vessel vessel)
 		{
-			Tools.DebugLogger log = Tools.DebugLogger.New(typeof(ModuleDB<T>));
-
 			// If the vessel's Parts list is defined and includes any Parts...
 			if (vessel.Parts != null && vessel.Parts.Count > 0)
 			{
 				// ...and if the vessel is not in the shallow cache...
 				if (!vesselModuleTable.ContainsKey(vessel.id))
 				{
-					log.AppendFormat("Vessel '{0}' not in shallow cache, building new entry.", vessel);
-
 					// ...create a list flat list of modules
 					List<T> modulesInVessel = new List<T>();
 
@@ -157,11 +172,6 @@ namespace ToadicusTools
 					vesselModuleTable[vessel.id] = modulesInVessel;
 				}
 
-				log.AppendFormat("Returning {0} modules of type '{1}' for Vessel '{2}'",
-					vesselModuleTable[vessel.id].Count, typeof(T).Name, vessel);
-
-				log.Print();
-
 				// ...return the shallow cache for the queried Vessel
 				return vesselModuleTable[vessel.id];
 			}
@@ -177,55 +187,53 @@ namespace ToadicusTools
 		/// <param name="part">The Part being queried</param>
 		public List<T> getModules(Part part)
 		{
-			Tools.DebugLogger log = Tools.DebugLogger.New(typeof(ModuleDB<T>));
+			Guid id;
 
-			// If the Part's Vessel is defined...
-			if (part.vessel != null)
+			if (HighLogic.LoadedSceneIsEditor)
 			{
-				// ...and if the Vessel is not in the deep cache...
-				if (!vesselPartModuleDB.ContainsKey(part.vessel.id))
-				{
-					log.AppendFormat("Vessel '{0}' not in deep cache, building new entry.", part.vessel);
-
-					// ...create a new table for the Vessel in the deep cache.
-					vesselPartModuleDB[part.vessel.id] = new Dictionary<uint, List<T>>();
-				}
-
-				// ...and if the Part is not in the Vessel's table in the deep cache...
-				if (!vesselPartModuleDB[part.vessel.id].ContainsKey(part.uid))
-				{
-					log.AppendFormat("Part '{0}' not in cache for Vessel '{1}', building new entry.",
-						part, part.vessel);
-
-					// ...create a flat list of modules
-					List<T> modulesInPart = new List<T>();
-
-					// ...loop through the Part's modules...
-					foreach (PartModule module in part.Modules)
-					{
-						// ...if any module matches...
-						if (module is T)
-						{
-							// ...add it to the list
-							modulesInPart.Add((T)module);
-						}
-					}
-
-					// ...set the deep cache entry to the new list
-					vesselPartModuleDB[part.vessel.id][part.uid] = modulesInPart;
-				}
-
-				log.AppendFormat("Returning {2} modules of type '{3}' in Part '{0}' for Vessel '{1}'.",
-					part, part.vessel, vesselPartModuleDB[part.vessel.id][part.uid].Count, typeof(T).Name);
-
-				log.Print();
-
-				// ...return the deep cache entry for the queried Part.
-				return vesselPartModuleDB[part.vessel.id][part.uid];
+				id = this.editorVesselID;
+			}
+			// If the Part's Vessel is defined...
+			else if (part.vessel != null)
+			{
+				id = part.vessel.id;
+			}
+			else
+			{
+				// Otherwise, return an empty list
+				return new List<T>();
 			}
 
-			// Otherwise, return an empty list
-			return new List<T>();
+			// ...and if the Vessel is not in the deep cache...
+			if (!vesselPartModuleDB.ContainsKey(id))
+			{
+				// ...create a new table for the Vessel in the deep cache.
+				vesselPartModuleDB[id] = new Dictionary<uint, List<T>>();
+			}
+
+			// ...and if the Part is not in the Vessel's table in the deep cache...
+			if (!vesselPartModuleDB[id].ContainsKey(part.uid))
+			{
+				// ...create a flat list of modules
+				List<T> modulesInPart = new List<T>();
+
+				// ...loop through the Part's modules...
+				foreach (PartModule module in part.Modules)
+				{
+					// ...if any module matches...
+					if (module is T)
+					{
+						// ...add it to the list
+						modulesInPart.Add((T)module);
+					}
+				}
+
+				// ...set the deep cache entry to the new list
+				vesselPartModuleDB[id][part.uid] = modulesInPart;
+			}
+
+			// ...return the deep cache entry for the queried Part.
+			return vesselPartModuleDB[id][part.uid];
 		}
 
 		/// <summary>
@@ -235,7 +243,7 @@ namespace ToadicusTools
 		/// <param name="vessel">The Vessel being queried</param>
 		public bool inDeepCache(Vessel vessel)
 		{
-			return vesselPartModuleDB.ContainsKey(vessel.id);
+			return vesselPartModuleDB.ContainsKey(HighLogic.LoadedSceneIsEditor ? this.editorVesselID : vessel.id);
 		}
 
 		/// <summary>
@@ -245,12 +253,20 @@ namespace ToadicusTools
 		/// <param name="part">The Part being queried</param>
 		public bool inDeepCache(Part part)
 		{
-			if (part.vessel == null)
+			if (HighLogic.LoadedSceneIsEditor)
 			{
-				return false;
+				return vesselPartModuleDB.ContainsKey(this.editorVesselID) &&
+					vesselPartModuleDB[this.editorVesselID].ContainsKey(part.uid);
 			}
+			else
+			{
+				if (part.vessel == null)
+				{
+					return false;
+				}
 
-			return inDeepCache(part.vessel) && vesselPartModuleDB[part.vessel.id].ContainsKey(part.uid);
+				return inDeepCache(part.vessel) && vesselPartModuleDB[part.vessel.id].ContainsKey(part.uid);
+			}
 		}
 
 		/// <summary>
@@ -260,7 +276,7 @@ namespace ToadicusTools
 		/// <param name="vessel">The Vessel being queried</param>
 		public bool inShallowCache(Vessel vessel)
 		{
-			return vesselModuleTable.ContainsKey(vessel.id);
+			return vesselModuleTable.ContainsKey(HighLogic.LoadedSceneIsEditor ? this.editorVesselID : vessel.id);
 		}
 	}
 }
