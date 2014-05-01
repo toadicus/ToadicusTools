@@ -30,18 +30,58 @@ using UnityEngine;
 
 namespace ToadicusTools
 {
+	/// <summary>
+	/// Interface for a generic, caching database of PartModule derivatives keyed by Vessel and Part.
+	/// </summary>
 	public interface IModuleDB<T>
 		where T : PartModule
 	{
+		/// <summary>
+		/// Gets a flat list of all modules of type T in the given Vessel.  Returns an empty list if none exist.
+		/// </summary>
+		/// <returns>The list modules of type T</returns>
+		/// <param name="vessel">The Vessel being queried</param>
 		List<T> getModules(Vessel vessel);
+
+		/// <summary>
+		/// Gets a flat list of all modules of type T in the given Part.  Returns an empty list if none exist.
+		/// </summary>
+		/// <returns>The list of modules of type T</returns>
+		/// <param name="part">The Part being queried</param>
 		List<T> getModules(Part part);
+
+		/// <summary>
+		/// Returns true if the given Vessel exists in the deep cache, false otherwise.
+		/// </summary>
+		/// <returns>true if the given Vessel exists in the deep cache, false otherwise</returns>
+		/// <param name="vessel">The Vessel being queried</param>
 		bool inDeepCache(Vessel vessel);
+
+		/// <summary>
+		/// Returns true if the given Part exists in the deep cache, false otherwise.
+		/// </summary>
+		/// <returns>true if the given Part exists in the deep cache, false otherwise</returns>
+		/// <param name="part">The Part being queried</param>
 		bool inDeepCache(Part part);
+
+		/// <summary>
+		/// Returns true if the given Vessel exists in the shallow cache, false otherwise.
+		/// </summary>
+		/// <returns>true if the given Vessel exists in the shallow cache, false otherwise</returns>
+		/// <param name="vessel">The Vessel being queried</param>
 		bool inShallowCache(Vessel vessel);
 	}
 
+	/// <summary>
+	/// Interface for a caching database of ModuleInfo objects keyed by part name and module name.
+	/// </summary>
 	public interface IPrefabPartDB
 	{
+		/// <summary>
+		/// Gets a moduleName-keyed table of ModuleInfo objects in the named part prefab.
+		/// </summary>
+		/// <returns>a moduleName-keyed table of ModuleInfo objects</returns>
+		/// <param name="partName">the part name</param>
 		Dictionary<string, AvailablePart.ModuleInfo> getPrefabModuleDB(string partName);
 	}
 }
