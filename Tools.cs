@@ -49,12 +49,6 @@ namespace ToadicusTools
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
-		public static void PostDebugMessage(string format, params object[] args)
-		{
-			PostDebugMessage(string.Format(format, args));
-		}
-
-		[System.Diagnostics.Conditional("DEBUG")]
 		public static void PostDebugMessage(object Sender, params object[] args)
 		{
 			string Msg;
