@@ -74,12 +74,6 @@ namespace ToadicusTools
 			PostDebugMessage(sb.ToString());
 		}
 
-		[System.Diagnostics.Conditional("VERBOSE")]
-		public static void PostVerboseMessage(object Sender, params object[] args)
-		{
-			PostDebugMessage(Sender, args);
-		}
-
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void DebugFieldsActivate(this PartModule partModule)
 		{
