@@ -72,6 +72,46 @@ namespace ToadicusTools
 			return (vessel.GetWorldPos3D() - body.position).sqrMagnitude;
 		}
 
+		/// <summary>
+		/// Returns true if no CelestialBody occludes the target Vessel from this Vessel, false otherwise.
+		/// This code is adapted from the RemoteTech2 RangeModelExtensions.
+		/// RemoteTech2 © Cilph 2013-2014.  Used under the GPLv2 license.
+		/// </summary>
+		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
+		/// <param name="vesselOne">this Vessel</param>
+		/// <param name="vesselTwo">target Vessel</param>
+		public static bool hasLineOfSightTo(this Vessel vesselOne, Vessel vesselTwo)
+		{
+			Vector3d v1Pos = vesselOne.GetWorldPos3D();
+			Vector3d v2Pos = vesselTwo.GetWorldPos3D();
+
+			foreach (CelestialBody referenceBody in FlightGlobals.Bodies)
+			{
+				Vector3d bodyFromV1 = referenceBody.position - v1Pos;
+				Vector3d V2FromV1 = v2Pos - v1Pos;
+
+				if (Vector3d.Dot(bodyFromV1, V2FromV1) <= 0)
+				{
+					continue;
+				}
+
+				Vector3d V2FromV1norm = V2FromV1.normalized;
+
+				if (Vector3d.Dot(bodyFromV1, V2FromV1norm) >= V2FromV1.magnitude)
+				{
+					continue;
+				}
+
+				Vector3d lateralOffset = bodyFromV1 - Vector3d.Dot(bodyFromV1, V2FromV1norm) * V2FromV1norm;
+
+				if (lateralOffset.magnitude < referenceBody.Radius - 5)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
 		public static List<T> getModulesOfType<T>(this Vessel vessel) where T : PartModule
 		{
 			if (vessel == null)
