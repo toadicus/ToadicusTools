@@ -41,25 +41,28 @@ namespace ToadicusTools
 				);
 			}
 
-			#if MODULE_DB_AVAILABLE
-			#if DEBUG
-			Debug.Log(string.Format("Checking Part {0} for modules of type {1}.",
-				part,
-				typeof(T).Name
-			));
-			#endif
+			if (ModuleDB<T>.DBPresent)
+			{
+				#if DEBUG
+				Debug.Log(string.Format("Checking Part {0} for modules of type {1}.",
+					part,
+					typeof(T).Name
+				));
+				#endif
 
-			if (ModuleDB<T>.Instance.inDeepCache(part))
-			{
-				return ModuleDB<T>.Instance.getModules(part).Count > 0;
+				if (ModuleDB<T>.Instance.inDeepCache(part))
+				{
+					return ModuleDB<T>.Instance.getModules(part).Count > 0;
+				}
+				else
+				{
+					System.Threading.ThreadPool.QueueUserWorkItem(delegate
+					{
+						ModuleDB<T>.Instance.getModules(part);
+					});
+				}
 			}
-			else
-			{
-				System.Threading.ThreadPool.QueueUserWorkItem(delegate {
-					ModuleDB<T>.Instance.getModules(part);
-				});
-			}
-			#endif
+
 			foreach (PartModule module in part.Modules)
 			{
 				if (module is T)
@@ -76,11 +79,15 @@ namespace ToadicusTools
 			#if DEBUG
 			Debug.Log(string.Format("Checking if part {0} has module(s) named {1}", part.partInfo.name, moduleName));
 			#endif
-			#if PREFAB_DB_AVAILABLE
-			return PrefabPartDB.Instance.getPrefabModuleDB(part.partInfo.name).ContainsKey(moduleName);
-			#else
-			return part.Modules.Contains(moduleName);
-			#endif
+
+			if (PrefabPartDB.prefabDBPresent)
+			{
+				return PrefabPartDB.Instance.getPrefabModuleDB(part.partInfo.name).ContainsKey(moduleName);
+			}
+			else
+			{
+				return part.Modules.Contains(moduleName);
+			}
 		}
 
 		public static List<T> getModulesOfType<T>(this Part part) where T : PartModule
@@ -92,21 +99,24 @@ namespace ToadicusTools
 				);
 			}
 
-			#if MODULE_DB_AVAILABLE
-			return ModuleDB<T>.Instance.getModules(part);
-			#else
-			List<T> returnList = new List<T>();
-
-			foreach (PartModule module in part.Modules)
+			if (ModuleDB<T>.DBPresent)
 			{
-				if (module is T)
-				{
-					returnList.Add(module as T);
-				}
+				return ModuleDB<T>.Instance.getModules(part);
 			}
+			else
+			{
+				List<T> returnList = new List<T>();
 
-			return returnList;
-			#endif
+				foreach (PartModule module in part.Modules)
+				{
+					if (module is T)
+					{
+						returnList.Add(module as T);
+					}
+				}
+
+				return returnList;
+			}
 		}
 
 		public static T getFirstModuleOfType<T>(this Part part) where T: PartModule
@@ -118,23 +128,25 @@ namespace ToadicusTools
 				);
 			}
 
-			#if MODULE_DB_AVAILABLE
-			if (ModuleDB<T>.Instance.inDeepCache(part))
+			if (ModuleDB<T>.DBPresent)
 			{
-				List<T> partModulesList = ModuleDB<T>.Instance.getModules(part);
-
-				if (partModulesList.Count > 0)
+				if (ModuleDB<T>.Instance.inDeepCache(part))
 				{
-					return partModulesList[0];
+					List<T> partModulesList = ModuleDB<T>.Instance.getModules(part);
+
+					if (partModulesList.Count > 0)
+					{
+						return partModulesList[0];
+					}
+				}
+				else
+				{
+					System.Threading.ThreadPool.QueueUserWorkItem(delegate
+					{
+						ModuleDB<T>.Instance.getModules(part);
+					});
 				}
 			}
-			else
-			{
-				System.Threading.ThreadPool.QueueUserWorkItem(delegate {
-					ModuleDB<T>.Instance.getModules(part);
-				});
-			}
-			#endif
 
 			foreach (PartModule module in part.Modules)
 			{

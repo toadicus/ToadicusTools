@@ -124,11 +124,27 @@ namespace ToadicusTools
 				);
 			}
 
-			#if MODULE_DB_AVAILABLE
-			return ModuleDB<T>.Instance.getModules(vessel);
-			#else
-			throw new NotImplementedException("Vessel.getModulesOfType<T> is not implemented without ModuleDB.");
-			#endif
+			if (ModuleDB<T>.DBPresent)
+			{
+				return ModuleDB<T>.Instance.getModules(vessel);
+			}
+			else
+			{
+				List<T> modulesInVessel = new List<T>();
+
+				foreach (Part part in vessel.Parts)
+				{
+					foreach (PartModule module in part.Modules)
+					{
+						if (module is T)
+						{
+							modulesInVessel.Add((T)module);
+						}
+					}
+				}
+
+				return modulesInVessel;
+			}
 		}
 	}
 }
