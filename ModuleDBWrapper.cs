@@ -37,7 +37,7 @@ namespace ToadicusTools
 		{
 			get
 			{
-				return (InstanceProperty != null);
+				return (Instance != null);
 			}
 		}
 
@@ -45,10 +45,27 @@ namespace ToadicusTools
 		{
 			get
 			{
-				if (DBPresent)
+				if (InstanceProperty != null)
 				{
-					return (IModuleDB<T>)InstanceProperty.GetValue(null, null);
+					try
+					{
+						return InstanceProperty.GetValue(null, null) as IModuleDB<T>;
+					}
+					catch (System.InvalidCastException)
+					{
+						Debug.Log(string.Format("[ModuleDBWrapper]: Cast failed in Instance call." +
+						"\n\tInstanceProperty: {0}" +
+						"\n\tInstanceProperty.GetValue(null, null): {1}" +
+						"\n\tInstanceProperty.GetValue(null, null).GetType().Name: {2}" +
+						"\n\ttypeof(IModuleDB<T>).Name: {3}",
+							InstanceProperty,
+							InstanceProperty.GetValue(null, null),
+							InstanceProperty.GetValue(null, null).GetType().Name,
+							typeof(IModuleDB<T>).Name
+						));
+					}
 				}
+
 				return null;
 			}
 		}
@@ -111,16 +128,45 @@ namespace ToadicusTools
 				{
 					foreach (AssemblyLoader.LoadedAssembly assy in AssemblyLoader.loadedAssemblies)
 					{
+						#if DEBUG
+						Tools.PostDebugMessage(null, "[ModuleDBWrapper] Checking assembly {0} version {1}",
+							assy.assembly.GetName().Name,
+							assy.assembly.GetName().Version
+						);
+						#endif
+
 						foreach (Type type in assy.assembly.GetExportedTypes())
 						{
-							if (type.FullName == "ModuleDB.ModuleDB")
+							#if DEBUG
+							if (type.Namespace == "ModuleDB")
+							{
+								Tools.PostDebugMessage(null, "[ModuleDBWrapper] Checking ModuleDB type {0}", type.FullName);
+							}
+							#endif
+
+							if (type.FullName == "ModuleDB.ModuleDB`1")
 							{
 								System.Version assyVersion = assy.assembly.GetName().Version;
 								if (assyVersion > loadedVersion)
 								{
+									#if DEBUG
+									Tools.PostDebugMessage(null, "[ModuleDBWrapper] Found type {0}", type.FullName);
+									#endif
+
 									moduleDBType = type;
 									loadedVersion = (System.Version)assyVersion.Clone();
 								}
+								#if DEBUG
+								else
+								{
+									Tools.PostDebugMessage(null,
+										"[ModuleDBWrapper] Discarded type {0} because" +
+										" assembly version {1}is not greather than loaded version {2}",
+										type.FullName,
+										assyVersion, loadedVersion
+									);
+								}
+								#endif
 							}
 						}
 					}
@@ -128,11 +174,11 @@ namespace ToadicusTools
 					#if DEBUG
 					if (moduleDBType == null)
 					{
-						Tools.PostDebugMessage("[ModuleDBWrapper]: ModuleDB not found.");
+						Tools.PostDebugMessage(null, "[ModuleDBWrapper]: ModuleDB not found.");
 					}
 					else
 					{
-						Tools.PostDebugMessage("[ModuleDBWrapper]: ModuleDB loaded from assembly version {0}.",
+						Tools.PostDebugMessage(null, "[ModuleDBWrapper]: ModuleDB loaded from assembly version {0}.",
 							loadedVersion);
 					}
 					#endif
