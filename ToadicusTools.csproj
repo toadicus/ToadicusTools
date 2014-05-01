@@ -57,6 +57,7 @@
     <Compile Include="Wrapper\ToolbarWrapper.cs">
       <Link>ToolbarWrapper.cs</Link>
     </Compile>
+    <Compile Include="PrefabPartDB.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
