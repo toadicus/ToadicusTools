@@ -61,6 +61,11 @@ namespace ToadicusTools
 
 		private Guid editorVesselID;
 
+		#if BENCH
+		public int cacheHits { get; protected set; }
+		public int cacheMisses { get; protected set; }
+		#endif
+
 		private ModuleDB()
 		{
 			// Initialize the caches.
@@ -78,6 +83,11 @@ namespace ToadicusTools
 			GameEvents.onGameSceneLoadRequested.Add(onSceneChange);
 			GameEvents.onPartUndock.Add(onPartEvent);
 			GameEvents.onPartCouple.Add(onFromPartToPartEvent);
+
+			#if BENCH
+			this.cacheHits = 0;
+			this.cacheMisses = 0;
+			#endif
 		}
 
 		// Called for a subject Vessel when destroyed, changed, or modified
@@ -120,6 +130,18 @@ namespace ToadicusTools
 					vesselModuleTable.Remove(this.editorVesselID);
 				}
 			}
+				
+			#if BENCH
+			if (scene == GameScenes.MAINMENU)
+			{
+				int cacheSwings = this.cacheHits + this.cacheMisses;
+				KSPLog.print(string.Format("ModuleDB<{4}> Destructing.  Cache hits: {0} ({1}%), cache misses: {2} ({3}%).",
+					this.cacheHits, (float)this.cacheHits / (float)cacheSwings * 100f,
+					this.cacheMisses, (float)this.cacheMisses / (float)cacheSwings * 100f,
+					typeof(T).Name
+				));
+			}
+			#endif
 		}
 
 		// Called for a subject Part when undocked
@@ -154,6 +176,9 @@ namespace ToadicusTools
 				// ...and if the vessel is not in the shallow cache...
 				if (!vesselModuleTable.ContainsKey(vessel.id))
 				{
+					#if BENCH
+					this.cacheMisses++;
+					#endif
 					// ...create a list flat list of modules
 					List<T> modulesInVessel = new List<T>();
 
@@ -171,6 +196,12 @@ namespace ToadicusTools
 					// ...set the shallow cache entry to the new list
 					vesselModuleTable[vessel.id] = modulesInVessel;
 				}
+				#if BENCH
+				else
+				{
+					this.cacheHits++;
+				}
+				#endif
 
 				// ...return the shallow cache for the queried Vessel
 				return vesselModuleTable[vessel.id];
@@ -214,6 +245,10 @@ namespace ToadicusTools
 			// ...and if the Part is not in the Vessel's table in the deep cache...
 			if (!vesselPartModuleDB[id].ContainsKey(part.uid))
 			{
+				#if BENCH
+				this.cacheMisses++;
+				#endif
+
 				// ...create a flat list of modules
 				List<T> modulesInPart = new List<T>();
 
@@ -231,6 +266,12 @@ namespace ToadicusTools
 				// ...set the deep cache entry to the new list
 				vesselPartModuleDB[id][part.uid] = modulesInPart;
 			}
+			#if BENCH
+			else
+			{
+				this.cacheHits++;
+			}
+			#endif
 
 			// ...return the deep cache entry for the queried Part.
 			return vesselPartModuleDB[id][part.uid];
@@ -278,5 +319,17 @@ namespace ToadicusTools
 		{
 			return vesselModuleTable.ContainsKey(HighLogic.LoadedSceneIsEditor ? this.editorVesselID : vessel.id);
 		}
+
+		#if BENCH
+		~ModuleDB()
+		{
+			int cacheSwings = this.cacheHits + this.cacheMisses;
+			KSPLog.print(string.Format("ModuleDB<{4}> Destructing.  Cache hits: {0} ({1}%), cache misses: {2} ({3}%).",
+				this.cacheHits, (float)this.cacheHits / (float)cacheSwings * 100f,
+				this.cacheMisses, (float)this.cacheMisses / (float)cacheSwings * 100f,
+				typeof(T).Name
+			));
+		}
+		#endif
 	}
 }

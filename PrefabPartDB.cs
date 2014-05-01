@@ -50,11 +50,21 @@ namespace ToadicusTools
 			}
 		}
 
-		Dictionary<string, Dictionary<string, AvailablePart.ModuleInfo>> partModuleNameDB;
+		protected Dictionary<string, Dictionary<string, AvailablePart.ModuleInfo>> partModuleNameDB;
+
+		#if BENCH
+		public int cacheHits { get; protected set; }
+		public int cacheMisses { get; protected set; }
+		#endif
 
 		private PrefabPartDB()
 		{
 			this.partModuleNameDB = new Dictionary<string, Dictionary<string, AvailablePart.ModuleInfo>>();
+			#if BENCH
+			this.cacheHits = 0;
+			this.cacheMisses = 0;
+			GameEvents.onGameSceneLoadRequested.Add(this.onSceneChange);
+			#endif
 		}
 
 		public Dictionary<string, AvailablePart.ModuleInfo> getPrefabModuleDB(string partName)
@@ -65,6 +75,9 @@ namespace ToadicusTools
 			{
 				if (!this.partModuleNameDB.ContainsKey(partName))
 				{
+					#if BENCH
+					this.cacheMisses++;
+					#endif
 					Dictionary<string, AvailablePart.ModuleInfo> prefabModuleDB =
 						new Dictionary<string, AvailablePart.ModuleInfo>();
 
@@ -75,11 +88,28 @@ namespace ToadicusTools
 
 					this.partModuleNameDB[partName] = prefabModuleDB;
 				}
+				#if BENCH
+				else
+				{
+					this.cacheHits++;
+				}
+				#endif
 
 				return this.partModuleNameDB[partName];
 			}
 
 			return new Dictionary<string, AvailablePart.ModuleInfo>();
 		}
+
+		#if BENCH
+		private void onSceneChange(GameScenes scene)
+		{
+			int cacheSwings = this.cacheHits + this.cacheMisses;
+			KSPLog.print(string.Format("PrefabPartDB Destructing.  Cache hits: {0} ({1}%), cache misses: {2} ({3}%).",
+				this.cacheHits, (float)this.cacheHits / (float)cacheSwings * 100f,
+				this.cacheMisses, (float)this.cacheMisses / (float)cacheSwings * 100f
+			));
+		}
+		#endif
 	}
 }
