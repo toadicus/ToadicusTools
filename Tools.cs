@@ -67,8 +67,12 @@ namespace ToadicusTools
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.Append(Sender.GetType().Name);
-			sb.Append(": ");
+			if (Sender != null)
+			{
+				sb.Append(Sender.GetType().Name);
+				sb.Append(": ");
+			}
+
 			sb.AppendFormat(Format, args);
 
 			PostDebugMessage(sb.ToString());
