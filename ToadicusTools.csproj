@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG; MODULE_DB_AVAILABLE; PREFAB_DB_AVAILABLE</DefineConstants>
+    <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -39,14 +39,12 @@
         <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ..\..\..\Games\KSP_win\GameData\TweakableEverything\" />
       </CustomCommands>
     </CustomCommands>
-    <DefineConstants>MODULE_DB_AVAILABLE; PREFAB_DB_AVAILABLE</DefineConstants>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="ConfigNodeExtensions.cs" />
     <Compile Include="EventSniffer.cs" />
     <Compile Include="IntCollection.cs" />
-    <Compile Include="ModuleDB.cs" />
     <Compile Include="MuMech_Tools.cs" />
     <Compile Include="PartExtensions.cs" />
     <Compile Include="Tools.cs" />
@@ -57,7 +55,9 @@
     <Compile Include="Wrapper\ToolbarWrapper.cs">
       <Link>ToolbarWrapper.cs</Link>
     </Compile>
-    <Compile Include="PrefabPartDB.cs" />
+    <Compile Include="ModuleDBWrapper.cs" />
+    <Compile Include="PrefabDBWrapper.cs" />
+    <Compile Include="IModuleDB.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -73,4 +73,13 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <StandardHeader Text="${ProjectName}&#xA;&#xA;${FileName}&#xA;&#xA;Copyright © ${Year}, ${AuthorName}&#xA;All rights reserved.&#xA;&#xA;Redistribution and use in source and binary forms, with or without modification,&#xA;are permitted provided that the following conditions are met:&#xA;&#xA;1. Redistributions of source code must retain the above copyright notice,&#xA;   this list of conditions and the following disclaimer.&#xA;&#xA;2. Redistributions in binary form must reproduce the above copyright notice,&#xA;   this list of conditions and the following disclaimer in the documentation and/or other&#xA;   materials provided with the distribution.&#xA;&#xA;THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES,&#xA;INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE&#xA;DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,&#xA;SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR&#xA;SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,&#xA;WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE&#xA;OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE." IncludeInNewFiles="True" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
