@@ -87,17 +87,6 @@
     <Compile Include="PrefabDBWrapper.cs" />
     <Compile Include="IModuleDB.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\Games\KSP_win\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System">
-      <HintPath>..\..\..\Games\KSP_win\KSP_Data\Managed\System.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\Games\KSP_win\KSP_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
@@ -107,4 +96,15 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\_KSPAssemblies\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\_KSPAssemblies\System.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\_KSPAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
