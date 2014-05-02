@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug_win</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D48A5542-6655-4149-BC27-B27DF0466F1C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -12,7 +12,6 @@
     <CodePage>65001</CodePage>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UseMSBuildEngine>False</UseMSBuildEngine>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_win|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
