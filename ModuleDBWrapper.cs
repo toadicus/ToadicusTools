@@ -124,8 +124,10 @@ namespace ToadicusTools
 		{
 			get
 			{
-				if (moduleDBType == null)
+				if (moduleDBType == null && runOnce)
 				{
+					runOnce = false;
+
 					foreach (AssemblyLoader.LoadedAssembly assy in AssemblyLoader.loadedAssemblies)
 					{
 						#if DEBUG
@@ -191,9 +193,11 @@ namespace ToadicusTools
 		static ModuleDBWrapper()
 		{
 			loadedVersion = new System.Version(0, 0, 0, 0);
+			runOnce = true;
 		}
 
 		private static Type moduleDBType;
 		private static System.Version loadedVersion;
+		private static bool runOnce;
 	}
 }

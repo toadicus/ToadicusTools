@@ -56,9 +56,9 @@ namespace ToadicusTools
 					{
 						return instanceProperty.GetValue(null, null) as IPrefabPartDB;
 					}
-					catch (System.InvalidCastException)
+					catch (System.InvalidCastException ex)
 					{
-						Debug.Log(string.Format("[PrefabDBWrapper]: Cast failed in Instance call." +
+						Debug.LogError(string.Format("[PrefabDBWrapper]: Cast failed in Instance call." +
 							"\n\tInstanceProperty: {0}" +
 							"\n\tInstanceProperty.GetValue(null, null): {1}" +
 							"\n\tInstanceProperty.GetValue(null, null).GetType().Name: {2}" +
@@ -68,6 +68,8 @@ namespace ToadicusTools
 							instanceProperty.GetValue(null, null).GetType().Name,
 							typeof(IPrefabPartDB).Name
 						));
+
+						Debug.LogException(ex);
 					}
 				}
 
@@ -93,8 +95,10 @@ namespace ToadicusTools
 		{
 			get
 			{
-				if (prefabDBType == null)
+				if (prefabDBType == null && runOnce)
 				{
+					runOnce = false;
+
 					foreach (AssemblyLoader.LoadedAssembly assy in AssemblyLoader.loadedAssemblies)
 					{
 						#if DEBUG
@@ -160,10 +164,13 @@ namespace ToadicusTools
 		static PrefabPartDB()
 		{
 			loadedVersion = new System.Version(0, 0, 0, 0);
+			runOnce = true;
 		}
 
 		private static Type prefabDBType;
 		private static PropertyInfo instanceProperty;
 		private static System.Version loadedVersion;
+
+		private static bool runOnce;
 	}
 }
