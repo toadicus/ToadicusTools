@@ -76,18 +76,19 @@ namespace ToadicusTools
 
 		public static bool hasModuleByName(this Part part, string moduleName)
 		{
+			if (part == null)
+			{
+				throw new ArgumentNullException("Part.hasModuleByName: 'part' argument must not be null");
+			}
+
 			#if DEBUG
 			Debug.Log(string.Format("Checking if part {0} has module(s) named {1}", part.partInfo.name, moduleName));
 			#endif
 
-			if (PrefabPartDB.prefabDBPresent)
-			{
-				return PrefabPartDB.Instance.getPrefabModuleDB(part.partInfo.name).ContainsKey(moduleName);
-			}
-			else
-			{
-				return part.Modules.Contains(moduleName);
-			}
+			Type moduleType = Type.GetType(moduleName);
+
+			return (bool)typeof(Tools).GetMethod("hasModuleType").MakeGenericMethod(moduleType)
+				.Invoke(null, new object[] {part});
 		}
 
 		public static List<T> getModulesOfType<T>(this Part part) where T : PartModule
@@ -161,6 +162,13 @@ namespace ToadicusTools
 
 		public static bool tryGetFirstModuleOfType<T>(this Part part, out T module) where T : PartModule
 		{
+			if (part == null)
+			{
+				throw new ArgumentNullException(
+					string.Format("Part.tryGetFirstModuleOfType<{0}>: 'part' argument must not be null", typeof(T).Name)
+				);
+			}
+
 			module = part.getFirstModuleOfType<T>();
 
 			if (module == null)
@@ -173,6 +181,15 @@ namespace ToadicusTools
 
 		public static bool hasAncestorPart(this Part part, Part checkPart)
 		{
+			if (part == null)
+			{
+				throw new ArgumentNullException("Part.hasAncestorPart: 'part' argument must not be null");
+			}
+			if (checkPart == null)
+			{
+				throw new ArgumentNullException("Part.hasAncestorPart: 'checkPart' argument must not be null");
+			}
+
 			Part ancestorPart = part;
 
 			do
