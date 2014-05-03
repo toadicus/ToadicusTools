@@ -79,7 +79,7 @@ namespace ToadicusTools
 		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
 		/// <param name="vessel">this Vessel</param>
 		/// <param name="distantPoint">target point</param>
-		public static bool hasLineOfSightTo(this Vessel vessel, Vector3d distantPoint)
+		public static bool hasLineOfSightTo(this Vessel vessel, Vector3d distantPoint, CelestialBody[] excludedBodies = null)
 		{
 			// Line X = A + tN
 			Vector3d a = vessel.GetWorldPos3D();
@@ -89,6 +89,11 @@ namespace ToadicusTools
 			{
 				foreach (CelestialBody body in FlightGlobals.Bodies)
 				{
+					if (excludedBodies != null && excludedBodies.Contains(body))
+					{
+						continue;
+					}
+
 					// Point p
 					Vector3d p = body.position;
 
@@ -124,7 +129,7 @@ namespace ToadicusTools
 		/// <param name="targetBody">target CelestialBody</param>
 		public static bool hasLineOfSightTo(this Vessel vessel, CelestialBody targetBody)
 		{
-			return vessel.hasLineOfSightTo(targetBody.position);
+			return vessel.hasLineOfSightTo(targetBody.position, new CelestialBody[] {targetBody});
 		}
 
 		public static List<T> getModulesOfType<T>(this Vessel vessel) where T : PartModule
