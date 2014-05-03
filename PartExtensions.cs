@@ -183,11 +183,13 @@ namespace ToadicusTools
 		{
 			if (part == null)
 			{
-				throw new ArgumentNullException("Part.hasAncestorPart: 'part' argument must not be null");
+				Debug.LogError("Part.hasAncestorPart: 'part' argument should not be null.  Returning false.");
+				return false;
 			}
 			if (checkPart == null)
 			{
-				throw new ArgumentNullException("Part.hasAncestorPart: 'checkPart' argument must not be null");
+				Debug.LogError("Part.hasAncestorPart: 'checkPart' argument should not be null.  Returning false.");
+				return false;
 			}
 
 			Part ancestorPart = part;
