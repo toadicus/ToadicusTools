@@ -152,6 +152,19 @@ namespace ToadicusTools
 
 			return false;
 		}
+
+		public static bool Contains(this CelestialBody[] haystack, CelestialBody needle)
+		{
+			foreach (CelestialBody item in haystack)
+			{
+				if (item == needle)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
 		#endregion
 
 		#region Enum_Tools
