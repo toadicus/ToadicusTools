@@ -132,6 +132,36 @@ namespace ToadicusTools
 			return vessel.hasLineOfSightTo(targetBody.position, new CelestialBody[] {targetBody});
 		}
 
+		/// <summary>
+		/// Checks if this vessel has a properly-crewed manned command pod.
+		/// </summary>
+		/// <returns><c>true</c>, if this vessel is adequately crewed for control, <c>false</c> otherwise.</returns>
+		/// <param name="vessel"></param>
+		public static bool hasCrewCommand(this Vessel vessel)
+		{
+			List<ModuleCommand> commandModules = vessel.getModulesOfType<ModuleCommand>();
+
+			foreach (ModuleCommand commandModule in commandModules)
+			{
+				if (
+					commandModule.part != null &&
+					commandModule.part.protoModuleCrew != null &&
+					commandModule.part.protoModuleCrew.Count > commandModule.minimumCrew
+				)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Gets a list of PartModules of type T within this vessel.
+		/// </summary>
+		/// <returns>a list of PartModules of type T within this vessel, or an empty list if none</returns>
+		/// <param name="vessel"></param>
+		/// <typeparam name="T">PartModule type paramter</typeparam>
 		public static List<T> getModulesOfType<T>(this Vessel vessel) where T : PartModule
 		{
 			if (vessel == null)
