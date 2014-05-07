@@ -79,11 +79,19 @@ namespace ToadicusTools
 		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
 		/// <param name="vessel">this Vessel</param>
 		/// <param name="distantPoint">target point</param>
-		public static bool hasLineOfSightTo(this Vessel vessel, Vector3d distantPoint, CelestialBody[] excludedBodies = null)
+		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
+		/// if any, otherwise null.</param>
+		public static bool hasLineOfSightTo(
+			this Vessel vessel,
+			Vector3d distantPoint,
+			out CelestialBody firstOccludingBody,
+			CelestialBody[] excludedBodies = null
+		)
 		{
 			// Line X = A + tN
 			Vector3d a = vessel.GetWorldPos3D();
-			Vector3d n = (distantPoint - a).normalized;
+			Vector3d dFroma = distantPoint - a;
+			Vector3d n = dFroma.normalized;
 
 			if (FlightGlobals.Bodies != null)
 			{
@@ -97,17 +105,58 @@ namespace ToadicusTools
 					// Point p
 					Vector3d p = body.position;
 
-					// Shortest distance d from point p to line X
-					Vector3d d = (a - p) - (Vector3d.Dot((a - p), n)) * n;
+					Vector3d pFroma = a - p;
 
-					if (d.sqrMagnitude < (body.Radius * body.Radius * .9025d))
+					double pFromaDotn = Vector3d.Dot(pFroma, n);
+
+					// Shortest distance d from point p to line X
+					Vector3d d = pFroma - pFromaDotn * n;
+
+					if (
+						d.sqrMagnitude < (body.Radius * body.Radius * .9025d) &&
+						pFromaDotn < 0 &&
+						dFroma.sqrMagnitude > pFroma.sqrMagnitude
+					)
 					{
+						firstOccludingBody = body;
 						return false;
 					}
 				}
 			}
 
+			firstOccludingBody = null;
 			return true;
+		}
+
+		/// <summary>
+		/// Returns true if no CelestialBody occludes the target point from this Vessel, false otherwise.
+		/// Includes a 5% "fudge factor".
+		/// </summary>
+		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
+		/// <param name="vessel">this Vessel</param>
+		/// <param name="distantPoint">target point</param>
+		public static bool hasLineOfSightTo(this Vessel vessel, Vector3d distantPoint, CelestialBody[] excludedBodies = null)
+		{
+			CelestialBody _;
+			return hasLineOfSightTo(vessel, distantPoint, out _, excludedBodies);
+		}
+
+		/// <summary>
+		/// Returns true if no CelestialBody occludes the target Vessel from this Vessel, false otherwise.
+		/// </summary>
+		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel,
+		/// <c>false</c> otherwise.</returns>
+		/// <param name="vessel">this Vessel</param>
+		/// <param name="targetVessel">target Vessel</param>
+		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
+		/// if any, otherwise null.</param>
+		public static bool hasLineOfSightTo(
+			this Vessel vessel,
+			Vessel targetVessel,
+			out CelestialBody firstOccludingBody
+		)
+		{
+			return vessel.hasLineOfSightTo(targetVessel.GetWorldPos3D(), out firstOccludingBody);
 		}
 
 		/// <summary>
@@ -119,6 +168,24 @@ namespace ToadicusTools
 		public static bool hasLineOfSightTo(this Vessel vessel, Vessel targetVessel)
 		{
 			return vessel.hasLineOfSightTo(targetVessel.GetWorldPos3D());
+		}
+
+		/// <summary>
+		/// Returns true if no CelestialBody occludes the target CelestialBody from this Vessel, false otherwise.
+		/// </summary>
+		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
+		/// <param name="vessel">this Vessel</param>
+		/// <param name="targetBody">target CelestialBody</param>
+		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
+		/// if any, otherwise null.</param>
+		public static bool hasLineOfSightTo(
+			this Vessel vessel,
+			CelestialBody targetBody,
+			out CelestialBody firstOccludingBody
+		)
+		{
+			return vessel.hasLineOfSightTo(
+				targetBody.position, out firstOccludingBody, new CelestialBody[] {targetBody});
 		}
 
 		/// <summary>
@@ -144,10 +211,21 @@ namespace ToadicusTools
 			foreach (ModuleCommand commandModule in commandModules)
 			{
 				if (
+					commandModule.minimumCrew > 0 &&
 					commandModule.part != null &&
 					commandModule.part.protoModuleCrew != null &&
-					commandModule.part.protoModuleCrew.Count > commandModule.minimumCrew
+					commandModule.part.protoModuleCrew.Count >= commandModule.minimumCrew
 				)
+				{
+					return true;
+				}
+			}
+
+			List<KerbalSeat> seatModules = vessel.getModulesOfType<KerbalSeat>();
+
+			foreach (KerbalSeat seatModule in seatModules)
+			{
+				if (seatModule.part != null && seatModule.part.isControlSource)
 				{
 					return true;
 				}
