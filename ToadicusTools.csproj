@@ -85,7 +85,6 @@
       <Link>ToolbarWrapper.cs</Link>
     </Compile>
     <Compile Include="ModuleDBWrapper.cs" />
-    <Compile Include="PrefabDBWrapper.cs" />
     <Compile Include="IModuleDB.cs" />
   </ItemGroup>
   <ProjectExtensions>
@@ -107,5 +106,8 @@
     <Reference Include="UnityEngine">
       <HintPath>..\_KSPAssemblies\UnityEngine.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PrefabDBWrapper.cs" />
   </ItemGroup>
 </Project>
