@@ -135,6 +135,7 @@ namespace ToadicusTools
 			public void Print()
 			{
 				PostDebugMessage(this.stringBuilder.ToString());
+				this.stringBuilder.Length = 0;
 			}
 		}
 		#endregion
