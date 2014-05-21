@@ -69,7 +69,8 @@ namespace ToadicusTools
 
 			if (Sender != null)
 			{
-				sb.Append(Sender.GetType().Name);
+				Type type = (Sender is Type) ? Sender as Type : Sender.GetType();
+				sb.Append(type.Name);
 				sb.Append(": ");
 			}
 
