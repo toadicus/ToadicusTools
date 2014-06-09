@@ -87,6 +87,7 @@
     <Compile Include="ModuleDBWrapper.cs" />
     <Compile Include="IModuleDB.cs" />
     <Compile Include="VectorTools.cs" />
+    <Compile Include="StringTools.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
