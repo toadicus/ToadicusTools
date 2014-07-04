@@ -89,6 +89,8 @@
     <Compile Include="VectorTools.cs" />
     <Compile Include="StringTools.cs" />
     <Compile Include="Singleton.cs" />
+    <Compile Include="DebugPartModule.cs" />
+    <Compile Include="SecurePartModule.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
