@@ -88,6 +88,7 @@
     <Compile Include="IModuleDB.cs" />
     <Compile Include="VectorTools.cs" />
     <Compile Include="StringTools.cs" />
+    <Compile Include="Singleton.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
