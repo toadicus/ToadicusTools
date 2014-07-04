@@ -246,5 +246,16 @@ namespace ToadicusTools
 			}
 		}
 		#endregion
+
+		public static bool SetIfDefault<T>(this T o, T val)
+		{
+			if (System.Object.Equals(o, default(T)))
+			{
+				o = val;
+				return true;
+			}
+
+			return false;
+		}
 	}
 }
