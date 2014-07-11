@@ -46,12 +46,36 @@ namespace ToadicusTools
 		}
 
 		[KSPEvent(guiActive = true, guiActiveEditor = true)]
+		public void DumpPart()
+		{
+			if (this.part != null)
+			{
+				DumpClassObject(this.part);
+			}
+
+			if (this.part.Modules != null)
+			{
+				foreach (var module in this.part.Modules)
+				{
+					DumpClassObject(module);
+				}
+			}
+		}
+
+		[KSPEvent(guiActive = true, guiActiveEditor = true)]
 		public void DumpModule()
+		{
+			DumpClassObject(this);
+		}
+
+		public static void DumpClassObject(object obj)
 		{
 			StringBuilder sb = new StringBuilder();
 
+			sb.Append(obj.GetType().Name);
+			sb.Append(":\n");
 
-			foreach (var fieldInfo in this.GetType().GetFields(
+			foreach (var fieldInfo in obj.GetType().GetFields(
 				System.Reflection.BindingFlags.Public |
 				System.Reflection.BindingFlags.NonPublic |
 				System.Reflection.BindingFlags.Instance |
@@ -60,7 +84,7 @@ namespace ToadicusTools
 			{
 				try
 				{
-					sb.AppendFormat("{0}: {1}\n", fieldInfo.Name, fieldInfo.GetValue(this));
+					sb.AppendFormat("{0}: {1}\n", fieldInfo.Name, fieldInfo.GetValue(obj));
 				}
 				catch
 				{
@@ -68,7 +92,7 @@ namespace ToadicusTools
 				}
 			}
 
-			foreach (var propInfo in this.GetType().GetProperties(
+			foreach (var propInfo in obj.GetType().GetProperties(
 				System.Reflection.BindingFlags.Public |
 				System.Reflection.BindingFlags.NonPublic |
 				System.Reflection.BindingFlags.Instance |
@@ -77,7 +101,7 @@ namespace ToadicusTools
 			{
 				try
 				{
-					sb.AppendFormat("{0}: {1}\n", propInfo.Name, propInfo.GetValue(this, null));
+					sb.AppendFormat("{0}: {1}\n", propInfo.Name, propInfo.GetValue(obj, null));
 				}
 				catch
 				{
@@ -85,7 +109,7 @@ namespace ToadicusTools
 				}
 			}
 
-			foreach (var methodInfo in this.GetType().GetMethods(
+			foreach (var methodInfo in obj.GetType().GetMethods(
 				System.Reflection.BindingFlags.Public |
 				System.Reflection.BindingFlags.NonPublic |
 				System.Reflection.BindingFlags.Instance |
@@ -96,7 +120,7 @@ namespace ToadicusTools
 				{
 					if (methodInfo.ReturnType != typeof(void) && methodInfo.GetParameters().Length == 0)
 					{
-						sb.AppendFormat("{0} returns: '''{1}'''\n", methodInfo.Name, methodInfo.Invoke(this, null));
+						sb.AppendFormat("{0} returns: '''{1}'''\n", methodInfo.Name, methodInfo.Invoke(obj, null));
 					}
 				}
 				catch
@@ -105,7 +129,7 @@ namespace ToadicusTools
 				}
 			}
 
-			Tools.PostDebugMessage(this, sb.ToString());
+			Debug.Log(sb.ToString());
 		}
 	}
 }
