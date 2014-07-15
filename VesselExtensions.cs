@@ -81,11 +81,14 @@ namespace ToadicusTools
 		/// <param name="distantPoint">target point</param>
 		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
 		/// if any, otherwise null.</param>
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
 		public static bool hasLineOfSightTo(
 			this Vessel vessel,
 			Vector3d distantPoint,
 			out CelestialBody firstOccludingBody,
-			CelestialBody[] excludedBodies = null
+			CelestialBody[] excludedBodies = null,
+			double sqrRatio = 1d
 		)
 		{
 			// Line X = A + tN
@@ -113,7 +116,7 @@ namespace ToadicusTools
 					Vector3d d = pFroma - pFromaDotn * n;
 
 					if (
-						d.sqrMagnitude < (body.Radius * body.Radius * .9025d) &&
+						d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio) &&
 						pFromaDotn < 0 &&
 						dFroma.sqrMagnitude > pFroma.sqrMagnitude
 					)
@@ -135,10 +138,17 @@ namespace ToadicusTools
 		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
 		/// <param name="vessel">this Vessel</param>
 		/// <param name="distantPoint">target point</param>
-		public static bool hasLineOfSightTo(this Vessel vessel, Vector3d distantPoint, CelestialBody[] excludedBodies = null)
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
+		public static bool hasLineOfSightTo(
+			this Vessel vessel,
+			Vector3d distantPoint,
+			CelestialBody[] excludedBodies = null,
+			double sqrRatio = 1d
+		)
 		{
 			CelestialBody _;
-			return hasLineOfSightTo(vessel, distantPoint, out _, excludedBodies);
+			return hasLineOfSightTo(vessel, distantPoint, out _, excludedBodies, sqrRatio);
 		}
 
 		/// <summary>
@@ -150,13 +160,16 @@ namespace ToadicusTools
 		/// <param name="targetVessel">target Vessel</param>
 		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
 		/// if any, otherwise null.</param>
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
 		public static bool hasLineOfSightTo(
 			this Vessel vessel,
 			Vessel targetVessel,
-			out CelestialBody firstOccludingBody
+			out CelestialBody firstOccludingBody,
+			double sqrRatio = 1d
 		)
 		{
-			return vessel.hasLineOfSightTo(targetVessel.GetWorldPos3D(), out firstOccludingBody);
+			return vessel.hasLineOfSightTo(targetVessel.GetWorldPos3D(), out firstOccludingBody, null, sqrRatio);
 		}
 
 		/// <summary>
@@ -165,9 +178,15 @@ namespace ToadicusTools
 		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
 		/// <param name="vessel">this Vessel</param>
 		/// <param name="targetVessel">target Vessel</param>
-		public static bool hasLineOfSightTo(this Vessel vessel, Vessel targetVessel)
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
+		public static bool hasLineOfSightTo(
+			this Vessel vessel,
+			Vessel targetVessel,
+			double sqrRatio = 1d
+		)
 		{
-			return vessel.hasLineOfSightTo(targetVessel.GetWorldPos3D());
+			return vessel.hasLineOfSightTo(targetVessel.GetWorldPos3D(), null, sqrRatio);
 		}
 
 		/// <summary>
@@ -178,10 +197,13 @@ namespace ToadicusTools
 		/// <param name="targetBody">target CelestialBody</param>
 		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
 		/// if any, otherwise null.</param>
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
 		public static bool hasLineOfSightTo(
 			this Vessel vessel,
 			CelestialBody targetBody,
-			out CelestialBody firstOccludingBody
+			out CelestialBody firstOccludingBody,
+			double sqrRatio = 1d
 		)
 		{
 			return vessel.hasLineOfSightTo(
@@ -194,7 +216,13 @@ namespace ToadicusTools
 		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
 		/// <param name="vessel">this Vessel</param>
 		/// <param name="targetBody">target CelestialBody</param>
-		public static bool hasLineOfSightTo(this Vessel vessel, CelestialBody targetBody)
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
+		public static bool hasLineOfSightTo(
+			this Vessel vessel,
+			CelestialBody targetBody,
+			double sqrRatio = 1d
+		)
 		{
 			return vessel.hasLineOfSightTo(targetBody.position, new CelestialBody[] {targetBody});
 		}
