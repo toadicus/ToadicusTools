@@ -28,7 +28,7 @@ using System;
 using ToadicusTools;
 using UnityEngine;
 
-namespace TweakableEverything
+namespace ToadicusTools
 {
 	public class TweakableAnimationWrapper
 	{
