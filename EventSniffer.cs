@@ -29,13 +29,15 @@ using System;
 using System.Text;
 using UnityEngine;
 
-namespace AntennaRange
+namespace ToadicusTools
 {
-	[KSPAddon(KSPAddon.Startup.Flight, false)]
+	[KSPAddon(KSPAddon.Startup.MainMenu, false)]
 	public class EventSniffer : MonoBehaviour
 	{
 		public void Awake()
 		{
+			GameEvents.onVesselGoOnRails.Add(this.onVesselGoOffRails);
+			GameEvents.onVesselGoOffRails.Add(this.onVesselGoOffRails);
 			GameEvents.onSameVesselDock.Add(this.onSameVesselDockUndock);
 			GameEvents.onSameVesselUndock.Add(this.onSameVesselDockUndock);
 			GameEvents.onPartUndock.Add(this.onPartUndock);
@@ -46,6 +48,8 @@ namespace AntennaRange
 
 		public void Destroy()
 		{
+			GameEvents.onVesselGoOnRails.Remove(this.onVesselGoOffRails);
+			GameEvents.onVesselGoOffRails.Remove(this.onVesselGoOffRails);
 			GameEvents.onSameVesselDock.Remove(this.onSameVesselDockUndock);
 			GameEvents.onSameVesselUndock.Remove(this.onSameVesselDockUndock);
 			GameEvents.onPartUndock.Remove(this.onPartUndock);
@@ -80,6 +84,23 @@ namespace AntennaRange
 		public void onPartCouple(GameEvents.FromToAction<Part, Part> data)
 		{
 			this.FromPartToPartHelper(this.getStringBuilder(), data);
+		}
+
+		public void onVesselGoOffRails(Vessel data)
+		{
+			this.VesselEventHelper(this.getStringBuilder(), data);
+		}
+
+		public void onVesselGoOnRails(Vessel data)
+		{
+			this.VesselEventHelper(this.getStringBuilder(), data);
+		}
+
+		internal void VesselEventHelper(StringBuilder sb, Vessel data)
+		{
+			this.appendVessel(sb, data);
+
+			Debug.Log(sb.ToString());
 		}
 
 		internal void EventReportHelper(StringBuilder sb, EventReport data)
