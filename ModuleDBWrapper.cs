@@ -25,46 +25,65 @@
 
 using KSP;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
 namespace ToadicusTools
 {
-	public class ModuleDB<T>
+	public class ModuleDB<T> : IModuleDB<T>
 		where T : PartModule
 	{
-		public static bool DBPresent
-		{
-			get
-			{
-				return (Instance != null);
-			}
-		}
-
 		public static IModuleDB<T> Instance
 		{
 			get
 			{
+				if (_instance == null && DBPresent)
+				{
+					_instance = new ModuleDB<T>();
+				}
+
+				return _instance;
+			}
+		}
+		private static IModuleDB<T> _instance;
+
+		public static bool DBPresent
+		{
+			get
+			{
+				return (realDBInstance != null);
+			}
+		}
+
+		private static object realDBInstance
+		{
+			get
+			{
+				if (_realDBInstance != null)
+				{
+					#if DEBUG
+					Debug.Log("[ModuleDBWrapper]: Returning cached instance.");
+					#endif
+					return _realDBInstance;
+				}
+
 				if (InstanceProperty != null)
 				{
-					try
-					{
-						return InstanceProperty.GetValue(null, null) as IModuleDB<T>;
-					}
-					catch (System.InvalidCastException)
-					{
-						Debug.Log(string.Format("[ModuleDBWrapper]: Cast failed in Instance call." +
-						"\n\tInstanceProperty: {0}" +
-						"\n\tInstanceProperty.GetValue(null, null): {1}" +
-						"\n\tInstanceProperty.GetValue(null, null).GetType().Name: {2}" +
-						"\n\ttypeof(IModuleDB<T>).Name: {3}",
-							InstanceProperty,
-							InstanceProperty.GetValue(null, null),
-							InstanceProperty.GetValue(null, null).GetType().Name,
-							typeof(IModuleDB<T>).Name
-						));
-					}
+					_realDBInstance = InstanceProperty.GetValue(null, null);;
+
+					#if DEBUG
+					Debug.Log(string.Format("[ModuleDBWrapper]: Caching instance {0}.", _realDBInstance));
+					#endif
+
+					return _realDBInstance;
 				}
+				#if DEBUG
+				else
+				{
+					Debug.Log("[ModuleDBWrapper]: InstanceProperty not set.");
+				}
+				#endif
 
 				return null;
 			}
@@ -99,6 +118,56 @@ namespace ToadicusTools
 					{
 						genericInstanceProperty = genericDBType.GetProperty("Instance",
 							BindingFlags.Public | BindingFlags.Static);
+
+						#if DEBUG
+						Debug.Log(string.Format("[ModuleDBWrapper]: Found genericInstanceProperty: {0}.",
+							genericInstanceProperty));
+						#endif
+					}
+
+					if (genericGetModules_Vessel == null)
+					{
+						genericGetModules_Vessel = genericDBType.GetMethod("getModules", new Type[] { typeof(Vessel) });
+						#if DEBUG
+						Debug.Log(string.Format("[ModuleDBWrapper]: Found genericGetModules_Vessel {0}.",
+							genericGetModules_Vessel));
+						#endif
+					}
+
+					if (genericGetModules_Part == null)
+					{
+						genericGetModules_Part = genericDBType.GetMethod("getModules", new Type[] { typeof(Part) });
+						#if DEBUG
+						Debug.Log(string.Format("[ModuleDBWrapper]: Found genericGetModules_Part {0}.",
+							genericGetModules_Part));
+						#endif
+					}
+
+					if (genericGetModules == null)
+					{
+						genericGetModules = genericDBType.GetMethod("getModules", new Type[] { typeof(System.Object) });
+						#if DEBUG
+						Debug.Log(string.Format("[ModuleDBWrapper]: Found genericGetModules {0}.",
+							genericGetModules));
+						#endif
+					}
+
+					if (genericInDeepCache == null)
+					{
+						genericInDeepCache = genericDBType.GetMethod("inDeepCache", new Type[] { typeof(System.Object) });
+						#if DEBUG
+						Debug.Log(string.Format("[ModuleDBWrapper]: Found genericInDeepCache {0}.",
+							genericInDeepCache));
+						#endif
+					}
+
+					if (genericInShallowCache == null)
+					{
+						genericInShallowCache = genericDBType.GetMethod("inShallowCache", new Type[] { typeof(System.Object) });
+						#if DEBUG
+						Debug.Log(string.Format("[ModuleDBWrapper]: Found genericInShallowCache {0}.",
+							genericInShallowCache));
+						#endif
 					}
 				}
 
@@ -108,6 +177,64 @@ namespace ToadicusTools
 
 		private static Type genericDBType;
 		private static PropertyInfo genericInstanceProperty;
+
+		private static MethodInfo genericGetModules_Vessel;
+		private static MethodInfo genericGetModules_Part;
+		private static MethodInfo genericGetModules;
+		private static MethodInfo genericInDeepCache;
+		private static MethodInfo genericInShallowCache;
+
+		private static System.Object _realDBInstance;
+
+		/// <summary>
+		/// Gets a flat list of all modules of type T in the given Vessel.  Returns an empty list if none exist.
+		/// </summary>
+		/// <returns>The list modules of type T</returns>
+		/// <param name="vessel">The Vessel being queried</param>
+		public List<T> getModules(Vessel vessel)
+		{
+			return genericGetModules.Invoke(_realDBInstance, new System.Object[] { vessel }) as List<T>;
+		}
+
+		/// <summary>
+		/// Gets a flat list of all modules of type T in the given Part.  Returns an empty list if none exist.
+		/// </summary>
+		/// <returns>The list of modules of type T</returns>
+		/// <param name="part">The Part being queried</param>
+		public List<T> getModules(Part part)
+		{
+			return genericGetModules.Invoke(_realDBInstance, new System.Object[] { part }) as List<T>;
+		}
+
+		/// <summary>
+		/// Returns true if the given Vessel exists in the deep cache, false otherwise.
+		/// </summary>
+		/// <returns>true if the given Vessel exists in the deep cache, false otherwise</returns>
+		/// <param name="vessel">The Vessel being queried</param>
+		public bool inDeepCache(Vessel vessel)
+		{
+			return (bool)genericInDeepCache.Invoke(_realDBInstance, new System.Object[] { vessel });
+		}
+
+		/// <summary>
+		/// Returns true if the given Part exists in the deep cache, false otherwise.
+		/// </summary>
+		/// <returns>true if the given Part exists in the deep cache, false otherwise</returns>
+		/// <param name="part">The Part being queried</param>
+		public bool inDeepCache(Part part)
+		{
+			return (bool)genericInDeepCache.Invoke(_realDBInstance, new System.Object[] { part });
+		}
+
+		/// <summary>
+		/// Returns true if the given Vessel exists in the shallow cache, false otherwise.
+		/// </summary>
+		/// <returns>true if the given Vessel exists in the shallow cache, false otherwise</returns>
+		/// <param name="vessel">The Vessel being queried</param>
+		public bool inShallowCache(Vessel vessel)
+		{
+			return (bool)genericInShallowCache.Invoke(_realDBInstance, new System.Object[] { vessel });
+		}
 	}
 
 	internal class ModuleDBWrapper
