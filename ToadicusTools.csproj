@@ -91,6 +91,7 @@
     <Compile Include="Singleton.cs" />
     <Compile Include="DebugPartModule.cs" />
     <Compile Include="SecurePartModule.cs" />
+    <Compile Include="AppLauncherTools.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -110,6 +111,9 @@
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\_KSPAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\_KSPAssemblies\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
