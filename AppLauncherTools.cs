@@ -68,6 +68,24 @@ namespace ToadicusTools
 		public static ApplicationLauncherButton AddModApplication(this ApplicationLauncher appLauncher,
 			RUIToggleButton.OnTrue onTrue,
 			RUIToggleButton.OnFalse onFalse,
+			RUIToggleButton.OnEnable onEnable,
+			RUIToggleButton.OnDisable onDisable,
+			ApplicationLauncher.AppScenes visibleInScenes,
+			Texture texture
+		)
+		{
+			return appLauncher.AddModApplication(
+				onTrue, onFalse,
+				Dummy, Dummy,
+				onEnable, onDisable,
+				visibleInScenes,
+				texture
+			);
+		}
+
+		public static ApplicationLauncherButton AddModApplication(this ApplicationLauncher appLauncher,
+			RUIToggleButton.OnTrue onTrue,
+			RUIToggleButton.OnFalse onFalse,
 			ApplicationLauncher.AppScenes visibleInScenes,
 			Texture texture
 		)
@@ -82,21 +100,63 @@ namespace ToadicusTools
 		}
 
 		public static ApplicationLauncherButton AddModApplication(this ApplicationLauncher appLauncher,
-			RUIToggleButton.OnTrue onTrue,
-			RUIToggleButton.OnFalse onFalse,
-			RUIToggleButton.OnEnable onEnable,
-			RUIToggleButton.OnDisable onDisable,
 			ApplicationLauncher.AppScenes visibleInScenes,
 			Texture texture
 		)
 		{
 			return appLauncher.AddModApplication(
-				onTrue, onFalse,
 				Dummy, Dummy,
-				onEnable, onDisable,
+				Dummy, Dummy,
+				Dummy, Dummy,
 				visibleInScenes,
 				texture
 			);
+		}
+
+		public static ApplicationLauncher.AppScenes ToAppScenes(this GameScenes gameScene)
+		{
+			/*
+			 * AppScenes:
+			 * NEVER = 0,
+			 * SPACECENTER = 1,
+			 * FLIGHT = 2,
+			 * MAPVIEW = 4,
+			 * VAB = 5,
+			 * SPH = 6,
+			 * ALWAYS = 7
+			 */
+
+			switch (gameScene)
+			{
+				case GameScenes.EDITOR:
+					Debug.LogWarning("Converting GameScenes.EDITOR to AppScenes.VAB.  This may not always be safe!");
+					return ApplicationLauncher.AppScenes.VAB;
+				case GameScenes.FLIGHT:
+					return ApplicationLauncher.AppScenes.FLIGHT;
+				case GameScenes.SPACECENTER:
+					return ApplicationLauncher.AppScenes.SPACECENTER;
+				case GameScenes.SPH:
+					return ApplicationLauncher.AppScenes.SPH;
+				case GameScenes.TRACKSTATION:
+					Debug.LogWarning(
+						"Converting GameScenes.TRACKSTATION to AppScenes.MAPVIEW.  This may not always be safe!");
+					return ApplicationLauncher.AppScenes.MAPVIEW;
+				case GameScenes.CREDITS:
+				case GameScenes.LOADING:
+				case GameScenes.LOADINGBUFFER:
+				case GameScenes.MAINMENU:
+				case GameScenes.PSYSTEM:
+				case GameScenes.SETTINGS:
+				default:
+					Debug.LogWarning(string.Format(
+						"Cannot convert GameScenes.{0}: no acceptable AppScenes analog.",
+						Enum.GetName(
+							typeof(GameScenes),
+							gameScene
+						)
+					));
+					return ApplicationLauncher.AppScenes.NEVER;
+			}
 		}
 	}
 }
