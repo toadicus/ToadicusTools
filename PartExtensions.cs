@@ -52,10 +52,18 @@ namespace ToadicusTools
 
 				if (ModuleDB<T>.Instance.inDeepCache(part))
 				{
+					#if DEBUG
+					Debug.Log("[hasModuleType]: Part {0} in cache, fetching count.");
+					#endif
+
 					return ModuleDB<T>.Instance.getModules(part).Count > 0;
 				}
 				else
 				{
+					#if DEBUG
+					Debug.Log("[hasModuleType]: Part {0} not in cache, queueing future search.");
+					#endif
+
 					System.Threading.ThreadPool.QueueUserWorkItem(delegate
 					{
 						ModuleDB<T>.Instance.getModules(part);
@@ -63,11 +71,36 @@ namespace ToadicusTools
 				}
 			}
 
-			foreach (PartModule module in part.Modules)
+			#if DEBUG
+			Debug.Log("[hasModuleType]: Falling back to linear search.");
+			#endif
+
+			if (part.Modules != null)
 			{
-				if (module is T)
+				#if DEBUG
+				Debug.Log("[hasModuleType]: Part.modules is defined; checking PartModule subtypes.");
+				#endif
+
+				foreach (PartModule module in part.Modules)
 				{
-					return true;
+					if (module is T)
+					{
+						return true;
+					}
+				}
+			}
+			else
+			{
+				#if DEBUG
+				Debug.Log("[hasModuleType]: Part.modules is not defined; trying ModuleInfo search.");
+				#endif
+
+				foreach (var moduleInfo in part.partInfo.moduleInfos)
+				{
+					if (moduleInfo.moduleName == typeof(T).Name)
+					{
+						return true;
+					}
 				}
 			}
 
