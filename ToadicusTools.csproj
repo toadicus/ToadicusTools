@@ -92,6 +92,7 @@
     <Compile Include="DebugPartModule.cs" />
     <Compile Include="SecurePartModule.cs" />
     <Compile Include="AppLauncherTools.cs" />
+    <Compile Include="IOTools.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
