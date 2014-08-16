@@ -84,8 +84,6 @@
     <Compile Include="Wrapper\ToolbarWrapper.cs">
       <Link>ToolbarWrapper.cs</Link>
     </Compile>
-    <Compile Include="ModuleDBWrapper.cs" />
-    <Compile Include="IModuleDB.cs" />
     <Compile Include="VectorTools.cs" />
     <Compile Include="StringTools.cs" />
     <Compile Include="Singleton.cs" />
@@ -119,5 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="PrefabDBWrapper.cs" />
+    <None Include="ModuleDBWrapper.cs" />
+    <None Include="IModuleDB.cs" />
   </ItemGroup>
 </Project>

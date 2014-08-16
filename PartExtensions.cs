@@ -41,36 +41,6 @@ namespace ToadicusTools
 				);
 			}
 
-			if (ModuleDB<T>.DBPresent)
-			{
-				#if DEBUG
-				Debug.Log(string.Format("Checking Part {0} for modules of type {1}.",
-					part,
-					typeof(T).Name
-				));
-				#endif
-
-				if (ModuleDB<T>.Instance.inDeepCache(part))
-				{
-					#if DEBUG
-					Debug.Log("[hasModuleType]: Part {0} in cache, fetching count.");
-					#endif
-
-					return ModuleDB<T>.Instance.getModules(part).Count > 0;
-				}
-				else
-				{
-					#if DEBUG
-					Debug.Log("[hasModuleType]: Part {0} not in cache, queueing future search.");
-					#endif
-
-					System.Threading.ThreadPool.QueueUserWorkItem(delegate
-					{
-						ModuleDB<T>.Instance.getModules(part);
-					});
-				}
-			}
-
 			#if DEBUG
 			Debug.Log("[hasModuleType]: Falling back to linear search.");
 			#endif
@@ -133,24 +103,17 @@ namespace ToadicusTools
 				);
 			}
 
-			if (ModuleDB<T>.DBPresent)
-			{
-				return ModuleDB<T>.Instance.getModules(part);
-			}
-			else
-			{
-				List<T> returnList = new List<T>();
+			List<T> returnList = new List<T>();
 
-				foreach (PartModule module in part.Modules)
+			foreach (PartModule module in part.Modules)
+			{
+				if (module is T)
 				{
-					if (module is T)
-					{
-						returnList.Add(module as T);
-					}
+					returnList.Add(module as T);
 				}
-
-				return returnList;
 			}
+
+			return returnList;
 		}
 
 		public static T getFirstModuleOfType<T>(this Part part) where T: PartModule
@@ -160,26 +123,6 @@ namespace ToadicusTools
 				throw new ArgumentNullException(
 					string.Format("Part.getFirstModuleOfType<{0}>: 'part' argument must not be null", typeof(T).Name)
 				);
-			}
-
-			if (ModuleDB<T>.DBPresent)
-			{
-				if (ModuleDB<T>.Instance.inDeepCache(part))
-				{
-					List<T> partModulesList = ModuleDB<T>.Instance.getModules(part);
-
-					if (partModulesList.Count > 0)
-					{
-						return partModulesList[0];
-					}
-				}
-				else
-				{
-					System.Threading.ThreadPool.QueueUserWorkItem(delegate
-					{
-						ModuleDB<T>.Instance.getModules(part);
-					});
-				}
 			}
 
 			foreach (PartModule module in part.Modules)

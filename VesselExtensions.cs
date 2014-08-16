@@ -280,27 +280,20 @@ namespace ToadicusTools
 				);
 			}
 
-			if (ModuleDB<T>.DBPresent)
-			{
-				return ModuleDB<T>.Instance.getModules(vessel);
-			}
-			else
-			{
-				List<T> modulesInVessel = new List<T>();
+			List<T> modulesInVessel = new List<T>();
 
-				foreach (Part part in vessel.Parts)
+			foreach (Part part in vessel.Parts)
+			{
+				foreach (PartModule module in part.Modules)
 				{
-					foreach (PartModule module in part.Modules)
+					if (module is T)
 					{
-						if (module is T)
-						{
-							modulesInVessel.Add((T)module);
-						}
+						modulesInVessel.Add((T)module);
 					}
 				}
-
-				return modulesInVessel;
 			}
+
+			return modulesInVessel;
 		}
 	}
 }
