@@ -31,29 +31,49 @@ namespace ToadicusTools
 	public static partial class Tools
 	{
 		/// <summary>
-		/// Gets the value of key "name" in ConfigNode "node" as a double, or returns a given default value if the key
-		/// does not exist or cannot be parsed to a double.
+		/// Gets the value of key "name" in <see cref="ConfigNode"/> "node" as a <see cref="double"/>,
+		/// or returns a given default value if the key does not exist or cannot be parsed.
 		/// </summary>
-		/// <returns>The value as a double</returns>
-		/// <param name="node">The ConfigNode being referenced</param>
+		/// <returns>The value as a <see cref="double"/></returns>
+		/// <param name="node">The <see cref="ConfigNode"/> being referenced</param>
 		/// <param name="name">The name of the key being referenced</param>
 		/// <param name="defaultValue">The default value to return in fallback conditions</param>
 		public static double GetValue(this ConfigNode node, string name, double defaultValue)
 		{
-			if (node.HasValue(name))
+			double value;
+
+			if (node.TryGetValue(name, out value))
 			{
-				double result;
-				if (double.TryParse(node.GetValue(name), out result))
-				{
-					return result;
-				}
+				return value;
 			}
+
 			return defaultValue;
 		}
 
 		/// <summary>
-		/// Gets the value of key "name" in ConfigNode "node" as a float, or returns a given default value if the key
-		/// does not exist or cannot be parsed to a double.
+		/// Trys to gets the value of key "name" in <see cref="ConfigNode"/> "node" as a <see cref="double"/>,
+		/// placing it in the output value
+		/// </summary>
+		/// <returns><c>true</c>, if get value was retrieved successfully, <c>false</c> otherwise.</returns>
+		/// <param name="node">The <see cref="ConfigNode"/>  being referenced</param>
+		/// <param name="name">The name of the key being referenced</param>
+		/// <param name="value">The output value as parsed</param>
+		public static bool TryGetValue(this ConfigNode node, string name, out double value)
+		{
+			string result;
+
+			if (node.TryGetValue(name, out result))
+			{
+				return double.TryParse(result, out value);
+			}
+
+			value = default(double);
+			return false;
+		}
+
+		/// <summary>
+		/// Gets the value of key "name" in <see cref="ConfigNode"/> "node" as a <see cref="float"/>,
+		/// or returns a given default value if the key does not exist or cannot be parsed.
 		/// </summary>
 		/// <returns>The value as a float</returns>
 		/// <param name="node">The ConfigNode being referenced</param>
@@ -61,15 +81,35 @@ namespace ToadicusTools
 		/// <param name="defaultValue">The default value to return in fallback conditions</param>
 		public static float GetValue(this ConfigNode node, string name, float defaultValue)
 		{
-			if (node.HasValue(name))
+			float value;
+
+			if (node.TryGetValue(name, out value))
 			{
-				float result;
-				if (float.TryParse(node.GetValue(name), out result))
-				{
-					return result;
-				}
+				return value;
 			}
+
 			return defaultValue;
+		}
+
+		/// <summary>
+		/// Trys to gets the value of key "name" in <see cref="ConfigNode"/> "node" as a <see cref="float"/>,
+		/// placing it in the output value
+		/// </summary>
+		/// <returns><c>true</c>, if get value was retrieved successfully, <c>false</c> otherwise.</returns>
+		/// <param name="node">The ConfigNode being referenced</param>
+		/// <param name="name">The name of the key being referenced</param>
+		/// <param name="value">The output value as parsed</param>
+		public static bool TryGetValue(this ConfigNode node, string name, out float value)
+		{
+			string result;
+
+			if (node.TryGetValue(name, out result))
+			{
+				return float.TryParse(result, out value);
+			}
+
+			value = default(float);
+			return false;
 		}
 
 		/// <summary>
@@ -82,15 +122,47 @@ namespace ToadicusTools
 		/// <param name="defaultValue">The default value to return in fallback conditions</param>
 		public static int GetValue(this ConfigNode node, string name, int defaultValue)
 		{
+			int value;
+
+			if (node.TryGetValue(name, out value))
+			{
+				return value;
+			}
+
+			return defaultValue;
+		}
+
+		/// <summary>
+		/// Trys to gets the value of key "name" in <see cref="ConfigNode"/> "node" as an <see cref="int"/>,
+		/// placing it in the output value
+		/// </summary>
+		/// <returns><c>true</c>, if get value was retrieved successfully, <c>false</c> otherwise.</returns>
+		/// <param name="node">The ConfigNode being referenced</param>
+		/// <param name="name">The name of the key being referenced</param>
+		/// <param name="value">The output value as parsed</param>
+		public static bool TryGetValue(this ConfigNode node, string name, out int value)
+		{
+			string result;
+
+			if (node.TryGetValue(name, out result))
+			{
+				return int.TryParse(result, out value);
+			}
+
+			value = default(int);
+			return false;
+		}
+
+		public static bool TryGetValue(this ConfigNode node, string name, out string value)
+		{
 			if (node.HasValue(name))
 			{
-				int result;
-				if (int.TryParse(node.GetValue(name), out 	result))
-				{
-					return result;
-				}
+				value = node.GetValue(name);
+				return true;
 			}
-			return defaultValue;
+
+			value = string.Empty;
+			return false;
 		}
 	}
 }
