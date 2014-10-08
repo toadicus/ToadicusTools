@@ -239,7 +239,6 @@ namespace ToadicusTools
 			foreach (ModuleCommand commandModule in commandModules)
 			{
 				if (
-					commandModule.minimumCrew > 0 &&
 					commandModule.part != null &&
 					commandModule.part.protoModuleCrew != null &&
 					commandModule.part.protoModuleCrew.Count >= commandModule.minimumCrew
