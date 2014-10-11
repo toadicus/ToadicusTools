@@ -234,31 +234,65 @@ namespace ToadicusTools
 		/// <param name="vessel"></param>
 		public static bool hasCrewCommand(this Vessel vessel)
 		{
-			List<ModuleCommand> commandModules = vessel.getModulesOfType<ModuleCommand>();
+			return (vessel.CurrentCommand() & VesselCommand.Crew) == VesselCommand.Crew;
+		}
 
-			foreach (ModuleCommand commandModule in commandModules)
+		public static bool hasProbeCommand(this Vessel vessel)
+		{
+			return (vessel.CurrentCommand() & VesselCommand.Probe) == VesselCommand.Probe;
+		}
+
+		public static VesselCommand CurrentCommand(this Vessel vessel)
+		{
+			VesselCommand currentCommand = VesselCommand.None;
+
+			foreach (PartModule module in vessel.getModulesOfType<PartModule>())
 			{
-				if (
-					commandModule.part != null &&
-					commandModule.part.protoModuleCrew != null &&
-					commandModule.part.protoModuleCrew.Count >= commandModule.minimumCrew
-				)
+				if (module is ModuleCommand)
 				{
-					return true;
+					ModuleCommand commandModule = module as ModuleCommand;
+
+					if (
+						commandModule.part != null &&
+						commandModule.part.protoModuleCrew != null &&
+						commandModule.part.protoModuleCrew.Count >= commandModule.minimumCrew
+					)
+					{
+						if (commandModule.minimumCrew > 0)
+						{
+							currentCommand |= VesselCommand.Crew;
+						}
+						else
+						{
+							if (commandModule.part.CrewCapacity > 0 &&
+								commandModule.part.protoModuleCrew.Count > 0
+							)
+							{
+								currentCommand |= VesselCommand.Crew;
+							}
+
+							currentCommand |= VesselCommand.Probe;
+						}
+					}
+				}
+
+				if (module is KerbalSeat)
+				{
+					KerbalSeat seatModule = module as KerbalSeat;
+
+					if (seatModule.part != null && seatModule.part.isControlSource)
+					{
+						currentCommand |= VesselCommand.Crew;
+					}
+				}
+
+				if (currentCommand == (VesselCommand.Crew | VesselCommand.Probe))
+				{
+					break;
 				}
 			}
 
-			List<KerbalSeat> seatModules = vessel.getModulesOfType<KerbalSeat>();
-
-			foreach (KerbalSeat seatModule in seatModules)
-			{
-				if (seatModule.part != null && seatModule.part.isControlSource)
-				{
-					return true;
-				}
-			}
-
-			return false;
+			return currentCommand;
 		}
 
 		/// <summary>
@@ -294,5 +328,12 @@ namespace ToadicusTools
 
 			return modulesInVessel;
 		}
+	}
+
+	public enum VesselCommand
+	{
+		None = 0,
+		Probe = 1,
+		Crew = 2
 	}
 }

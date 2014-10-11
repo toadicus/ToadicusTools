@@ -198,7 +198,6 @@ namespace ToadicusTools
 
 		public void Start()
 		{
-
 			if (!this.validScenes.Contains(HighLogic.LoadedScene))
 			{
 				return;
