@@ -258,19 +258,15 @@ namespace ToadicusTools
 						commandModule.part.protoModuleCrew.Count >= commandModule.minimumCrew
 					)
 					{
-						if (commandModule.minimumCrew > 0)
+						if (
+							commandModule.minimumCrew > 0 ||
+							(commandModule.part.CrewCapacity > 0 &&	commandModule.part.protoModuleCrew.Count > 0)
+						)
 						{
 							currentCommand |= VesselCommand.Crew;
 						}
-						else
+						if (commandModule.minimumCrew == 0)
 						{
-							if (commandModule.part.CrewCapacity > 0 &&
-								commandModule.part.protoModuleCrew.Count > 0
-							)
-							{
-								currentCommand |= VesselCommand.Crew;
-							}
-
 							currentCommand |= VesselCommand.Probe;
 						}
 					}
