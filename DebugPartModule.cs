@@ -31,6 +31,7 @@ using UnityEngine;
 
 namespace ToadicusTools
 {
+	#if DEBUG
 	public class DebugPartModule : PartModule
 	{
 		public override void OnAwake()
@@ -132,5 +133,5 @@ namespace ToadicusTools
 			Debug.Log(sb.ToString());
 		}
 	}
+	#endif
 }
-
