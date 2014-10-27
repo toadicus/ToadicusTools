@@ -31,13 +31,17 @@ namespace ToadicusTools
 {
 	public static partial class Tools
 	{
+		public static Rect ClampRectToScreen(Rect window, int topMargin, int rgtMargin, int botMargin, int lftMargin)
+		{
+			window.x = Mathf.Clamp(window.x, lftMargin - window.width, Screen.width - rgtMargin);
+			window.y = Mathf.Clamp(window.y, topMargin - window.height, Screen.height - botMargin);
+
+			return window;
+		}
 		// This implementation is adapted from FARGUIUtils.ClampToScreen
 		public static Rect ClampRectToScreen(Rect window, int xMargin, int yMargin)
 		{
-			window.x = Mathf.Clamp(window.x, xMargin - window.width, Screen.width - xMargin);
-			window.y = Mathf.Clamp(window.y, yMargin - window.height, Screen.height - yMargin);
-
-			return window;
+			return ClampRectToScreen(window, yMargin, xMargin, yMargin, xMargin);
 		}
 
 		public static Rect ClampRectToScreen(Rect window, int Margin)
@@ -48,6 +52,27 @@ namespace ToadicusTools
 		public static Rect ClampRectToScreen(Rect window)
 		{
 			return ClampRectToScreen(window, 30);
+		}
+
+		public static Rect ClampRectToEditorPad(Rect window)
+		{
+			float lftMargin = window.width;
+
+			switch (EditorLogic.fetch.editorScreen)
+			{
+				case EditorLogic.EditorScreen.Actions:
+					lftMargin += EditorPanels.Instance.actionsPanelWidth;
+					break;
+				case EditorLogic.EditorScreen.Crew:
+					lftMargin += EditorPanels.Instance.crewPanelWidth;
+					break;
+				case EditorLogic.EditorScreen.Parts:
+				default:
+					lftMargin += EditorPanels.Instance.partsPanelWidth;
+					break;
+			}
+
+			return Tools.ClampRectToScreen(window, 30, 30, 30, (int)lftMargin);
 		}
 
 		public static Vector2 ClampV2ToScreen(Vector2 vec, uint xMargin, uint yMargin)
