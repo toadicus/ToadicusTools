@@ -66,6 +66,22 @@ public class Table
 		this.width += column.Width;
 	}
 
+	public void ApplyCellStyle(GUIStyle style)
+	{
+		foreach (Column column in this.columns)
+		{
+			column.CellStyle = style;
+		}
+	}
+
+	public void ApplyHeaderStyle(GUIStyle style)
+	{
+		foreach (Column column in this.columns)
+		{
+			column.HeaderStyle = style;
+		}
+	}
+
 	public void ClearColumns()
 	{
 		foreach (Column column in this.columns)
@@ -96,7 +112,10 @@ public class Table
 		private List<T> cells;
 		private string format;
 
-		public GUIStyle Style { get; set; }
+		public string Header { get; set; }
+
+		public GUIStyle CellStyle { get; set; }
+		public GUIStyle HeaderStyle { get; set; }
 
 		public float Width { get; set; }
 
@@ -166,6 +185,8 @@ public class Table
 		{
 			GUILayout.BeginVertical(GUILayout.Width(this.Width), GUILayout.ExpandHeight(true));
 
+			GUILayout.Label(this.Header, this.HeaderStyle, GUILayout.ExpandWidth(true), GUILayout.Height(20f));
+
 			foreach (T cell in this.cells)
 			{
 				string cellContents;
@@ -191,7 +212,7 @@ public class Table
 					cellContents = cell.ToString();
 				}
 
-				GUILayout.Label(cellContents, this.Style, GUILayout.ExpandWidth(true));
+				GUILayout.Label(cellContents, this.CellStyle, GUILayout.ExpandWidth(true), GUILayout.Height(20f));
 			}
 
 			GUILayout.EndVertical();
@@ -207,27 +228,36 @@ public class Table
 			return this.GetEnumerator();
 		}
 
-		public Column(float width, GUIStyle style)
+		public Column(string header, float width, GUIStyle cellStyle, GUIStyle headerStyle)
 		{
+			this.Header = header;
 			this.cells = new List<T>();
 			this.Width = width;
-			this.Style = style;
+			this.CellStyle = cellStyle;
+			this.HeaderStyle = headerStyle;
 		}
 
-		public Column(float width) : this(width, GUI.skin.label) {}
+		public Column(string header, float width, GUIStyle style) : this(header, width, style, style) {}
 
-		public Column(GUIStyle style) : this(60f, style) {}
+		public Column(string header, float width) : this(header, width, GUI.skin.label) {}
+
+		public Column(float width) : this(null, width, GUI.skin.label) {}
+
+		public Column(GUIStyle style) : this(null, 60f, style) {}
 
 		public Column() : this(60f) {}
 	}
 
 	public interface Column : System.Collections.IEnumerable
 	{
-		float Width { get; }
+		GUIStyle CellStyle { set; }
+		GUIStyle HeaderStyle { set; }
 
 		int Count { get; }
 
 		string Format { get; set; }
+
+		float Width { get; }
 
 		void Clear();
 
