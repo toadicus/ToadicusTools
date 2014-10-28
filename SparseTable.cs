@@ -26,7 +26,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 // TODO: Write list-style sequential column and row classes.
 
@@ -271,7 +270,7 @@ public class SparseTable
 		{
 			for (UInt32 i = 0; i < this.Range; i++)
 			{
-				if (System.Object.Equals(this[i], value))
+				if (Object.Equals(this[i], value))
 				{
 					this.RemoveAt(i);
 					break;
@@ -332,45 +331,34 @@ public class SparseTable
 		}
 	}
 
-	public struct Cell<T>
-		where T : struct
+	public class Cell<T> : Cell, ICell
 	{
-		public Address Hash
-		{
-			get;
-			set;
-		}
+		object ICell.Value { get; set ; }
 
-		public T Value
+		public new T Value
 		{
-			get;
-			set;
-		}
-
-		public Cell(Address hash, T value) : this()
-		{
-			this.Hash = hash;
-			this.Value = value;
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (obj is Cell<T>)
+			get
 			{
-				Cell<T> cellObj = (Cell<T>)obj;
-
-				return System.Object.Equals(cellObj.Hash, this.Hash) && System.Object.Equals(cellObj.Value, this.Value);
+				return (T)base.Value;
 			}
-
-			return false;
+			set
+			{
+				base.Value = (object)value;
+			}
 		}
+
+		public Cell(Address hash, T value) : base(hash, value) {}
+
+		public Cell(object value) : base(value) {}
+
+		public Cell() : base() {}
 
 		public static implicit operator T(Cell<T> cell)
 		{
 			return cell.Value;
 		}
 
-		public static explicit operator Cell<T>(T obj)
+		public static implicit operator Cell<T>(T obj)
 		{
 			Cell<T> cell = new Cell<T>();
 
@@ -380,9 +368,192 @@ public class SparseTable
 		}
 	}
 
-	public interface Cell
+	public class Cell : ICell
+	{
+		public virtual Address Hash
+		{
+			get;
+			set;
+		}
+
+		public virtual object Value
+		{
+			get;
+			set;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is Cell)
+			{
+				Cell cellObj = (Cell)obj;
+
+				return Object.Equals(cellObj.Hash, this.Hash) && Object.Equals(cellObj.Value, this.Value);
+			}
+
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return this.Hash.GetHashCode() + this.Value.GetHashCode();
+		}
+
+		public Cell(Address hash, object value) : this(value)
+		{
+			this.Hash = hash;
+		}
+
+		public Cell(object value) : this()
+		{
+			this.Value = value;
+		}
+
+		public Cell() {}
+
+		public static implicit operator Cell(UInt32 value)
+		{
+			Cell cell = new Cell<UInt32>();
+
+			cell.Value = value;
+
+			return cell;
+		}
+
+		public static implicit operator UInt32(Cell cell)
+		{
+			if (cell.Value is UInt32)
+			{
+				return (UInt32)cell.Value;
+			}
+
+			throw new InvalidCastException();
+		}
+
+		public static implicit operator Cell(Int32 value)
+		{
+			Cell cell = new Cell<Int32>();
+
+			cell.Value = value;
+
+			return cell;
+		}
+
+		public static implicit operator Int32(Cell cell)
+		{
+			if (cell.Value is Int32)
+			{
+				return (Int32)cell.Value;
+			}
+
+			throw new InvalidCastException();
+		}
+
+		public static implicit operator Cell(UInt64 value)
+		{
+			Cell cell = new Cell<UInt64>();
+
+			cell.Value = value;
+
+			return cell;
+		}
+
+		public static implicit operator UInt64(Cell cell)
+		{
+			if (cell.Value is UInt64)
+			{
+				return (UInt64)cell.Value;
+			}
+
+			throw new InvalidCastException();
+		}
+
+		public static implicit operator Cell(Int64 value)
+		{
+			Cell cell = new Cell<Int64>();
+
+			cell.Value = value;
+
+			return cell;
+		}
+
+		public static implicit operator Int64(Cell cell)
+		{
+			if (cell.Value is Int64)
+			{
+				return (Int64)cell.Value;
+			}
+
+			throw new InvalidCastException();
+		}
+
+		public static implicit operator Cell(double value)
+		{
+			Cell cell = new Cell<double>();
+
+			cell.Value = value;
+
+			return cell;
+		}
+
+		public static implicit operator double(Cell cell)
+		{
+			if (cell.Value is double)
+			{
+				return (double)cell.Value;
+			}
+
+			throw new InvalidCastException();
+		}
+
+		public static implicit operator Cell(float value)
+		{
+			Cell cell = new Cell<float>();
+
+			cell.Value = value;
+
+			return cell;
+		}
+
+		public static implicit operator float(Cell cell)
+		{
+			if (cell.Value is float)
+			{
+				return (float)cell.Value;
+			}
+
+			throw new InvalidCastException();
+		}
+
+		public static implicit operator Cell(string value)
+		{
+			Cell cell = new Cell<string>();
+
+			cell.Value = value;
+
+			return cell;
+		}
+
+		public static implicit operator string(Cell cell)
+		{
+			if (cell.Value is string)
+			{
+				return (string)cell.Value;
+			}
+
+			throw new InvalidCastException();
+		}
+	}
+
+	public interface ICell
 	{
 		Address Hash
+		{
+			get;
+			set;
+		}
+
+		object Value
 		{
 			get;
 			set;
