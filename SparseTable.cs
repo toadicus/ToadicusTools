@@ -80,7 +80,7 @@ public class SparseTable
 		{
 			this.columns[columnIdx] = new ColumnRange(this, columnIdx, offset, range);
 		}
-		List<int> foo;
+
 		return this.columns[columnIdx];
 	}
 
