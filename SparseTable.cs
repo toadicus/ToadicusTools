@@ -119,15 +119,38 @@ public class SparseTable
 		this.table = new Dictionary<Address, Cell>();
 	}
 
-	public class ColumnRange : Range1D
+	public class SequentialColumn : ColumnRange
 	{
-		private UInt32 columnIdx;
+		public override UInt32 Range
+		{
+			get;
+			protected set;
+		}
 
-		public override object this[uint idx]
+		public UInt32 Count
 		{
 			get
 			{
-				if (idx >= this.columnIdx)
+				return this.Range;
+			}
+		}
+
+		public void Add(object value)
+		{
+			this.Range++;
+			this[this.Range - 1] = value;
+		}
+	}
+
+	public class ColumnRange : Range1D
+	{
+		protected UInt32 columnIdx;
+
+		public override object this[UInt32 idx]
+		{
+			get
+			{
+				if (idx >= this.Range)
 				{
 					throw new ArgumentOutOfRangeException();
 				}
@@ -136,7 +159,7 @@ public class SparseTable
 			}
 			set
 			{
-				if (idx >= this.columnIdx)
+				if (idx >= this.Range)
 				{
 					throw new ArgumentOutOfRangeException();
 				}
@@ -152,18 +175,18 @@ public class SparseTable
 
 		public ColumnRange(SparseTable table, UInt32 columnIdx, UInt32 range) : this(table, columnIdx, 0, range) {}
 
-		private ColumnRange() {}
+		protected ColumnRange() {}
 	}
 
 	public class RowRange : Range1D
 	{
 		private UInt32 rowIdx;
 
-		public override object this[uint idx]
+		public override object this[UInt32 idx]
 		{
 			get
 			{
-				if (idx >= this.rowIdx)
+				if (idx >= this.Range)
 				{
 					throw new ArgumentOutOfRangeException();
 				}
@@ -172,7 +195,7 @@ public class SparseTable
 			}
 			set
 			{
-				if (idx >= this.rowIdx)
+				if (idx >= this.Range)
 				{
 					throw new ArgumentOutOfRangeException();
 				}
