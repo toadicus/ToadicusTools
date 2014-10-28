@@ -121,12 +121,6 @@ public class SparseTable
 
 	public class SequentialColumn : ColumnRange
 	{
-		public override UInt32 Range
-		{
-			get;
-			protected set;
-		}
-
 		public UInt32 Count
 		{
 			get
@@ -140,6 +134,35 @@ public class SparseTable
 			this.Range++;
 			this[this.Range - 1] = value;
 		}
+
+		public SequentialColumn(SparseTable table, UInt32 columnIdx, UInt32 offset) : base(table, columnIdx, offset, 0) {}
+
+		public SequentialColumn(SparseTable table, UInt32 columnIdx) : this(table, columnIdx, 0) {}
+
+		protected SequentialColumn() {}
+	}
+
+	public class SequentialRow : RowRange
+	{
+		public UInt32 Count
+		{
+			get
+			{
+				return this.Range;
+			}
+		}
+
+		public void Add(object value)
+		{
+			this.Range++;
+			this[this.Range - 1] = value;
+		}
+
+		public SequentialRow(SparseTable table, UInt32 rowIdx, UInt32 offset) : base(table, rowIdx, offset, 0) {}
+
+		public SequentialRow(SparseTable table, UInt32 rowIdx) : this(table, rowIdx, 0) {}
+
+		protected SequentialRow() {}
 	}
 
 	public class ColumnRange : Range1D
@@ -211,7 +234,7 @@ public class SparseTable
 
 		public RowRange(SparseTable table, UInt32 rowIdx, UInt32 range) : this(table, rowIdx, 0, range) {}
 
-		private RowRange() {}
+		protected RowRange() {}
 	}
 
 	public abstract class Range1D : IEnumerable
@@ -234,6 +257,26 @@ public class SparseTable
 		{
 			get;
 			set;
+		}
+
+		public void RemoveAt(UInt32 idx)
+		{
+			if (idx < this.Range)
+			{
+				this[idx] = null;
+			}
+		}
+
+		public void Remove(object value)
+		{
+			for (UInt32 i = 0; i < this.Range; i++)
+			{
+				if (System.Object.Equals(this[i], value))
+				{
+					this.RemoveAt(i);
+					break;
+				}
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
