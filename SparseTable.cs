@@ -411,6 +411,44 @@ public class SparseTable
 
 		public Cell() {}
 
+		public static implicit operator Cell(UInt16 value)
+		{
+			Cell cell = new Cell<UInt16>();
+
+			cell.Value = value;
+
+			return cell;
+		}
+
+		public static implicit operator UInt16(Cell cell)
+		{
+			if (cell.Value is UInt16)
+			{
+				return (UInt16)cell.Value;
+			}
+
+			throw new InvalidCastException();
+		}
+
+		public static implicit operator Cell(Int16 value)
+		{
+			Cell cell = new Cell<Int16>();
+
+			cell.Value = value;
+
+			return cell;
+		}
+
+		public static implicit operator Int16(Cell cell)
+		{
+			if (cell.Value is Int16)
+			{
+				return (Int16)cell.Value;
+			}
+
+			throw new InvalidCastException();
+		}
+
 		public static implicit operator Cell(UInt32 value)
 		{
 			Cell cell = new Cell<UInt32>();
