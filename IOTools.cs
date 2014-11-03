@@ -35,9 +35,7 @@ namespace ToadicusTools
 	public static class IOTools
 	{
 		public static readonly string rootPath = KSPUtil.ApplicationRootPath;
-		public static readonly char ds = Path.DirectorySeparatorChar;
-		public static readonly string dirSepString = new string(ds, 1);
-		public static readonly string gameDataPath = string.Format("{0}{1}GameData{1}", rootPath, ds);
+		public static readonly string gameDataPath = string.Format("{0}GameData/", rootPath);
 
 		public static bool LoadTexture(
 			out Texture2D texture,
@@ -49,13 +47,17 @@ namespace ToadicusTools
 			bool isGameDataRelative = true
 		)
 		{
-			path.Replace("\\", dirSepString);
-			path.Replace("/", dirSepString);
+			string url = string.Empty;
 
 			if (isGameDataRelative)
 			{
+				url = path;
 				path = string.Format("{0}{1}", gameDataPath, path);
 			}
+
+			path.Replace("\\", "/");
+			
+			bool success = false;
 
 			if (File.Exists(path))
 			{
@@ -63,12 +65,50 @@ namespace ToadicusTools
 
 				if (texture.LoadImage(File.ReadAllBytes(path)))
 				{
-					return true;
+					success = true;
 				}
 			}
+			else
+			{
+				StringBuilder sb = new StringBuilder();
 
-			texture = null;
-			return false;
+				sb.AppendFormat("ToadicusTools.IOTools.LoadTexture: specified file '{0}' did not exist.", path);
+
+				if (url == string.Empty)
+				{
+					url = path.Substring(gameDataPath.Length);
+				}
+
+				Texture2D tex = null;
+
+				try
+				{
+					string extension = Path.GetExtension(url);
+
+					if (extension != string.Empty)
+					{
+						url = url.Substring(0, url.Length - extension.Length);
+					}
+
+					sb.AppendFormat("  Attempting falling back to GameDatabase.GetTexture from URL '{0}'...", url);
+
+					tex = GameDatabase.Instance.GetTexture(url, false);
+
+					success = true;
+				}
+				finally
+				{
+					success = !(tex == null);
+
+					sb.Append(success ? " success!" : " failed!");
+
+					Debug.LogWarning(sb.ToString());
+				}
+
+				texture = tex;
+			}
+
+			return success;
 		}
 
 		public static bool LoadTexture(out Texture2D texture, string path, int width, int height)
