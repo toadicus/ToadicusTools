@@ -411,6 +411,7 @@ public class SparseTable
 
 		public Cell() {}
 
+		#region Cast Operators
 		public static implicit operator Cell(UInt16 value)
 		{
 			Cell cell = new Cell<UInt16>();
@@ -581,6 +582,7 @@ public class SparseTable
 
 			throw new InvalidCastException();
 		}
+		#endregion
 	}
 
 	public interface ICell
