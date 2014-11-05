@@ -512,6 +512,7 @@ namespace ToadicusTools.SparseTable
 		{
 		}
 
+		#region Cast Operators
 		public static implicit operator Cell(UInt16 value)
 		{
 			Cell cell = new Cell<UInt16>();
@@ -682,6 +683,7 @@ namespace ToadicusTools.SparseTable
 
 			throw new InvalidCastException();
 		}
+		#endregion
 	}
 
 	public interface ICell
