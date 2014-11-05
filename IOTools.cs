@@ -55,8 +55,6 @@ namespace ToadicusTools
 				path = string.Format("{0}{1}", gameDataPath, path);
 			}
 
-			path.Replace("\\", "/");
-			
 			bool success = false;
 
 			if (File.Exists(path))
@@ -79,7 +77,7 @@ namespace ToadicusTools
 					url = path.Substring(gameDataPath.Length);
 				}
 
-				Texture2D tex = null;
+				texture = null;
 
 				try
 				{
@@ -92,20 +90,16 @@ namespace ToadicusTools
 
 					sb.AppendFormat("  Attempting falling back to GameDatabase.GetTexture from URL '{0}'...", url);
 
-					tex = GameDatabase.Instance.GetTexture(url, false);
-
-					success = true;
+					texture = GameDatabase.Instance.GetTexture(url, false);
 				}
 				finally
 				{
-					success = !(tex == null);
+					success = !(texture == null);
 
 					sb.Append(success ? " success!" : " failed!");
 
 					Debug.LogWarning(sb.ToString());
 				}
-
-				texture = tex;
 			}
 
 			return success;
