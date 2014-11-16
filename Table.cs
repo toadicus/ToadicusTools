@@ -185,7 +185,12 @@ public class Table
 		{
 			GUILayout.BeginVertical(GUILayout.Width(this.Width), GUILayout.ExpandHeight(true));
 
-			GUILayout.Label(this.Header, this.HeaderStyle, GUILayout.ExpandWidth(true), GUILayout.Height(20f));
+			GUILayout.Label(
+				this.Header,
+				this.HeaderStyle,
+				GUILayout.ExpandWidth(true),
+				GUILayout.Height(36f)
+			);
 
 			foreach (T cell in this.cells)
 			{
