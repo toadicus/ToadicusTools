@@ -92,7 +92,6 @@
     <Compile Include="AppLauncherTools.cs" />
     <Compile Include="IOTools.cs" />
     <Compile Include="Table.cs" />
-    <Compile Include="SparseTable.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -121,5 +120,6 @@
     <None Include="PrefabDBWrapper.cs" />
     <None Include="ModuleDBWrapper.cs" />
     <None Include="IModuleDB.cs" />
+    <None Include="SparseTable.cs" />
   </ItemGroup>
 </Project>
