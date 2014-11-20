@@ -41,6 +41,7 @@ namespace ToadicusTools
 		{
 			if (HighLogic.LoadedScene > GameScenes.SPACECENTER)
 			{
+
 				debugmsg.message = Msg;
 				ScreenMessages.PostScreenMessage(debugmsg, true);
 			}
@@ -133,10 +134,24 @@ namespace ToadicusTools
 			}
 
 			[System.Diagnostics.Conditional("DEBUG")]
+			public void Print(bool postToScreen)
+			{
+				if (postToScreen)
+				{
+					PostDebugMessage(this.stringBuilder.ToString());
+				}
+				else
+				{
+					Debug.Log(this.stringBuilder.ToString());
+				}
+
+				this.stringBuilder.Length = 0;
+			}
+
+			[System.Diagnostics.Conditional("DEBUG")]
 			public void Print()
 			{
-				PostDebugMessage(this.stringBuilder.ToString());
-				this.stringBuilder.Length = 0;
+				this.Print(true);
 			}
 		}
 		#endregion
