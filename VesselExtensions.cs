@@ -73,8 +73,8 @@ namespace ToadicusTools
 		}
 
 		/// <summary>
-		/// Returns the <see cref="ToadicusTools.LineOfSightStatus"/> of this Vessel to the target point.
-		/// Line of sight margins less than 5% of potential occluding bodies' radii are considered "Marginal".
+		/// Returns true if no CelestialBody occludes the target point from this Vessel, false otherwise.
+		/// Includes a 5% "fudge factor".
 		/// </summary>
 		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
 		/// <param name="vessel">this Vessel</param>
@@ -83,7 +83,7 @@ namespace ToadicusTools
 		/// if any, otherwise null.</param>
 		/// <param name="sqrRatio">The square of the "grace" ratio to apply
 		/// to the radius of potentially excluding bodies.</param>
-		public static LineOfSightStatus getLineOfSightTo(
+		public static bool hasLineOfSightTo(
 			this Vessel vessel,
 			Vector3d distantPoint,
 			out CelestialBody firstOccludingBody,
@@ -116,134 +116,20 @@ namespace ToadicusTools
 					Vector3d d = pFroma - pFromaDotn * n;
 
 					if (
+						d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio) &&
 						pFromaDotn < 0 &&
 						dFroma.sqrMagnitude > pFroma.sqrMagnitude
 					)
 					{
-						if (d.sqrMagnitude < (body.Radius * body.Radius * 1.1025d))
-						{
-							firstOccludingBody = body;
-
-							if (d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio))
-							{
-								return LineOfSightStatus.Blocked;
-							}
-							else
-							{
-								return LineOfSightStatus.Marginal;
-							}
-						}
+						firstOccludingBody = body;
+						return false;
 					}
 				}
 			}
 
 			firstOccludingBody = null;
-			return LineOfSightStatus.Clear;
+			return true;
 		}
-
-		/// <summary>
-		/// Returns the <see cref="ToadicusTools.LineOfSightStatus"/> of this Vessel to the target point.
-		/// Line of sight margins less than 5% of potential occluding bodies' radii are considered "Marginal".
-		/// </summary>
-		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
-		/// <param name="vessel">this Vessel</param>
-		/// <param name="targetBody">target <see cref="CelestialBody"/></param>
-		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
-		/// if any, otherwise null.</param>
-		/// <param name="sqrRatio">The square of the "grace" ratio to apply
-		/// to the radius of potentially excluding bodies.</param>
-		public static LineOfSightStatus getLineOfSightTo(
-			this Vessel vessel,
-			CelestialBody targetBody,
-			out CelestialBody firstOccludingBody,
-			double sqrRatio = 1d
-		)
-		{
-			return vessel.getLineOfSightTo(
-				targetBody.position,
-				out firstOccludingBody,
-				new CelestialBody[] {targetBody},
-				sqrRatio
-			);
-		}
-
-		/// <summary>
-		/// Returns the <see cref="ToadicusTools.LineOfSightStatus"/> of this Vessel to the target point.
-		/// Line of sight margins less than 5% of potential occluding bodies' radii are considered "Marginal".
-		/// </summary>
-		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
-		/// <param name="vessel">this Vessel</param>
-		/// <param name="targetVessel">target <see cref="Vessel"/></param>
-		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
-		/// if any, otherwise null.</param>
-		/// <param name="sqrRatio">The square of the "grace" ratio to apply
-		/// to the radius of potentially excluding bodies.</param>
-		public static LineOfSightStatus getLineOfSightTo(
-			this Vessel vessel,
-			Vessel targetVessel,
-			out CelestialBody firstOccludingBody,
-			CelestialBody[] excludedBodies = null,
-			double sqrRatio = 1d
-		)
-		{
-			return vessel.getLineOfSightTo(
-				targetVessel.GetWorldPos3D(),
-				out firstOccludingBody,
-				excludedBodies,
-				sqrRatio
-			);
-		}
-
-		/// <summary>
-		/// Returns the <see cref="ToadicusTools.LineOfSightStatus"/> of this Vessel to the target point.
-		/// Line of sight margins less than 5% of potential occluding bodies' radii are considered "Marginal".
-		/// </summary>
-		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
-		/// <param name="vessel">this Vessel</param>
-		/// <param name="targetVessel">target <see cref="Vessel"/></param>
-		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
-		/// if any, otherwise null.</param>
-		/// <param name="sqrRatio">The square of the "grace" ratio to apply
-		/// to the radius of potentially excluding bodies.</param>
-		public static LineOfSightStatus getLineOfSightTo(
-			this Vessel vessel,
-			Vessel targetVessel,
-			out CelestialBody firstOccludingBody,
-			double sqrRatio = 1d
-		)
-		{
-			return vessel.getLineOfSightTo(
-				targetVessel.GetWorldPos3D(),
-				out firstOccludingBody,
-				null,
-				sqrRatio
-			);
-		}
-
-		/// <summary>
-		/// Returns true if no CelestialBody occludes the target point from this Vessel, false otherwise.
-		/// Includes a 5% "fudge factor".
-		/// </summary>
-		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
-		/// <param name="vessel">this Vessel</param>
-		/// <param name="distantPoint">target point</param>
-		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
-		/// if any, otherwise null.</param>
-		/// <param name="sqrRatio">The square of the "grace" ratio to apply
-		/// to the radius of potentially excluding bodies.</param>
-		public static bool hasLineOfSightTo(
-			this Vessel vessel,
-			Vector3d distantPoint,
-			out CelestialBody firstOccludingBody,
-			CelestialBody[] excludedBodies = null,
-			double sqrRatio = 1d
-		)
-		{
-			return vessel.getLineOfSightTo(
-				distantPoint, out firstOccludingBody, excludedBodies, sqrRatio) != LineOfSightStatus.Blocked;
-		}
-
-
 
 		/// <summary>
 		/// Returns true if no CelestialBody occludes the target point from this Vessel, false otherwise.
@@ -445,12 +331,5 @@ namespace ToadicusTools
 		None = 0,
 		Probe = 1,
 		Crew = 2
-	}
-
-	public enum LineOfSightStatus
-	{
-		Blocked,
-		Clear,
-		Marginal
 	}
 }
