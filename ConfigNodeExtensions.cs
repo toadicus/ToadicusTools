@@ -133,6 +133,26 @@ namespace ToadicusTools
 		}
 
 		/// <summary>
+		/// Gets the value of key "name" in ConfigNode "node" as a bool, or returns a given default value if the key
+		/// does not exist or cannot be parsed to a bool.
+		/// </summary>
+		/// <returns>The value as a bool</returns>
+		/// <param name="node">The ConfigNode being referenced</param>
+		/// <param name="name">The name of the key being referenced</param>
+		/// <param name="defaultValue">The default value to return in fallback conditions</param>
+		public static bool GetValue(this ConfigNode node, string name, bool defaultValue)
+		{
+			bool value;
+
+			if (node.TryGetValue(name, out value))
+			{
+				return value;
+			}
+
+			return defaultValue;
+		}
+
+		/// <summary>
 		/// Trys to gets the value of key "name" in <see cref="ConfigNode"/> "node" as an <see cref="int"/>,
 		/// placing it in the output value
 		/// </summary>
@@ -150,6 +170,27 @@ namespace ToadicusTools
 			}
 
 			value = default(int);
+			return false;
+		}
+
+		/// <summary>
+		/// Trys to gets the value of key "name" in <see cref="ConfigNode"/> "node" as a <see cref="bool"/>,
+		/// placing it in the output value
+		/// </summary>
+		/// <returns><c>true</c>, if get value was retrieved successfully, <c>false</c> otherwise.</returns>
+		/// <param name="node">The ConfigNode being referenced</param>
+		/// <param name="name">The name of the key being referenced</param>
+		/// <param name="value">The output value as parsed</param>
+		public static bool TryGetValue(this ConfigNode node, string name, out bool value)
+		{
+			string result;
+
+			if (node.TryGetValue(name, out result))
+			{
+				return bool.TryParse(result, out value);
+			}
+
+			value = default(bool);
 			return false;
 		}
 
