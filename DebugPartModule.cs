@@ -46,6 +46,46 @@ namespace ToadicusTools
 			base.OnAwake();
 		}
 
+		public override void OnLoad(ConfigNode node)
+		{
+			base.OnLoad(node);
+		}
+
+		public override void OnSave(ConfigNode node)
+		{
+			base.OnSave(node);
+		}
+
+		public override void OnActive()
+		{
+			base.OnActive();
+		}
+
+		public override void OnInactive()
+		{
+			base.OnInactive();
+		}
+
+		public override void OnInitialize()
+		{
+			base.OnInitialize();
+		}
+
+		public override void OnFixedUpdate()
+		{
+			base.OnFixedUpdate();
+		}
+
+		public override void OnUpdate()
+		{
+			base.OnUpdate();
+		}
+
+		public override string GetInfo()
+		{
+			return base.GetInfo();
+		}
+
 		[KSPEvent(guiActive = true, guiActiveEditor = true)]
 		public void DumpPart()
 		{
