@@ -130,7 +130,8 @@ namespace ToadicusTools
 			[System.Diagnostics.Conditional("DEBUG")]
 			public void AppendLine(string value)
 			{
-				this.stringBuilder.AppendLine(value);
+				this.stringBuilder.Append(value);
+				this.stringBuilder.Append('\n');
 			}
 
 			[System.Diagnostics.Conditional("DEBUG")]
