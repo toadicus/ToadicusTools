@@ -23,39 +23,123 @@
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if DEBUG
 using KSP;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ToadicusTools;
 using UnityEngine;
+
+#if DEBUG
 
 namespace ToadicusTools
 {
-	[KSPAddon(KSPAddon.Startup.MainMenu, false)]
+	[KSPAddon(KSPAddon.Startup.EveryScene, false)]
 	public class EventSniffer : MonoBehaviour
 	{
 		public void Awake()
 		{
+			GameEvents.onCrewOnEva.Add(this.onCrewOnEva);
+			GameEvents.onCrewBoardVessel.Add(this.onCrewBoardVessel);
+
+			GameEvents.onKerbalStatusChange.Add(this.onKerbalStatusChange);
+
+			GameEvents.onPartPack.Add(this.onPartPack);
+			GameEvents.onPartUnpack.Add(this.onPartUnpack);
+
+			GameEvents.onVesselCreate.Add(this.onVesselCreate);
+			GameEvents.onVesselDestroy.Add(this.onVesselDestroy);
+			GameEvents.onVesselLoaded.Add(this.onVesselLoaded);
 			GameEvents.onVesselGoOnRails.Add(this.onVesselGoOffRails);
 			GameEvents.onVesselGoOffRails.Add(this.onVesselGoOffRails);
+
 			GameEvents.onSameVesselDock.Add(this.onSameVesselDockUndock);
 			GameEvents.onSameVesselUndock.Add(this.onSameVesselDockUndock);
 			GameEvents.onPartUndock.Add(this.onPartUndock);
 			GameEvents.onUndock.Add(this.onReportEvent);
+
 			GameEvents.onPartCouple.Add(this.onPartCouple);
 			GameEvents.onPartJointBreak.Add(this.onPartJointBreak);
+
+			Tools.PostDebugMessage(this, "Awake.");
 		}
 
-		public void Destroy()
+		public void OnDestroy()
 		{
+			GameEvents.onCrewOnEva.Remove(this.onCrewOnEva);
+			GameEvents.onCrewBoardVessel.Remove(this.onCrewBoardVessel);
+
+			GameEvents.onKerbalStatusChange.Remove(this.onKerbalStatusChange);
+
+			GameEvents.onPartPack.Remove(this.onPartPack);
+			GameEvents.onPartUnpack.Remove(this.onPartUnpack);
+
+			GameEvents.onVesselCreate.Remove(this.onVesselCreate);
+			GameEvents.onVesselDestroy.Remove(this.onVesselDestroy);
+			GameEvents.onVesselLoaded.Remove(this.onVesselLoaded);
 			GameEvents.onVesselGoOnRails.Remove(this.onVesselGoOffRails);
 			GameEvents.onVesselGoOffRails.Remove(this.onVesselGoOffRails);
+
 			GameEvents.onSameVesselDock.Remove(this.onSameVesselDockUndock);
 			GameEvents.onSameVesselUndock.Remove(this.onSameVesselDockUndock);
 			GameEvents.onPartUndock.Remove(this.onPartUndock);
 			GameEvents.onUndock.Remove(this.onReportEvent);
+
 			GameEvents.onPartCouple.Remove(this.onPartCouple);
 			GameEvents.onPartJointBreak.Remove(this.onPartJointBreak);
+
+			Tools.PostDebugMessage(this, "Destroyed.");
+		}
+
+		public void onCrewOnEva(GameEvents.FromToAction<Part, Part> data)
+		{
+			this.FromPartToPartHelper(
+				this.getStringBuilder(),
+				data
+			);
+		}
+
+		public void onCrewBoardVessel(GameEvents.FromToAction<Part, Part> data)
+		{
+			this.FromPartToPartHelper(
+				this.getStringBuilder(),
+				data
+			);
+		}
+
+		public void onKerbalStatusChange(ProtoCrewMember kerbal, ProtoCrewMember.RosterStatus fromStatus, ProtoCrewMember.RosterStatus toStatus)
+		{
+			StringBuilder sb = this.getStringBuilder();
+
+			string item;
+
+			if (kerbal != null)
+			{
+				item = kerbal.name;
+			}
+			else
+			{
+				item = "null";
+			}
+
+			sb.AppendFormat("\n\tKerbal: {0}", item);
+
+			sb.AppendFormat("\n\tfromStatus: {0}", Enum.GetName(typeof(ProtoCrewMember.RosterStatus), fromStatus));
+
+			sb.AppendFormat("\n\ttoStatus: {0}", Enum.GetName(typeof(ProtoCrewMember.RosterStatus), toStatus));
+
+			Debug.Log(sb.ToString());
+		}
+
+		public void onPartPack(Part data)
+		{
+			this.PartEventHelper(this.getStringBuilder(), data);
+		}
+
+		public void onPartUnpack(Part data)
+		{
+			this.PartEventHelper(this.getStringBuilder(), data);
 		}
 
 		public void onSameVesselDockUndock(GameEvents.FromToAction<ModuleDockingNode, ModuleDockingNode> data)
@@ -86,6 +170,16 @@ namespace ToadicusTools
 			this.FromPartToPartHelper(this.getStringBuilder(), data);
 		}
 
+		public void onVesselCreate(Vessel data)
+		{
+			this.VesselEventHelper(this.getStringBuilder(), data);
+		}
+
+		public void onVesselDestroy(Vessel data)
+		{
+			this.VesselEventHelper(this.getStringBuilder(), data);
+		}
+
 		public void onVesselGoOffRails(Vessel data)
 		{
 			this.VesselEventHelper(this.getStringBuilder(), data);
@@ -95,6 +189,13 @@ namespace ToadicusTools
 		{
 			this.VesselEventHelper(this.getStringBuilder(), data);
 		}
+
+
+		public void onVesselLoaded(Vessel data)
+		{
+			this.VesselEventHelper(this.getStringBuilder(), data);
+		}
+
 
 		internal void VesselEventHelper(StringBuilder sb, Vessel data)
 		{
@@ -151,6 +252,47 @@ namespace ToadicusTools
 			this.appendModuleAncestry(sb, data.to);
 
 			Debug.Log(sb.ToString());
+		}
+
+		internal void HostedFromPartToPartHelper(StringBuilder sb, GameEvents.HostedFromToAction<Part, Part> data)
+		{
+			sb.AppendLine("Caught onCrewOnEva");
+
+			string item;
+
+			if (data.host != null)
+			{
+				item = data.host.partName;
+			}
+			else
+			{
+				item = "NULL";
+			}
+
+			sb.AppendFormat("Host: {0}\n", item);
+
+
+			if (data.from != null)
+			{
+				item = data.from.partName;
+			}
+			else
+			{
+				item = "NULL";
+			}
+
+			sb.AppendFormat("From: {0}\n", item);
+
+			if (data.to != null)
+			{
+				item = data.to.partName;
+			}
+			else
+			{
+				item = "NULL";
+			}
+
+			sb.AppendFormat("To: {0}\n", item);
 		}
 
 		internal void PartJointHelper(StringBuilder sb, PartJoint joint)
@@ -224,7 +366,11 @@ namespace ToadicusTools
 
 			if (vessel != null)
 			{
-				sb.AppendFormat("'{0}' ({1})", vessel.vesselName, vessel.id);
+				sb.AppendFormat("{0} '{1}' ({2})",
+					Enum.GetName(typeof(VesselType), vessel.vesselType),
+					vessel.vesselName,
+					vessel.id
+				);
 			}
 			else
 			{
@@ -242,6 +388,19 @@ namespace ToadicusTools
 				new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name
 			);
 			return sb;
+		}
+	}
+
+	[AttributeUsage(AttributeTargets.Method)]
+	internal class EventSubscriptionAttribute : Attribute
+	{
+		public System.Reflection.MethodInfo addMethod;
+		public System.Reflection.MethodInfo removeMethod;
+
+		public EventSubscriptionAttribute()
+		{
+			this.addMethod = null;
+			this.removeMethod = null;
 		}
 	}
 }
