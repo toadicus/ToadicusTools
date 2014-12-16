@@ -60,13 +60,13 @@ namespace ToadicusTools
 
 			switch (EditorLogic.fetch.editorScreen)
 			{
-				case EditorLogic.EditorScreen.Actions:
+				case EditorScreen.Actions:
 					lftMargin += EditorPanels.Instance.actionsPanelWidth;
 					break;
-				case EditorLogic.EditorScreen.Crew:
+				case EditorScreen.Crew:
 					lftMargin += EditorPanels.Instance.crewPanelWidth;
 					break;
-				case EditorLogic.EditorScreen.Parts:
+				case EditorScreen.Parts:
 				default:
 					lftMargin += EditorPanels.Instance.partsPanelWidth;
 					break;

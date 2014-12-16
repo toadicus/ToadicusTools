@@ -129,14 +129,16 @@ namespace ToadicusTools
 			switch (gameScene)
 			{
 				case GameScenes.EDITOR:
+					if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.SPH)
+					{
+						return ApplicationLauncher.AppScenes.SPH;
+					}
 					Debug.LogWarning("Converting GameScenes.EDITOR to AppScenes.VAB.  This may not always be safe!");
 					return ApplicationLauncher.AppScenes.VAB;
 				case GameScenes.FLIGHT:
 					return ApplicationLauncher.AppScenes.FLIGHT;
 				case GameScenes.SPACECENTER:
 					return ApplicationLauncher.AppScenes.SPACECENTER;
-				case GameScenes.SPH:
-					return ApplicationLauncher.AppScenes.SPH;
 				case GameScenes.TRACKSTATION:
 					Debug.LogWarning(
 						"Converting GameScenes.TRACKSTATION to AppScenes.MAPVIEW.  This may not always be safe!");

@@ -57,7 +57,6 @@ namespace ToadicusTools
 			{
 				case GameScenes.EDITOR:
 				case GameScenes.FLIGHT:
-				case GameScenes.SPH:
 				case GameScenes.SPACECENTER:
 				case GameScenes.TRACKSTATION:
 					isClonePass = true;
