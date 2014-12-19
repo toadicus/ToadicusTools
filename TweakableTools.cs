@@ -41,12 +41,15 @@ namespace ToadicusTools
 			float centerValue,
 			float lowerMult,
 			float upperMult,
+			float stepMult = 1f,
 			bool clobberEverywhere = false
 		)
 		{
 			Vector2 bounds;
+			float loadedStep;
 
 			bounds = LoadBounds<T>();
+			stepMult = LoadStep<T>(stepMult);
 
 			// If our field is uninitialized...
 			if (localField == -1)
@@ -71,6 +74,7 @@ namespace ToadicusTools
 			}
 
 			floatRange.stepIncrement = Mathf.Pow(10f, Mathf.RoundToInt(Mathf.Log10(Mathf.Abs(centerValue))) - 1);
+			floatRange.stepIncrement *= stepMult;
 
 			localField = Mathf.Clamp(localField, floatRange.minValue, floatRange.maxValue);
 
@@ -96,6 +100,7 @@ namespace ToadicusTools
 				centerValue,
 				0f,
 				2f,
+				1f,
 				clobberEverywhere
 			);
 		}
@@ -122,6 +127,22 @@ namespace ToadicusTools
 			config.save();
 
 			return bounds;
+		}
+
+		public static float LoadStep<T>(float defStep = 1f)
+		{
+			PluginConfiguration config = PluginConfiguration.CreateForType<T>();
+			double stepMult, defDouble;
+
+			defDouble = (double)defStep;
+
+			config.load();
+
+			stepMult = config.GetValue("stepMult", defDouble);
+
+			config.save();
+
+			return (float)stepMult;
 		}
 	}
 }
