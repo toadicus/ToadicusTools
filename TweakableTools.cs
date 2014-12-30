@@ -46,7 +46,6 @@ namespace ToadicusTools
 		)
 		{
 			Vector2 bounds;
-			float loadedStep;
 
 			bounds = LoadBounds<T>();
 			stepMult = LoadStep<T>(stepMult);
@@ -83,6 +82,28 @@ namespace ToadicusTools
 				// Clobber the remote field with ours.
 				remoteField = localField;
 			}
+		}
+
+		public static void InitializeTweakable<T>(
+			UI_FloatRange floatRange,
+			ref float localField,
+			ref float remoteField,
+			float centerValue,
+			float lowerMult,
+			float upperMult,
+			bool clobberEverywhere = false
+		)
+		{
+			InitializeTweakable<T>(
+				floatRange,
+				ref localField,
+				ref remoteField,
+				centerValue,
+				lowerMult,
+				upperMult,
+				1f,
+				false
+			);
 		}
 
 		public static void InitializeTweakable<T>(
