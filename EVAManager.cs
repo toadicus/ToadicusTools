@@ -92,7 +92,7 @@ namespace EVAManager
 									if (evaPart.GetComponents<PartModule>().Any(m => m.GetType().Name == moduleName))
 									{
 										Debug.LogWarning(string.Format(
-											"[{0}]: Skipping module {1}: already present in kerbalEVA",
+											"[{0}] Skipping module {1}: already present in kerbalEVA",
 											this.GetType().Name,
 											moduleName
 										));
@@ -104,7 +104,7 @@ namespace EVAManager
 									if (moduleClass == null)
 									{
 										Debug.LogWarning(string.Format(
-											"[{0}]: Skipping module {1}: class not found in loaded assemblies.",
+											"[{0}] Skipping module {1}: class not found in loaded assemblies.",
 											this.GetType().Name,
 											moduleName
 										));
@@ -139,12 +139,16 @@ namespace EVAManager
 
 									if (evaPart.GetComponents<PartModule>().Any(m => m.GetType().Name == moduleName))
 									{
-										Debug.Log(string.Format("EVAManager added {0} to kerbalEVA part.", moduleName));
+										Debug.Log(string.Format("[{0}] added module {1} to kerbalEVA part.",
+											this.GetType().Name,
+											moduleName
+										));
 									}
 									else
 									{
 										Debug.LogWarning(string.Format(
-											"EVAManager failed to add {0} to kerbalEVA part.",
+											"[{0}] failed to add {1} to kerbalEVA part.",
+											this.GetType().Name,
 											moduleName
 										));
 									}
@@ -152,7 +156,7 @@ namespace EVAManager
 								else
 								{
 									Debug.Log(string.Format(
-										"[{0}]: Skipping malformed EVA_MODULE node: missing 'name' field.",
+										"[{0}] Skipping malformed EVA_MODULE node: missing 'name' field.",
 										this.GetType().Name
 									));
 									continue;
@@ -190,7 +194,7 @@ namespace EVAManager
 									if (evaPart.GetComponents<PartResource>().Any(r => r.resourceName == resourceName))
 									{
 										Debug.LogWarning(string.Format(
-											"[{0}]: Skipping resource {1}: already present in kerbalEVA.",
+											"[{0}] Skipping resource {1}: already present in kerbalEVA.",
 											this.GetType().Name,
 											resourceName
 										));
@@ -200,19 +204,24 @@ namespace EVAManager
 
 									Tools.PostDebugMessage(this, "Resource '{0}' is not present.", resourceName);
 
-									PartResource resource = evaPart.gameObject.AddComponent<PartResource>();
+									PartResource resource = evaPart.gameObject.AddComponent<EVAPartResource>();
 
 									Tools.PostDebugMessage(this, "Resource '{0}' component built.", resourceName);
 
 									resource.SetInfo(resourceInfo);
-									resource.Load(evaResourceNode);
+									((EVAPartResource)resource).Load(evaResourceNode);
+
+									Debug.Log(string.Format("[{0}] Added resource {1} to kerbalEVA part.",
+										this.GetType().Name,
+										resource.resourceName
+									));
 
 									Tools.PostDebugMessage(this, "Resource '{0}' loaded.", resourceName);
 								}
 								else
 								{
 									Debug.Log(string.Format(
-										"[{0}]: Skipping malformed EVA_RESOURCE node: missing 'name' field.",
+										"[{0}] Skipping malformed EVA_RESOURCE node: missing 'name' field.",
 										this.GetType().Name
 									));
 									continue;
@@ -263,6 +272,141 @@ namespace EVAManager
 			Tools.PostDebugMessage(this, "Destroyed.");
 		}
 		#endif
+	}
+
+	public class EVAPartResource : PartResource
+	{
+		public bool FillFromPod
+		{
+			get;
+			private set;
+		}
+
+		public void Awake()
+		{
+			try
+			{
+				var baseAwake = typeof(PartResource).GetMethod(
+					"Awake",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+				);
+
+				baseAwake.Invoke(this, null);
+
+				Tools.PostDebugMessage(this, "base Awake.");
+			}
+			#if DEBUG
+			catch (Exception ex)
+			#else
+			catch
+			#endif
+			{
+				Debug.LogError(string.Format("[{0}] Could not wake up base class.", this.GetType().Name));
+
+				#if DEBUG
+				Debug.LogException(ex);
+				#endif
+			}
+
+			this.FillFromPod = true;
+
+			GameEvents.onCrewOnEva.Add(this.onEvaHandler);
+			GameEvents.onCrewBoardVessel.Add(this.onBoardHandler);
+
+			Tools.PostDebugMessage(this, "Awake");
+		}
+
+		public void OnDestroy()
+		{
+			GameEvents.onCrewOnEva.Remove(this.onEvaHandler);
+			GameEvents.onCrewBoardVessel.Remove(this.onBoardHandler);
+		}
+
+		public new void Load(ConfigNode node)
+		{
+			base.Load(node);
+
+			this.FillFromPod = node.GetValue("FillFromPod", this.FillFromPod);
+
+			Tools.PostDebugMessage(this, "Loaded.");
+		}
+
+		public new void Save(ConfigNode node)
+		{
+			base.Save(node);
+
+			if (node.HasValue("FillFromPod"))
+			{
+				node.SetValue("FillFromPod", this.FillFromPod.ToString());
+			}
+			else
+			{
+				node.AddValue("FillFromPod", this.FillFromPod.ToString());
+			}
+
+			Tools.PostDebugMessage(this, "Saved.");
+		}
+
+		private void onEvaHandler(GameEvents.FromToAction<Part, Part> data)
+		{
+			if (data.to == null || data.from == null)
+			{
+				return;
+			}
+
+			if (data.to == this.part)
+			{
+				Debug.Log(
+					string.Format("[{0}] Caught OnCrewOnEva event to part ({1}) containing this resource ({2})",
+					this.GetType().Name,
+					this.part.partInfo.title,
+					this.resourceName
+					));
+
+				if (this.FillFromPod)
+				{
+					double needAmount = this.maxAmount - this.amount;
+					double gotAmount;
+
+					gotAmount = data.from.RequestResource(this.resourceName, needAmount);
+
+					this.amount += gotAmount;
+
+					Tools.PostDebugMessage(this, "Filled {0} {1} from {2}",
+						gotAmount,
+						this.resourceName,
+						data.to.partInfo.title
+					);
+				}
+			}
+		}
+
+		private void onBoardHandler(GameEvents.FromToAction<Part, Part> data)
+		{
+			if (data.to == null || data.from == null)
+			{
+				return;
+			}
+
+			if (data.from == this.part)
+			{
+				if (this.FillFromPod)
+				{
+					double returnAmount = this.amount;
+					double sentAmount;
+
+					sentAmount = data.to.RequestResource(this.resourceName, -returnAmount);
+
+					this.amount += sentAmount;
+
+					Tools.PostDebugMessage(this, "Returned {0} {1} to {2}",
+						-sentAmount,
+						this.resourceName,
+						data.to.partInfo.title
+					);
+				}
+			}
+		}
 	}
 }
 
