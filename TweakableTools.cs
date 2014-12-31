@@ -41,7 +41,7 @@ namespace ToadicusTools
 			float centerValue,
 			float lowerMult,
 			float upperMult,
-			float stepMult = 1f,
+			float stepMult,
 			bool clobberEverywhere = false
 		)
 		{
