@@ -92,7 +92,6 @@
     <Compile Include="AppLauncherTools.cs" />
     <Compile Include="IOTools.cs" />
     <Compile Include="Table.cs" />
-    <Compile Include="EVAManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ProjectExtensions>
