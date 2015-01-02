@@ -33,6 +33,131 @@ namespace ToadicusTools
 {
 	public static partial class Tools
 	{
+		#region LOGGING_TOOLS
+		public static void PostLogMessage(LogChannel channel, string Msg)
+		{
+			switch (channel)
+			{
+				case LogChannel.Log:
+					#if DEBUG
+					Debug.Log(Msg);
+					#else
+					KSPLog.print(Msg);
+					#endif
+					break;
+				case LogChannel.Warning:
+					Debug.LogWarning(Msg);
+					break;
+				case LogChannel.Error:
+					Debug.LogError(Msg);
+					break;
+				default:
+					throw new NotImplementedException("Invalid channel, must pick one of Log, Warning, or Error.");
+			}
+		}
+
+		public static void PostLogMessage(LogChannel channel, string Format, params object[] args)
+		{
+			string message = string.Format(Format, args);
+
+			PostLogMessage(message);
+		}
+
+		public static void PostLogMessage(string Msg)
+		{
+			PostLogMessage(LogChannel.Log, Msg);
+		}
+
+		public static void PostLogMessage(string Format, params object[] args)
+		{
+			PostLogMessage(LogChannel.Log, Format, args);
+		}
+
+		public static void PostWarningMessage(string Msg)
+		{
+			PostLogMessage(LogChannel.Warning, Msg);
+		}
+
+		public static void PostWarningMessage(string Format, params object[] args)
+		{
+			PostLogMessage(LogChannel.Warning, Format, args);
+		}
+
+		public static void PostErrorMessage(string Msg)
+		{
+			PostLogMessage(LogChannel.Error, Msg);
+		}
+
+		public static void PostErrorMessage(string Format, params object[] args)
+		{
+			PostLogMessage(LogChannel.Error, Format, args);
+		}
+
+		public static void Log(this Component component, LogChannel channel, string Msg)
+		{
+			string message = string.Format("[{0}] {1}", component.GetType().Name, Msg);
+
+			PostLogMessage(channel, message);
+		}
+
+		public static void Log(this Component component, string Msg)
+		{
+			component.Log(LogChannel.Log, Msg);
+		}
+
+		public static void Log(this Component component, string format, params object[] args)
+		{
+			string message = string.Format(format, args);
+
+			component.Log(message);
+		}
+
+		public static void LogWarning(this Component component, string Msg)
+		{
+			component.Log(LogChannel.Warning, Msg);
+		}
+
+		public static void LogWarning(this Component component, string format, params object[] args)
+		{
+			string message = string.Format(format, args);
+
+			component.LogWarning(message);
+		}
+
+		public static void LogError(this Component component, string Msg)
+		{
+			component.Log(LogChannel.Error, Msg);
+		}
+
+		public static void LogError(this Component component, string format, params object[] args)
+		{
+			string message = string.Format(format, args);
+
+			component.LogError(message);
+		}
+
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void LogDebug(this Component component, string Msg)
+		{
+			component.Log(LogChannel.Log, Msg);
+		}
+
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void LogDebug(this Component component, string format, params object[] args)
+		{
+			string message = string.Format(format, args);
+
+			component.Log(message);
+		}
+
+		public enum LogChannel
+		{
+			Log,
+			Warning,
+			Error
+		}
+		#endregion
+
 		#region DEBUG_TOOLS
 		private static ScreenMessage debugmsg = new ScreenMessage("", 4f, ScreenMessageStyle.UPPER_RIGHT);
 
@@ -46,7 +171,7 @@ namespace ToadicusTools
 				ScreenMessages.PostScreenMessage(debugmsg, true);
 			}
 
-			KSPLog.print(Msg);
+			PostLogMessage(Msg, LogChannel.Log);
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
@@ -175,12 +300,10 @@ namespace ToadicusTools
 		{
 			foreach (CelestialBody item in haystack)
 			{
-				if (item == needle)
 				{
 					return true;
 				}
 			}
-
 			return false;
 		}
 		#endregion
