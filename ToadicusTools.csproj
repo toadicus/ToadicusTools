@@ -26,7 +26,7 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ..\..\..\Games\KSP_win\GameData\ToadicusTools\" />
+        <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -38,7 +38,7 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ..\..\..\Games\KSP_win\GameData\ToadicusTools\" />
+        <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
