@@ -53,7 +53,7 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="/usr/bin/cp -a ${TargetFile} /opt/games/KSP_linux/GameData/ToadicusTools/" />
+        <Command type="AfterBuild" command="/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -64,7 +64,7 @@
     <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="/usr/bin/cp -a ${TargetFile} /opt/games/KSP_linux/GameData/ToadicusTools/" />
+        <Command type="AfterBuild" command="/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/" />
       </CustomCommands>
     </CustomCommands>
     <ConsolePause>false</ConsolePause>
