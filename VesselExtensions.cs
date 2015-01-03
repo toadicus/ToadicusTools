@@ -276,7 +276,7 @@ namespace ToadicusTools
 				{
 					KerbalSeat seatModule = module as KerbalSeat;
 
-					if (seatModule.part != null && seatModule.part.isControlSource)
+					if (seatModule.Occupant != null)
 					{
 						currentCommand |= VesselCommand.Crew;
 					}
