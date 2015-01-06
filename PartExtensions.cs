@@ -105,12 +105,20 @@ namespace ToadicusTools
 
 			List<T> returnList = new List<T>();
 
-			foreach (PartModule module in part.Modules)
+
+			if (part.Modules != null)
 			{
-				if (module is T)
+				foreach (PartModule module in part.Modules)
 				{
-					returnList.Add(module as T);
+					if (module is T)
+					{
+						returnList.Add(module as T);
+					}
 				}
+			}
+			else
+			{
+				part.LogWarning("Modules list is null during module search; returning empty list.");
 			}
 
 			return returnList;
@@ -123,6 +131,13 @@ namespace ToadicusTools
 				throw new ArgumentNullException(
 					string.Format("Part.getFirstModuleOfType<{0}>: 'part' argument must not be null", typeof(T).Name)
 				);
+			}
+
+			if (part.Modules == null)
+			{
+				part.LogWarning("Modules list is null during module search; returning null.");
+
+				return null;
 			}
 
 			foreach (PartModule module in part.Modules)
