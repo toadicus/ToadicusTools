@@ -95,7 +95,23 @@ namespace ToadicusTools
 
 		public static void Log(this Component component, LogChannel channel, string Msg)
 		{
-			string message = string.Format("[{0}] {1}", component.GetType().Name, Msg);
+			Type componentType = component.GetType();
+			string name;
+
+			if (componentType == typeof(Vessel))
+			{
+				name = string.Format("{0} ({1})", componentType.Name, (component as Vessel).vesselName);
+			}
+			else if (componentType == typeof(Part))
+			{
+				name = string.Format("{0} ({1})", componentType.Name, (component as Part).partInfo.name);
+			}
+			else
+			{
+				name = componentType.Name;
+			}
+
+			string message = string.Format("[{0}] {1}", name, Msg);
 
 			PostLogMessage(channel, message);
 		}
