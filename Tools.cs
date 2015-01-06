@@ -300,6 +300,7 @@ namespace ToadicusTools
 		{
 			foreach (CelestialBody item in haystack)
 			{
+				if (item == needle)
 				{
 					return true;
 				}
