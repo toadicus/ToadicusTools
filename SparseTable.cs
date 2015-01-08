@@ -31,25 +31,37 @@ using System.Collections.Generic;
 
 namespace ToadicusTools.SparseTable
 {
-	public class SparseTable
+	public class SparseTable<T> : SparseTable<T, ColumnRange<T>, RowRange<T>>
+		where T : Cell, new()
+	{}
+
+	public class SparseTable<T, U, V> 
+		where T : Cell, new()
+		where U : ColumnRange<T>, new()
+		where V : RowRange<T>, new()
 	{
-		private Dictionary<Address, Cell> table;
-		private Dictionary<UInt32, ColumnRange> columns;
-		private Dictionary<UInt32, RowRange> rows;
+		public static implicit operator SparseTable<T>(SparseTable<T, U, V> table)
+		{
+			return table;
+		}
 
-		public Int64 maxColumn
+		private Dictionary<Address, T> table;
+		private Dictionary<UInt32, U> columns;
+		private Dictionary<UInt32, V> rows;
+
+		public UInt32 maxColumn
 		{
 			get;
 			private set;
 		}
 
-		public Int64 maxRow
+		public UInt32 maxRow
 		{
 			get;
 			private set;
 		}
 
-		public Cell this [UInt32 columnIdx, UInt32 rowIdx]
+		public virtual T this [UInt32 columnIdx, UInt32 rowIdx]
 		{
 			get
 			{
@@ -59,130 +71,92 @@ namespace ToadicusTools.SparseTable
 			{
 				Address hash = new Address(columnIdx, rowIdx);
 				this[hash] = value;
-				value.Hash = hash;
 			}
 		}
 
-		public Cell this [Address address]
+		public virtual T this [Address address]
 		{
 			get
 			{
-				if (this.table.ContainsKey(address))
+				if (!this.table.ContainsKey(address))
 				{
-					return this.table[address];
+					this.table[address] = new T();
 				}
-				else
-				{
-					return null;
-				}
+
+				return this.table[address];
 			}
 			set
 			{
-				this.table[address] = value;
+				this[address] = value;
 				this.maxColumn = Math.Max(address.columnIdx, this.maxColumn);
 				this.maxRow = Math.Max(address.rowIdx, this.maxRow);
+				value.Hash = address;
 			}
 		}
 
-		public ColumnRange GetColumn(UInt32 columnIdx, UInt32 offset, UInt32 range)
+		public bool ContainsKey(Address address)
+		{
+			return this.table.ContainsKey(address);
+		}
+
+		public bool ContainsKey(UInt32 colIdx, UInt32 rowIdx)
+		{
+			Address address = new Address(colIdx, rowIdx);
+			return this.ContainsKey(address);
+		}
+
+		public U GetColumn(UInt32 columnIdx, UInt32 offset, UInt32 range)
 		{
 			if (!this.columns.ContainsKey(columnIdx))
 			{
-				this.columns[columnIdx] = new ColumnRange(this, columnIdx, offset, range);
+				this.columns[columnIdx] = (U)(new ColumnRange<T>(this, columnIdx, offset, range));
 				this.maxColumn = Math.Max(this.maxColumn, columnIdx);
 			}
 
 			return this.columns[columnIdx];
 		}
 
-		public ColumnRange GetColumn(UInt32 columnIdx, UInt32 range)
+		public U GetColumn(UInt32 columnIdx, UInt32 range)
 		{
 			return this.GetColumn(columnIdx, 0, range);
 		}
 
-		public ColumnRange GetColumn(UInt32 columnIdx)
+		public U GetColumn(UInt32 columnIdx)
 		{
 			return this.GetColumn(columnIdx, (UInt32)this.maxRow);
 		}
 
-		public RowRange GetRow(UInt32 rowIdx, UInt32 offset, UInt32 range)
+		public V GetRow(UInt32 rowIdx, UInt32 offset, UInt32 range)
 		{
 			if (!this.rows.ContainsKey(rowIdx))
 			{
-				this.rows[rowIdx] = new RowRange(this, rowIdx, offset, range);
+				this.rows[rowIdx] = (V)(new RowRange<T>(this, rowIdx, offset, range));
 				this.maxRow = Math.Max(this.maxRow, rowIdx);
 			}
 
 			return this.rows[rowIdx];
 		}
 
-		public RowRange GetRow(UInt32 rowIdx, UInt32 range)
+		public V GetRow(UInt32 rowIdx, UInt32 range)
 		{
 			return this.GetRow(rowIdx, 0, range);
 		}
 
-		public RowRange GetRow(UInt32 rowIdx)
+		public V GetRow(UInt32 rowIdx)
 		{
 			return this.GetRow(rowIdx, (UInt32)this.maxColumn);
 		}
 
 		public SparseTable()
 		{
-			this.table = new Dictionary<Address, Cell>();
-			this.maxColumn = -1;
-			this.maxRow = -1;
-		}
-
-		public struct Address
-		{
-			public UInt64 Hash
-			{
-				get;
-				private set;
-			}
-
-			public UInt32 columnIdx
-			{
-				get
-				{
-					return (UInt32)(Hash >> 32);
-				}
-				set
-				{
-					this.Hash &= (((UInt64)UInt32.MaxValue) << 32);
-
-					this.Hash |= (((UInt64)value) << 32);
-				}
-			}
-
-			public UInt32 rowIdx
-			{
-				get
-				{
-					return (UInt32)Hash;
-				}
-				set
-				{
-					this.Hash &= (UInt64)UInt32.MaxValue;
-
-					this.Hash |= (UInt64)value;
-				}
-			}
-
-			public Address(UInt32 columnIdx, UInt32 rowIdx) : this()
-			{
-				this.columnIdx = columnIdx;
-				this.rowIdx = rowIdx;
-			}
-
-			public override int GetHashCode()
-			{
-				return this.Hash.GetHashCode();
-			}
+			this.table = new Dictionary<Address, T>();
+			this.maxColumn = 0;
+			this.maxRow = 0;
 		}
 	}
 
-	public class SequentialColumn : ColumnRange
+	public class SequentialColumn<T> : ColumnRange<T>
+		where T : Cell, new()
 	{
 		public UInt32 Count
 		{
@@ -192,17 +166,18 @@ namespace ToadicusTools.SparseTable
 			}
 		}
 
-		public void Add(object value)
+		public void Add(T value)
 		{
 			this.Range++;
 			this[this.Range - 1] = value;
 		}
 
-		public SequentialColumn(SparseTable table, UInt32 columnIdx, UInt32 offset) : base(table, columnIdx, offset, 0)
+		public SequentialColumn(SparseTable<T> table, UInt32 columnIdx, UInt32 offset)
+			: base(table, columnIdx, offset, UInt32.MaxValue)
 		{
 		}
 
-		public SequentialColumn(SparseTable table, UInt32 columnIdx) : this(table, columnIdx, 0)
+		public SequentialColumn(SparseTable<T> table, UInt32 columnIdx) : this(table, columnIdx, 0)
 		{
 		}
 
@@ -211,7 +186,8 @@ namespace ToadicusTools.SparseTable
 		}
 	}
 
-	public class SequentialRow : RowRange
+	public class SequentialRow<T> : RowRange<T>
+		where T : Cell, new()
 	{
 		public UInt32 Count
 		{
@@ -221,17 +197,18 @@ namespace ToadicusTools.SparseTable
 			}
 		}
 
-		public void Add(object value)
+		public void Add(T value)
 		{
 			this.Range++;
 			this[this.Range - 1] = value;
 		}
 
-		public SequentialRow(SparseTable table, UInt32 rowIdx, UInt32 offset) : base(table, rowIdx, offset, 0)
+		public SequentialRow(SparseTable<T> table, UInt32 rowIdx, UInt32 offset)
+			: base(table, rowIdx, offset, UInt32.MaxValue)
 		{
 		}
 
-		public SequentialRow(SparseTable table, UInt32 rowIdx) : this(table, rowIdx, 0)
+		public SequentialRow(SparseTable<T> table, UInt32 rowIdx) : this(table, rowIdx, 0)
 		{
 		}
 
@@ -240,11 +217,14 @@ namespace ToadicusTools.SparseTable
 		}
 	}
 
-	public class ColumnRange : Range1D
+	// public class ColumnRange : ColumnRange<Cell> {}
+
+	public class ColumnRange<T> : Range1D<T>
+		where T : Cell, new()
 	{
 		protected UInt32 columnIdx;
 
-		public override object this [UInt32 idx]
+		public override T this [UInt32 idx]
 		{
 			get
 			{
@@ -253,7 +233,7 @@ namespace ToadicusTools.SparseTable
 					throw new ArgumentOutOfRangeException();
 				}
 
-				return this.table[this.columnIdx, idx + this.Offset];
+				return (T)this.table[this.columnIdx, idx + this.Offset];
 			}
 			set
 			{
@@ -262,29 +242,30 @@ namespace ToadicusTools.SparseTable
 					throw new ArgumentOutOfRangeException();
 				}
 
-				this.table[this.columnIdx, idx + this.Offset] = (Cell)value;
+				this.table[this.columnIdx, idx + this.Offset] = (T)value;
 			}
 		}
 
-		public ColumnRange(SparseTable table, UInt32 columnIdx, UInt32 offset, UInt32 range) : base(table, offset, range)
+		public ColumnRange(SparseTable<T> table, UInt32 columnIdx, UInt32 offset, UInt32 range) : base(table, offset, range)
 		{
 			this.columnIdx = columnIdx;
 		}
 
-		public ColumnRange(SparseTable table, UInt32 columnIdx, UInt32 range) : this(table, columnIdx, 0, range)
+		public ColumnRange(SparseTable<T> table, UInt32 columnIdx, UInt32 range) : this(table, columnIdx, 0, range)
 		{
 		}
 
-		protected ColumnRange()
+		public ColumnRange()
 		{
 		}
 	}
 
-	public class RowRange : Range1D
+	public class RowRange<T> : Range1D<T>
+		where T : Cell, new()
 	{
 		private UInt32 rowIdx;
 
-		public override object this [UInt32 idx]
+		public override T this [UInt32 idx]
 		{
 			get
 			{
@@ -302,27 +283,28 @@ namespace ToadicusTools.SparseTable
 					throw new ArgumentOutOfRangeException();
 				}
 
-				this.table[idx + this.Offset, this.rowIdx] = (Cell)value;
+				this.table[idx + this.Offset, this.rowIdx] = (T)value;
 			}
 		}
 
-		public RowRange(SparseTable table, UInt32 rowIdx, UInt32 offset, UInt32 range) : base(table, offset, range)
+		public RowRange(SparseTable<T, ColumnRange<T>, RowRange<T>> table, UInt32 rowIdx, UInt32 offset, UInt32 range) : base(table, offset, range)
 		{
 			this.rowIdx = rowIdx;
 		}
 
-		public RowRange(SparseTable table, UInt32 rowIdx, UInt32 range) : this(table, rowIdx, 0, range)
+		public RowRange(SparseTable<T, ColumnRange<T>, RowRange<T>> table, UInt32 rowIdx, UInt32 range) : this(table, rowIdx, 0, range)
 		{
 		}
 
-		protected RowRange()
+		public RowRange()
 		{
 		}
 	}
 
-	public abstract class Range1D : IEnumerable
+	public abstract class Range1D<T> : IEnumerable
+		where T : Cell, new()
 	{
-		protected SparseTable table;
+		protected SparseTable<T> table;
 
 		public virtual UInt32 Offset
 		{
@@ -336,7 +318,7 @@ namespace ToadicusTools.SparseTable
 			protected set;
 		}
 
-		public abstract object this [UInt32 idx]
+		public abstract T this [UInt32 idx]
 		{
 			get;
 			set;
@@ -372,7 +354,7 @@ namespace ToadicusTools.SparseTable
 			return new RangeEnumerator(this);
 		}
 
-		protected Range1D(SparseTable table, UInt32 offset, UInt32 range)
+		protected Range1D(SparseTable<T> table, UInt32 offset, UInt32 range)
 		{
 			this.table = table;
 			this.Offset = offset;
@@ -385,7 +367,7 @@ namespace ToadicusTools.SparseTable
 
 		public class RangeEnumerator : IEnumerator
 		{
-			private Range1D range1D;
+			private Range1D<T> range1D;
 			private UInt32 idx;
 
 			public object Current
@@ -408,7 +390,7 @@ namespace ToadicusTools.SparseTable
 				this.idx = 0;
 			}
 
-			public RangeEnumerator(Range1D range)
+			public RangeEnumerator(Range1D<T> range)
 			{
 				this.range1D = range;
 			}
@@ -440,7 +422,7 @@ namespace ToadicusTools.SparseTable
 			}
 		}
 
-		public Cell(SparseTable.Address hash, T value) : base(hash, value)
+		public Cell(Address hash, T value) : base(hash, value)
 		{
 		}
 
@@ -469,7 +451,7 @@ namespace ToadicusTools.SparseTable
 
 	public class Cell : ICell
 	{
-		public virtual SparseTable.Address Hash
+		public virtual Address Hash
 		{
 			get;
 			set;
@@ -498,7 +480,7 @@ namespace ToadicusTools.SparseTable
 			return this.Hash.GetHashCode() + this.Value.GetHashCode();
 		}
 
-		public Cell(SparseTable.Address hash, object value) : this(value)
+		public Cell(Address hash, object value) : this(value)
 		{
 			this.Hash = hash;
 		}
@@ -688,7 +670,7 @@ namespace ToadicusTools.SparseTable
 
 	public interface ICell
 	{
-		SparseTable.Address Hash
+		Address Hash
 		{
 			get;
 			set;
@@ -698,6 +680,54 @@ namespace ToadicusTools.SparseTable
 		{
 			get;
 			set;
+		}
+	}
+
+	public struct Address
+	{
+		public UInt64 Hash
+		{
+			get;
+			private set;
+		}
+
+		public UInt32 columnIdx
+		{
+			get
+			{
+				return (UInt32)(Hash >> 32);
+			}
+			set
+			{
+				this.Hash &= (((UInt64)~UInt32.MaxValue) << 32);
+
+				this.Hash |= (((UInt64)value) << 32);
+			}
+		}
+
+		public UInt32 rowIdx
+		{
+			get
+			{
+				return (UInt32)Hash;
+			}
+			set
+			{
+				this.Hash &= (UInt64)UInt32.MaxValue;
+
+				this.Hash |= (UInt64)value;
+			}
+		}
+
+		public Address(UInt32 columnIdx, UInt32 rowIdx) : this()
+		{
+			this.columnIdx = columnIdx;
+			this.rowIdx = rowIdx;
+		}
+
+		public override int GetHashCode()
+		{
+			return this.Hash.GetHashCode();
 		}
 	}
 }

@@ -120,6 +120,7 @@
     <None Include="PrefabDBWrapper.cs" />
     <None Include="ModuleDBWrapper.cs" />
     <None Include="IModuleDB.cs" />
+    <None Include="LayoutTable.cs" />
     <None Include="SparseTable.cs" />
   </ItemGroup>
 </Project>
