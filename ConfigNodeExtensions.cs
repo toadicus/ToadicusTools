@@ -31,6 +31,26 @@ namespace ToadicusTools
 	public static partial class Tools
 	{
 		/// <summary>
+		/// Gets the value of key "name" in <see cref="ConfigNode"/> "node" as a <see cref="string"/>,
+		/// or returns a given default value if the key does not exist or cannot be parsed.
+		/// </summary>
+		/// <returns>The value as a <see cref="string"/></returns>
+		/// <param name="node">The <see cref="ConfigNode"/> being referenced</param>
+		/// <param name="name">The name of the key being referenced</param>
+		/// <param name="defaultValue">The default value to return in fallback conditions</param>
+		public static string GetValue(this ConfigNode node, string name, string defaultValue)
+		{
+			string value;
+
+			if (node.TryGetValue(name, out value))
+			{
+				return value;
+			}
+
+			return defaultValue;
+		}
+
+		/// <summary>
 		/// Gets the value of key "name" in <see cref="ConfigNode"/> "node" as a <see cref="double"/>,
 		/// or returns a given default value if the key does not exist or cannot be parsed.
 		/// </summary>
