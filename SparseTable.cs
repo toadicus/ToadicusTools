@@ -45,9 +45,9 @@ namespace ToadicusTools.SparseTable
 			return table;
 		}
 
-		private Dictionary<Address, T> table;
-		private Dictionary<UInt32, U> columns;
-		private Dictionary<UInt32, V> rows;
+		protected Dictionary<Address, T> table;
+		protected Dictionary<UInt32, U> columns;
+		protected Dictionary<UInt32, V> rows;
 
 		public UInt32 maxColumn
 		{
@@ -166,10 +166,26 @@ namespace ToadicusTools.SparseTable
 			}
 		}
 
-		public void Add(T value)
+		public virtual void Add(T value)
 		{
 			this.Range++;
 			this[this.Range - 1] = value;
+		}
+
+		public virtual T Next()
+		{
+			this.Range++;
+			return this[this.Range - 1u];
+		}
+
+		public void Reset(UInt32 newRange)
+		{
+			this.Range = newRange;
+		}
+
+		public void Reset()
+		{
+			this.Reset(0u);
 		}
 
 		public SequentialColumn(SparseTable<T> table, UInt32 columnIdx, UInt32 offset)
@@ -197,10 +213,26 @@ namespace ToadicusTools.SparseTable
 			}
 		}
 
-		public void Add(T value)
+		public virtual void Add(T value)
 		{
 			this.Range++;
 			this[this.Range - 1] = value;
+		}
+
+		public virtual T Next()
+		{
+			this.Range++;
+			return this[this.Range - 1u];
+		}
+
+		public void Reset(UInt32 newRange)
+		{
+			this.Range = newRange;
+		}
+
+		public void Reset()
+		{
+			this.Reset(0u);
 		}
 
 		public SequentialRow(SparseTable<T> table, UInt32 rowIdx, UInt32 offset)
@@ -301,7 +333,7 @@ namespace ToadicusTools.SparseTable
 		}
 	}
 
-	public abstract class Range1D<T> : IEnumerable
+	public abstract class Range1D<T> : IEnumerable<T>
 		where T : Cell, new()
 	{
 		protected SparseTable<T> table;
@@ -349,9 +381,9 @@ namespace ToadicusTools.SparseTable
 			return (IEnumerator)this.GetEnumerator();
 		}
 
-		public virtual RangeEnumerator GetEnumerator()
+		public virtual IEnumerator<T> GetEnumerator()
 		{
-			return new RangeEnumerator(this);
+			return new RangeEnumerator<T>(this);
 		}
 
 		protected Range1D(SparseTable<T> table, UInt32 offset, UInt32 range)
@@ -365,16 +397,25 @@ namespace ToadicusTools.SparseTable
 		{
 		}
 
-		public class RangeEnumerator : IEnumerator
+		public class RangeEnumerator<U> : IEnumerator<U>
+			where U : Cell, new()
 		{
-			private Range1D<T> range1D;
+			private Range1D<U> range1D;
 			private UInt32 idx;
 
-			public object Current
+			public U Current
 			{
 				get
 				{
 					return range1D[idx];
+				}
+			}
+
+			object IEnumerator.Current
+			{
+				get
+				{
+					return (object)this.Current;
 				}
 			}
 
@@ -390,7 +431,9 @@ namespace ToadicusTools.SparseTable
 				this.idx = 0;
 			}
 
-			public RangeEnumerator(Range1D<T> range)
+			public void Dispose() {}
+
+			public RangeEnumerator(Range1D<U> range)
 			{
 				this.range1D = range;
 			}

@@ -33,13 +33,28 @@ namespace ToadicusTools
 {
 	public class LayoutTable : SparseTable<LayoutCell, LayoutColumn, LayoutRow>
 	{
-		private Dictionary<UInt32, float> columnWidths;
-		private Dictionary<UInt32, float> rowHeights;
+		public GUIStyle defaultStyle = GUI.skin.label;
 
 		public LayoutTable() : base()
 		{
-			this.columnWidths = new Dictionary<uint, float>();
-			this.rowHeights = new Dictionary<uint, float>();
+		}
+
+		public void ApplyStyle(GUIStyle style, UInt32 colOffset, UInt32 rowOffset)
+		{
+			this.defaultStyle = style;
+
+			foreach (var cell in this.table.Values)
+			{
+				if (cell.Hash.columnIdx >= colOffset && cell.Hash.rowIdx >= rowOffset)
+				{
+					cell.Style = defaultStyle;
+				}
+			}
+		}
+
+		public void ApplyStyle(GUIStyle style)
+		{
+			this.ApplyStyle(style, 0u, 0u);
 		}
 
 		public void Render(UInt32 colOffset, UInt32 rowOffset, UInt32 colRange, UInt32 rowRange)
@@ -111,6 +126,39 @@ namespace ToadicusTools
 			private set;
 		}
 
+		public LayoutCell() : base() {}
+
+		public LayoutCell(
+			object value,
+			string format = default(string),
+			GUIStyle style = null,
+			float? width = null,
+			float? height = null
+		) : base()
+		{
+			this.Value = value;
+
+			if (format != default(string))
+			{
+				this.Format = format;
+			}
+
+			if (style != null)
+			{
+				this.Style = style;
+			}
+
+			if (width != null)
+			{
+				this.Width = (float)width;
+			}
+
+			if (height != null)
+			{
+				this.Height = (float)height;
+			}
+		}
+
 		public void Render(params GUILayoutOption[] options)
 		{
 			GUILayout.Label(this.Value.ToString(), this.Style, options);
@@ -134,14 +182,58 @@ namespace ToadicusTools
 		}
 	}
 
-	public class LayoutColumn : ColumnRange<LayoutCell>
+	public class LayoutColumn : SequentialColumn<LayoutCell>
 	{
 		public float? Width = null;
+		public GUIStyle defaultStyle = GUI.skin.label;
+
+		public override void Add(LayoutCell value)
+		{
+			value.Style = defaultStyle;
+			base.Add(value);
+		}
+
+		public void ApplyStyle(GUIStyle style)
+		{
+			this.defaultStyle = style;
+
+			foreach (LayoutCell cell in this)
+			{
+				cell.Style = defaultStyle;
+			}
+		}
 	}
 
-	public class LayoutRow : RowRange<LayoutCell>
+	public class LayoutRow : SequentialRow<LayoutCell>
 	{
 		public float? Height = null;
+		public GUIStyle defaultStyle = GUI.skin.label;
+
+		public override void Add(LayoutCell value)
+		{
+			value.Style = defaultStyle;
+			base.Add(value);
+		}
+
+		public void Reset(UInt32 newRange)
+		{
+			this.Range = newRange;
+		}
+
+		public void Reset()
+		{
+			this.Reset(0u);
+		}
+
+		public void ApplyStyle(GUIStyle style)
+		{
+			this.defaultStyle = style;
+
+			foreach (LayoutCell cell in this)
+			{
+				cell.Style = defaultStyle;
+			}
+		}
 	}
 }
 
