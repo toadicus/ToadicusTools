@@ -116,47 +116,38 @@ namespace ToadicusTools
 		public static ApplicationLauncher.AppScenes ToAppScenes(this GameScenes gameScene)
 		{
 			/*
-			 * AppScenes:
-			 * NEVER = 0,
-			 * SPACECENTER = 1,
-			 * FLIGHT = 2,
-			 * MAPVIEW = 4,
-			 * VAB = 5,
-			 * SPH = 6,
-			 * ALWAYS = 7
+			 * 	NEVER = 0,
+			 *	ALWAYS = -1,
+			 *	SPACECENTER = 1,
+			 *	FLIGHT = 2,
+			 *	MAPVIEW = 4,
+			 *	VAB = 8,
+			 *	SPH = 16,
+			 *	TRACKSTATION = 32
 			 */
 
 			switch (gameScene)
 			{
 				case GameScenes.EDITOR:
-					if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.SPH)
-					{
-						return ApplicationLauncher.AppScenes.SPH;
-					}
-					Debug.LogWarning("Converting GameScenes.EDITOR to AppScenes.VAB.  This may not always be safe!");
-					return ApplicationLauncher.AppScenes.VAB;
+					return ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH;
 				case GameScenes.FLIGHT:
 					return ApplicationLauncher.AppScenes.FLIGHT;
 				case GameScenes.SPACECENTER:
 					return ApplicationLauncher.AppScenes.SPACECENTER;
 				case GameScenes.TRACKSTATION:
-					Debug.LogWarning(
-						"Converting GameScenes.TRACKSTATION to AppScenes.MAPVIEW.  This may not always be safe!");
-					return ApplicationLauncher.AppScenes.MAPVIEW;
+					return ApplicationLauncher.AppScenes.TRACKSTATION;
+				case GameScenes.MAINMENU:
 				case GameScenes.CREDITS:
 				case GameScenes.LOADING:
 				case GameScenes.LOADINGBUFFER:
-				case GameScenes.MAINMENU:
 				case GameScenes.PSYSTEM:
 				case GameScenes.SETTINGS:
 				default:
-					Debug.LogWarning(string.Format(
+					Tools.PostLogMessage(Tools.LogChannel.Warning,
 						"Cannot convert GameScenes.{0}: no acceptable AppScenes analog.",
-						Enum.GetName(
-							typeof(GameScenes),
-							gameScene
-						)
-					));
+						Enum.GetName(typeof(GameScenes), gameScene)
+					);
+					
 					return ApplicationLauncher.AppScenes.NEVER;
 			}
 		}
