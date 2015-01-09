@@ -119,6 +119,14 @@ public class Table
 
 		public float Width { get; set; }
 
+		object Column.this[int idx]
+		{
+			get
+			{
+				return (object)this[idx];
+			}
+		}
+
 		public T this[int idx]
 		{
 			get
@@ -257,6 +265,8 @@ public class Table
 	{
 		GUIStyle CellStyle { set; }
 		GUIStyle HeaderStyle { set; }
+
+		object this[int idx] { get; }
 
 		int Count { get; }
 
