@@ -25,12 +25,12 @@
 
 using System;
 using System.Collections.Generic;
+using ToadicusTools;
 using UnityEngine;
 
 public class Table
 {
 	private List<Column> columns;
-	private float width;
 
 	public Column this[int idx]
 	{
@@ -40,14 +40,7 @@ public class Table
 		}
 		set
 		{
-			if (idx > 0 && idx < this.columns.Count)
-			{
-				this.width -= this.columns[idx].Width;
-			}
-
 			this.columns[idx] = value;
-
-			this.width += value.Width;
 		}
 	}
 
@@ -55,6 +48,13 @@ public class Table
 	{
 		get
 		{
+			float width = 0f;
+
+			foreach (Column column in this.columns)
+			{
+				width += column.Width;
+			}
+
 			return width;
 		}
 	}
@@ -62,8 +62,6 @@ public class Table
 	public void Add(Column column)
 	{
 		this.columns.Add(column);
-
-		this.width += column.Width;
 	}
 
 	public void ApplyCellStyle(GUIStyle style)
@@ -82,6 +80,12 @@ public class Table
 		}
 	}
 
+	public void ClearTable()
+	{
+		this.ClearColumns();
+		this.columns.Clear();
+	}
+
 	public void ClearColumns()
 	{
 		foreach (Column column in this.columns)
@@ -90,13 +94,37 @@ public class Table
 		}
 	}
 
-	public void Render()
+	public void Render(bool renderHeader)
 	{
-		GUILayout.BeginHorizontal(GUILayout.MinWidth(this.width));
+		GUILayout.BeginHorizontal(GUILayout.MinWidth(this.Width));
 
 		foreach (Column column in this.columns)
 		{
-			column.Render();
+			Tools.PostDebugMessage(this, "Rendering column #{0}", this.columns.IndexOf(column));
+			column.Render(renderHeader);
+		}
+
+		GUILayout.EndHorizontal();
+	}
+
+	public void Render()
+	{
+		this.Render(true);
+	}
+
+	public void RenderHeader()
+	{
+		GUILayout.BeginHorizontal(GUILayout.MinWidth(this.Width));
+
+		foreach (Column column in this.columns)
+		{
+			Tools.PostDebugMessage(this, "Rendering column #{0}", this.columns.IndexOf(column));
+
+			GUILayout.BeginVertical(GUILayout.Width(column.Width), GUILayout.ExpandHeight(false));
+
+			column.RenderHeader();
+
+			GUILayout.EndVertical();
 		}
 
 		GUILayout.EndHorizontal();
@@ -111,6 +139,7 @@ public class Table
 	{
 		private List<T> cells;
 		private string format;
+		public float defWidth;
 
 		public string Header { get; set; }
 
@@ -189,19 +218,31 @@ public class Table
 			this.cells.Clear();
 		}
 
-		public void Render()
+		public void Render(bool renderHeader)
 		{
-			GUILayout.BeginVertical(GUILayout.Width(this.Width), GUILayout.ExpandHeight(true));
-
-			GUILayout.Label(
-				this.Header,
-				this.HeaderStyle,
-				GUILayout.ExpandWidth(true),
-				GUILayout.Height(36f)
+			GUILayout.BeginVertical(
+				GUILayout.MinWidth(this.Width),
+				GUILayout.ExpandHeight(true)
 			);
+
+			if (renderHeader)
+			{
+				this.RenderHeader();
+			}
+
+			float newWidth = this.defWidth;
+
+			#if DEBUG
+			int idx = 0;
+			#endif
 
 			foreach (T cell in this.cells)
 			{
+				#if DEBUG
+				idx++;
+				Tools.PostDebugMessage(this, "cell #{0} ({1}).", idx, cell.ToString());
+				#endif
+
 				string cellContents;
 
 				if (cell is IFormattable && this.format != null && this.format != string.Empty)
@@ -225,10 +266,51 @@ public class Table
 					cellContents = cell.ToString();
 				}
 
-				GUILayout.Label(cellContents, this.CellStyle, GUILayout.ExpandWidth(true), GUILayout.Height(20f));
+				Vector2 cellSize = this.CellStyle.CalcSize(new GUIContent(cellContents));
+
+				GUILayout.Label(
+					cellContents,
+					this.CellStyle,
+					GUILayout.MinWidth(cellSize.x),
+					GUILayout.ExpandWidth(true),
+					GUILayout.Height(20f)
+				);
+
+				Rect labelRect = GUILayoutUtility.GetLastRect();
+
+				newWidth = Mathf.Max(labelRect.width, newWidth);
 			}
 
+			this.Width = newWidth;
+
 			GUILayout.EndVertical();
+		}
+
+		public void Render()
+		{
+			this.Render(true);
+		}
+
+		public void RenderHeader()
+		{
+			Tools.PostDebugMessage(this, "Rendering header." +
+				"\n\tthis.Header: {0}" +
+				"\n\tthis.HeaderStyle: {1}",
+				this.Header ?? "NULL",
+				this.HeaderStyle == null ? "NULL" : this.HeaderStyle.ToString()
+			);
+
+			Vector2 headerSize = this.HeaderStyle.CalcSize(new GUIContent(this.Header));
+
+			this.defWidth = Mathf.Max(headerSize.x, this.defWidth);
+
+			GUILayout.Label(
+				this.Header,
+				this.HeaderStyle,
+				GUILayout.ExpandWidth(true),
+				GUILayout.MinWidth(defWidth),
+				GUILayout.Height(((float)this.HeaderStyle.fontSize) * .8f)
+			);
 		}
 
 		public IEnumerator<T> GetEnumerator()
@@ -245,7 +327,7 @@ public class Table
 		{
 			this.Header = header;
 			this.cells = new List<T>();
-			this.Width = width;
+			this.defWidth = this.Width = width;
 			this.CellStyle = cellStyle;
 			this.HeaderStyle = headerStyle;
 		}
@@ -276,6 +358,9 @@ public class Table
 
 		void Clear();
 
+		void Render(bool renderHeader);
 		void Render();
+
+		void RenderHeader();
 	}
 }
