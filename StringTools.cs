@@ -31,7 +31,7 @@ namespace ToadicusTools
 {
 	public static partial class Tools
 	{
-		private static IFormatProvider mySIFormatter;
+		public static readonly IFormatProvider mySIFormatter = new SIFormatter() as IFormatProvider;
 
 		/// <summary>
 		/// <para>Replaces the format items in a specified string with the string representation of corresponding objects in a
@@ -44,11 +44,6 @@ namespace ToadicusTools
 		/// <param name="args">An object array that contains zero or more objects to format.</param>
 		public static string Format(string format, params object[] args)
 		{
-			if (mySIFormatter == null)
-			{
-				mySIFormatter = new SIFormatter() as IFormatProvider;
-			}
-
 			return string.Format(mySIFormatter, format, args);
 		}
 	}
