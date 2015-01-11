@@ -112,22 +112,22 @@ public class Table
 		this.Render(true);
 	}
 
-	public void RenderHeader()
+	public void RenderHeader(bool doVertical)
 	{
 		GUILayout.BeginHorizontal(GUILayout.MinWidth(this.Width));
 
 		foreach (Column column in this.columns)
 		{
 			Tools.PostDebugMessage(this, "Rendering column #{0}", this.columns.IndexOf(column));
-
-			GUILayout.BeginVertical(GUILayout.Width(column.Width), GUILayout.ExpandHeight(false));
-
-			column.RenderHeader();
-
-			GUILayout.EndVertical();
+			column.RenderHeader(doVertical);
 		}
 
 		GUILayout.EndHorizontal();
+	}
+
+	public void RenderHeader()
+	{
+		this.RenderHeader(true);
 	}
 
 	public Table()
@@ -222,6 +222,7 @@ public class Table
 		{
 			GUILayout.BeginVertical(
 				GUILayout.MinWidth(this.Width),
+				GUILayout.ExpandWidth(true),
 				GUILayout.ExpandHeight(true)
 			);
 
@@ -229,8 +230,6 @@ public class Table
 			{
 				this.RenderHeader();
 			}
-
-			float newWidth = this.defWidth;
 
 			#if DEBUG
 			int idx = 0;
@@ -257,7 +256,7 @@ public class Table
 					{
 						cellContents = ((IFormattable)cell).ToString(
 							this.format,
-							System.Globalization.CultureInfo.CurrentUICulture
+							Tools.mySIFormatter
 						);
 					}
 				}
@@ -268,20 +267,16 @@ public class Table
 
 				Vector2 cellSize = this.CellStyle.CalcSize(new GUIContent(cellContents));
 
+				this.Width = Mathf.Max(cellSize.x, this.Width);
+
 				GUILayout.Label(
 					cellContents,
 					this.CellStyle,
-					GUILayout.MinWidth(cellSize.x),
 					GUILayout.ExpandWidth(true),
-					GUILayout.Height(20f)
+					GUILayout.MinWidth(this.Width),
+					GUILayout.Height(((float)this.HeaderStyle.fontSize) * .8f)
 				);
-
-				Rect labelRect = GUILayoutUtility.GetLastRect();
-
-				newWidth = Mathf.Max(labelRect.width, newWidth);
 			}
-
-			this.Width = newWidth;
 
 			GUILayout.EndVertical();
 		}
@@ -291,7 +286,7 @@ public class Table
 			this.Render(true);
 		}
 
-		public void RenderHeader()
+		public void RenderHeader(bool doVertical)
 		{
 			Tools.PostDebugMessage(this, "Rendering header." +
 				"\n\tthis.Header: {0}" +
@@ -300,17 +295,36 @@ public class Table
 				this.HeaderStyle == null ? "NULL" : this.HeaderStyle.ToString()
 			);
 
-			Vector2 headerSize = this.HeaderStyle.CalcSize(new GUIContent(this.Header));
+			if (doVertical)
+			{
+				GUILayout.BeginVertical(
+					GUILayout.MinWidth(this.Width),
+					GUILayout.ExpandWidth(true),
+					GUILayout.ExpandHeight(true)
+				);
+			}
 
-			this.defWidth = Mathf.Max(headerSize.x, this.defWidth);
+			Vector2 cellSize = this.HeaderStyle.CalcSize(new GUIContent(this.Header));
+
+			this.Width = Mathf.Max(cellSize.x, this.Width);
 
 			GUILayout.Label(
 				this.Header,
 				this.HeaderStyle,
 				GUILayout.ExpandWidth(true),
-				GUILayout.MinWidth(defWidth),
+				GUILayout.MinWidth(this.Width),
 				GUILayout.Height(((float)this.HeaderStyle.fontSize) * .8f)
 			);
+
+			if (doVertical)
+			{
+				GUILayout.EndVertical();
+			}
+		}
+
+		public void RenderHeader()
+		{
+			this.RenderHeader(false);
 		}
 
 		public IEnumerator<T> GetEnumerator()
@@ -361,6 +375,7 @@ public class Table
 		void Render(bool renderHeader);
 		void Render();
 
+		void RenderHeader(bool doVertical);
 		void RenderHeader();
 	}
 }
