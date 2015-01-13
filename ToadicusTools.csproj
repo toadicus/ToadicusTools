@@ -92,6 +92,7 @@
     <Compile Include="AppLauncherTools.cs" />
     <Compile Include="IOTools.cs" />
     <Compile Include="Table.cs" />
+    <Compile Include="GUITools.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
