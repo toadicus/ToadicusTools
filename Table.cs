@@ -256,7 +256,7 @@ public class Table
 					{
 						cellContents = ((IFormattable)cell).ToString(
 							this.format,
-							Tools.mySIFormatter
+							Tools.SIFormatter
 						);
 					}
 				}

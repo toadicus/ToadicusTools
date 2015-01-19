@@ -31,7 +31,7 @@ namespace ToadicusTools
 {
 	public static partial class Tools
 	{
-		public static readonly IFormatProvider mySIFormatter = new SIFormatter() as IFormatProvider;
+		public static readonly SIFormatProvider SIFormatter = new SIFormatProvider();
 
 		/// <summary>
 		/// <para>Replaces the format items in a specified string with the string representation of corresponding objects in a
@@ -44,33 +44,26 @@ namespace ToadicusTools
 		/// <param name="args">An object array that contains zero or more objects to format.</param>
 		public static string Format(string format, params object[] args)
 		{
-			return string.Format(mySIFormatter, format, args);
+			return string.Format(SIFormatter, format, args);
 		}
 	}
 
-	public class SIFormatter : IFormatProvider, ICustomFormatter
+	/// <summary>
+	/// <para>Facilitates a new "SI prefixed" string format for doubles and double-like numbers, "S[x[,y[,z]]]" where:</para>
+	/// <list type="bullet">
+	/// <item><description>x:  Number of digits to display after the decimal point,</description></item>
+	/// <item><description>y:  Minimum magnitude to be used for an SI prefix, e.g. -3 for "milli", and</description></item>
+	/// <item><description>z:  Maximum magnitude to be used for an SI prefix, e.g. 9 for "giga".</description></item>
+	/// </list>
+	/// <para>When used thus:</para>
+	/// <example>string.Format("{0:x,y,z}", d"),</example>
+	/// <para>the formatter will invoke Tools.MuMech_ToSI(d, x, y, z).</para>
+	/// </summary>
+	public class SIFormatProvider : IFormatProvider, ICustomFormatter
 	{
-		private readonly static int[] defaultArgs;
-
-		static SIFormatter()
+		public object GetFormat(Type type)
 		{
-			defaultArgs = new int[3];
-
-			var SIMethod = typeof(Tools).GetMethod("MuMech_ToSI");
-
-			var parameters = SIMethod.GetParameters();
-
-			int loopLimit = Math.Min(parameters.Length, defaultArgs.Length + 1);
-
-			for (int i = 1; i < loopLimit; i++)
-			{
-				defaultArgs[i - 1] = (int)parameters[i].DefaultValue;
-			}
-		}
-
-		public object GetFormat(Type service)
-		{
-			if (service == typeof(ICustomFormatter))
+			if (type == typeof(ICustomFormatter))
 			{
 				return this;
 			}
@@ -80,63 +73,54 @@ namespace ToadicusTools
 			}
 		}
 
-		/*
-		 * Facilitates a new "SI prefixed" string format for doubles and double-like numbers, "S[x[,y[,z]]]" where:
-		 * 
-		 *  x:  Number of digits to display after the decimal point,
-		 *  y:  Minimum magnitude to be used for an SI prefix, e.g. -3 for "milli", and
-		 *  z:  Maximum magnitude to be used for an SI prefix, e.g. 9 for "giga".
-		 * 
-		 * When used thus:
-		 * 
-		 *  string.Format("{0:x,y,z}", d"),
-		 * 
-		 * the formatter will invoke Tools.MuMech_ToSI(d, x, y, z).
-		 * */
-		public string Format(string format, object arg, IFormatProvider provider)
+		public string Format(string format, object arg, IFormatProvider formatProvider)
 		{
-			if (format == null)
+			if (!this.Equals(formatProvider))
 			{
-				return string.Format("{0}", arg);
+				return null;
 			}
 
-			if (!(arg is IConvertible) ||
-				!format.StartsWith("S", true, System.Globalization.CultureInfo.CurrentCulture))
+			switch (format[0])
 			{
-				if (arg is IFormattable)
-				{
-					return ((IFormattable)arg).ToString(format, provider);
-				}
-				else if (arg != null)
-				{
-					return arg.ToString();
-				}
+				case 'S':
+				case 's':
+					string[] args = format.Substring(1).Split(new char[] {','}, 3);
+
+					double d = Convert.ToDouble(arg);
+
+					int digits = 3;
+					int MinMagnitude = 0;
+					int MaxMagnitude = int.MaxValue;
+
+					if (args.Length > 0)
+					{
+						digits = int.Parse(args[0]);
+					}
+					if (args.Length > 1)
+					{
+						MinMagnitude = int.Parse(args[1]);
+					}
+					if (args.Length > 2)
+					{
+						MaxMagnitude = int.Parse(args[2]);
+					}
+
+					return Tools.MuMech_ToSI(d, digits, MinMagnitude, MaxMagnitude);
+				default:
+					if (arg is IFormattable)
+					{
+						return ((IFormattable)arg).ToString(format, System.Globalization.CultureInfo.CurrentCulture);
+					}
+					else if (arg != null)
+					{
+						return arg.ToString();
+					}
+					else
+					{
+						return string.Empty;
+					}
 			}
-
-			string[] formatArgs = format.Trim('S', 's').Split(',');
-			int[] SIArgs = new int[defaultArgs.Length];
-
-			Array.Copy(defaultArgs, SIArgs, defaultArgs.Length);
-
-			for (int i = 0; i<formatArgs.Length; i++)
-			{
-				int SIarg;
-
-				if (!Int32.TryParse(formatArgs[i], out SIarg))
-				{
-					Debug.LogError(
-						string.Format("[SIFormatter] Ignoring invalid format argument at index {0}: '{1}'.",
-							i,
-							formatArgs[i]
-						));
-				}
-
-				SIArgs[i] = SIarg;
-			}
-
-			double dArg = ((IConvertible)arg).ToDouble(System.Globalization.CultureInfo.CurrentCulture);
-
-			return Tools.MuMech_ToSI(dArg, SIArgs[0], SIArgs[1], SIArgs[2]);
 		}
 	}
+
 }
