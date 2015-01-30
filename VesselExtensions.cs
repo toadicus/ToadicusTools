@@ -324,6 +324,75 @@ namespace ToadicusTools
 
 			return modulesInVessel;
 		}
+
+		public static bool tryGetFirstModuleOfType<T>(this Vessel vessel, out T module) where T : PartModule
+		{
+			if (vessel == null)
+			{
+				throw new ArgumentNullException(
+					string.Format(
+						"Vessel.getModulesOfType<{0}>: 'vessel' argument cannot be null.",
+						typeof(T).Name
+					)
+				);
+			}
+
+			module = null;
+
+			if (vessel.Parts == null)
+			{
+				return false;
+			}
+
+			foreach (Part part in vessel.Parts)
+			{
+				if (part.tryGetFirstModuleOfType<T>(out module))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public static T getFirstModuleOfType<T>(this Vessel vessel) where T : PartModule
+		{
+			if (vessel == null)
+			{
+				throw new ArgumentNullException(
+					string.Format(
+						"Vessel.getModulesOfType<{0}>: 'vessel' argument cannot be null.",
+						typeof(T).Name
+					)
+				);
+			}
+
+			T module;
+
+			if (vessel.tryGetFirstModuleOfType<T>(out module))
+			{
+				return module;
+			}
+
+			return null;
+		}
+
+		public static bool hasModuleOfType<T>(this Vessel vessel) where T : PartModule
+		{
+			if (vessel == null)
+			{
+				throw new ArgumentNullException(
+					string.Format(
+						"Vessel.getModulesOfType<{0}>: 'vessel' argument cannot be null.",
+						typeof(T).Name
+					)
+				);
+			}
+
+			T _;
+
+			return vessel.tryGetFirstModuleOfType(out _);
+		}
 	}
 
 	public enum VesselCommand
