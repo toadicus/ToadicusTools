@@ -100,7 +100,6 @@ public class Table
 
 		foreach (Column column in this.columns)
 		{
-			Tools.PostDebugMessage(this, "Rendering column #{0}", this.columns.IndexOf(column));
 			column.Render(renderHeader);
 		}
 
@@ -118,7 +117,6 @@ public class Table
 
 		foreach (Column column in this.columns)
 		{
-			Tools.PostDebugMessage(this, "Rendering column #{0}", this.columns.IndexOf(column));
 			column.RenderHeader(doVertical);
 		}
 
@@ -231,17 +229,8 @@ public class Table
 				this.RenderHeader();
 			}
 
-			#if DEBUG
-			int idx = 0;
-			#endif
-
 			foreach (T cell in this.cells)
 			{
-				#if DEBUG
-				idx++;
-				Tools.PostDebugMessage(this, "cell #{0} ({1}).", idx, cell.ToString());
-				#endif
-
 				string cellContents;
 
 				if (cell is IFormattable && this.format != null && this.format != string.Empty)
@@ -288,13 +277,6 @@ public class Table
 
 		public void RenderHeader(bool doVertical)
 		{
-			Tools.PostDebugMessage(this, "Rendering header." +
-				"\n\tthis.Header: {0}" +
-				"\n\tthis.HeaderStyle: {1}",
-				this.Header ?? "NULL",
-				this.HeaderStyle == null ? "NULL" : this.HeaderStyle.ToString()
-			);
-
 			if (doVertical)
 			{
 				GUILayout.BeginVertical(
