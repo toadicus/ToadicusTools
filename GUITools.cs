@@ -34,6 +34,7 @@ namespace ToadicusTools
 		public static bool Toggle(
 			bool value,
 			GUIContent content,
+			bool expandWidth,
 			GUIStyle toggleStyle,
 			GUIStyle labelStyle
 		)
@@ -48,11 +49,11 @@ namespace ToadicusTools
 				labelStyle = GUI.skin.label;
 			}
 
-			GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
+			GUILayout.BeginHorizontal(GUILayout.ExpandWidth(expandWidth));
 
 			value = GUILayout.Toggle(value, GUIContent.none, GUILayout.ExpandWidth(false));
 
-			GUILayout.Label(content, GUILayout.ExpandWidth(true));
+			GUILayout.Label(content, GUILayout.ExpandWidth(expandWidth));
 
 			GUILayout.EndHorizontal();
 
@@ -62,31 +63,72 @@ namespace ToadicusTools
 		public static bool Toggle(
 			bool value,
 			string text,
+			bool expandWidth,
 			GUIStyle toggleStyle,
 			GUIStyle labelStyle
 		)
 		{
-			return Toggle(value, new GUIContent(text), toggleStyle, toggleStyle);
+			return Toggle(value, new GUIContent(text), expandWidth, toggleStyle, toggleStyle);
+		}
+
+		public static bool Toggle(
+			bool value,
+			GUIContent content,
+			GUIStyle toggleStyle,
+			GUIStyle labelStyle
+		)
+		{
+			return Toggle(value, content, true, toggleStyle, toggleStyle);
+		}
+
+		public static bool Toggle(
+			bool value,
+			string text,
+			GUIStyle toggleStyle,
+			GUIStyle labelStyle
+		)
+		{
+			return Toggle(value, new GUIContent(text), true, toggleStyle, toggleStyle);
+		}
+
+		public static bool Toggle(bool value, GUIContent content, bool expandWidth, GUIStyle labelStyle)
+		{
+			return Toggle(value, content, expandWidth, null, labelStyle);
+		}
+
+		public static bool Toggle(bool value, string text, bool expandWidth, GUIStyle labelStyle)
+		{
+			return Toggle(value, new GUIContent(text), expandWidth, labelStyle);
 		}
 
 		public static bool Toggle(bool value, GUIContent content, GUIStyle labelStyle)
 		{
-			return Toggle(value, content, null, labelStyle);
+			return Toggle(value, content, true, null, labelStyle);
 		}
 
 		public static bool Toggle(bool value, string text, GUIStyle labelStyle)
 		{
-			return Toggle(value, new GUIContent(text), labelStyle);
+			return Toggle(value, new GUIContent(text), true, labelStyle);
+		}
+
+		public static bool Toggle(bool value, GUIContent content, bool expandWidth)
+		{
+			return Toggle(value, content, expandWidth, null, null);
+		}
+
+		public static bool Toggle(bool value, string text, bool expandWidth)
+		{
+			return Toggle(value, new GUIContent(text), expandWidth);
 		}
 
 		public static bool Toggle(bool value, GUIContent content)
 		{
-			return Toggle(value, content, null, null);
+			return Toggle(value, content, true, null, null);
 		}
 
 		public static bool Toggle(bool value, string text)
 		{
-			return Toggle(value, new GUIContent(text));
+			return Toggle(value, new GUIContent(text), true);
 		}
 	}
 }
