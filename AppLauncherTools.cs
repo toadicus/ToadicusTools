@@ -131,7 +131,7 @@ namespace ToadicusTools
 				case GameScenes.EDITOR:
 					return ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH;
 				case GameScenes.FLIGHT:
-					return ApplicationLauncher.AppScenes.FLIGHT;
+					return ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW;
 				case GameScenes.SPACECENTER:
 					return ApplicationLauncher.AppScenes.SPACECENTER;
 				case GameScenes.TRACKSTATION:
