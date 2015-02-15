@@ -138,30 +138,62 @@ namespace ToadicusTools
 
 		public static Vector2 LoadBounds<T>()
 		{
-			PluginConfiguration config = PluginConfiguration.CreateForType<T>();
-			Vector2 bounds;
+			Vector2 bounds = new Vector2(float.NegativeInfinity, float.PositiveInfinity);
 
-			config.load();
+			try
+			{
+				PluginConfiguration config = PluginConfiguration.CreateForType<T>();
 
-			bounds = config.GetValue("bounds", new Vector2(float.NegativeInfinity, float.PositiveInfinity));
+				config.load();
 
-			config.save();
+				bounds = config.GetValue("bounds", bounds);
+
+				config.save();
+			}
+			catch (Exception e)
+			{
+				Tools.PostErrorMessage(
+					"{0} handled while loading PluginData for type {1}: do you have a malformed XML file?",
+					e.GetType().FullName,
+					typeof(T).Name
+				);
+
+				#if DEBUG
+				Tools.PostDebugMessage(e.ToString());
+				#endif
+			}
 
 			return bounds;
 		}
 
 		public static float LoadStep<T>(float defStep = 1f)
 		{
-			PluginConfiguration config = PluginConfiguration.CreateForType<T>();
-			double stepMult, defDouble;
+			double stepMult;
 
-			defDouble = (double)defStep;
+			stepMult = (double)defStep;
 
-			config.load();
+			try
+			{
+				PluginConfiguration config = PluginConfiguration.CreateForType<T>();
 
-			stepMult = config.GetValue("stepMult", defDouble);
+				config.load();
 
-			config.save();
+				stepMult = config.GetValue("stepMult", stepMult);
+
+				config.save();
+			}
+			catch (Exception e)
+			{
+				Tools.PostErrorMessage(
+					"{0} handled while loading PluginData for type {1}: do you have a malformed XML file?",
+					e.GetType().FullName,
+					typeof(T).Name
+				);
+
+				#if DEBUG
+				Tools.PostDebugMessage(e.ToString());
+				#endif
+			}
 
 			return (float)stepMult;
 		}
