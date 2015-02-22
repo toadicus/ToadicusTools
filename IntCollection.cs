@@ -79,10 +79,6 @@ namespace ToadicusTools
 		public ushort this[int idx]
 		{
 			get {
-				if (idx < 0) {
-					idx += this.maxCount;
-				}
-
 				if (idx >= maxCount || idx < 0) {
 					throw new IndexOutOfRangeException ();
 				}
