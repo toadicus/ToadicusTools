@@ -61,6 +61,189 @@ namespace ToadicusTools
 	/// </summary>
 	public class SIFormatProvider : IFormatProvider, ICustomFormatter
 	{
+		public static string ToSI(double value, int sigFigs)
+		{
+			if (value == 0)
+			{
+				return "0.0";
+			}
+
+			string format;
+
+			double absValue = Math.Abs(value);
+
+			int magnitude = (int)Math.Log10(absValue);
+			int significance = (sigFigs / 3) * 3;
+			int decimalPlaces = 0;
+			int divisorExp;
+
+			string prefix = string.Empty;
+
+			if (magnitude < 0 || absValue < 1)
+			{
+				decimalPlaces++;
+
+				significance = 1;
+			}
+
+			if (Math.Abs(magnitude) >= significance)
+			{
+				divisorExp = magnitude - significance;
+			}
+			else
+			{
+				divisorExp = 0;
+			}
+
+			switch (divisorExp)
+			{
+				case 0:
+					break;
+				case 1:
+				case 2:
+				case 3:
+					value /= 1e3;
+					magnitude -= 3;
+					prefix = "k";
+					break;
+				case 4:
+				case 5:
+				case 6:
+					value /= 1e6;
+					magnitude -= 6;
+					prefix = "M";
+					break;
+				case 7:
+				case 8:
+				case 9:
+					value /= 1e9;
+					magnitude -= 9;
+					prefix = "G";
+					break;
+				case 10:
+				case 11:
+				case 12:
+					value /= 1e12;
+					magnitude -= 12;
+					prefix = "T";
+					break;
+				case 13:
+				case 14:
+				case 15:
+					value /= 1e15;
+					magnitude -= 15;
+					prefix = "P";
+					break;
+				case 16:
+				case 17:
+				case 18:
+					value /= 1e18;
+					magnitude -= 18;
+					prefix = "E";
+					break;
+				case 19:
+				case 20:
+				case 21:
+					value /= 1e21;
+					magnitude -= 21;
+					prefix = "Z";
+					break;
+				case 22:
+				case 23:
+				case 24:
+					value /= 1e24;
+					magnitude -= 24;
+					prefix = "Y";
+					break;
+				case -1:
+				case -2:
+				case -3:
+					value *= 1e3;
+					magnitude += 3;
+					prefix = "m";
+					break;
+				case -4:
+				case -5:
+				case -6:
+					value *= 1e6;
+					magnitude += 6;
+					prefix = "µ";
+					break;
+				case -7:
+				case -8:
+				case -9:
+					value *= 1e9;
+					magnitude += 9;
+					prefix = "n";
+					break;
+				case -10:
+				case -11:
+				case -12:
+					value *= 1e12;
+					magnitude += 12;
+					prefix = "p";
+					break;
+				case -13:
+				case -14:
+				case -15:
+					value *= 1e15;
+					magnitude += 15;
+					prefix = "f";
+					break;
+				case -16:
+				case -17:
+				case -18:
+					value *= 1e18;
+					magnitude += 18;
+					prefix = "a";
+					break;
+				case -19:
+				case -20:
+				case -21:
+					value *= 1e21;
+					magnitude += 21;
+					prefix = "z";
+					break;
+				case -22:
+				case -23:
+				case -24:
+					value *= 1e24;
+					magnitude += 24;
+					prefix = "y";
+					break;
+				default:
+					if (divisorExp > 0)
+					{
+						value /= 1e24;
+						magnitude -= 24;
+						prefix = "Y";
+					}
+					else
+					{
+						value *= 1e24;
+						magnitude += 24;
+						prefix = "y";
+					}
+
+					format = string.Format("{{0:g{0}}}{1}", sigFigs < 5 ? 2 : sigFigs - 3, prefix);
+
+					return string.Format(format, value, prefix);
+			}
+
+			decimalPlaces += sigFigs - magnitude - 1;
+
+			if (decimalPlaces < 0)
+			{
+				double divisor = Math.Pow(10d, -decimalPlaces);
+				value = ((int)value / divisor) * divisor;
+				decimalPlaces = 0;
+			}
+
+			format = string.Format("{{0:f{0}}}{1}", decimalPlaces, prefix);
+
+			return string.Format(format, value, prefix);
+		}
+
 		public object GetFormat(Type type)
 		{
 			if (type == typeof(ICustomFormatter))
@@ -96,6 +279,12 @@ namespace ToadicusTools
 					{
 						digits = int.Parse(args[0]);
 					}
+
+					if (args.Length == 1)
+					{
+						return ToSI(d, digits);
+					}
+
 					if (args.Length > 1)
 					{
 						MinMagnitude = int.Parse(args[1]);
