@@ -73,17 +73,23 @@ namespace ToadicusTools
 			double absValue = Math.Abs(value);
 
 			int magnitude = (int)Math.Log10(absValue);
-			int significance = (sigFigs / 3) * 3;
-			int decimalPlaces = 0;
+			int significance;
 			int divisorExp;
+			int decimalPlaces;
 
 			string prefix = string.Empty;
 
-			if (magnitude < 0 || absValue < 1)
+			if (absValue < 1)
 			{
-				decimalPlaces++;
+				decimalPlaces = 1;
 
 				significance = 1;
+			}
+			else
+			{
+				decimalPlaces = 0;
+
+				significance = (sigFigs / 3) * 3;
 			}
 
 			if (Math.Abs(magnitude) >= significance)
