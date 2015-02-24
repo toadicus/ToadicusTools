@@ -29,6 +29,12 @@ namespace ToadicusTools
 {
 	public static partial class Tools
 	{
+		/// <summary>
+		/// <para>Exponentiation function optimized for arbitrary integer exponents.</para>
+		/// <para>Returns b to the nth power</para>
+		/// </summary>
+		/// <param name="b">The base of the exponential</param>
+		/// <param name="n">The exponent</param>
 		public static double Pow(double b, int n)
 		{
 			switch (n)
@@ -91,6 +97,13 @@ namespace ToadicusTools
 			}
 		}
 
+		/// <summary>
+		/// <para>Exponentiation function which uses an integer-optimized algorithm when possible,
+		/// or falls back to <see cref="Math.Pow"/>.</para>
+		/// <para>Returns b to the nth power</para>
+		/// </summary>
+		/// <param name="b">The base of the exponential</param>
+		/// <param name="n">The exponent</param>
 		public static double Pow(double b, double n)
 		{
 			int x = (int)n;
@@ -105,6 +118,13 @@ namespace ToadicusTools
 			}
 		}
 
+		/// <summary>
+		/// <para>Exponentiation function optimized for arbitrary integer exponents
+		/// using single-precision floats.</para>
+		/// <para>Returns b to the nth power</para>
+		/// </summary>
+		/// <param name="b">The base of the exponential</param>
+		/// <param name="n">The exponent</param>
 		public static float Pow(float b, int n)
 		{
 			switch (n)
@@ -167,6 +187,13 @@ namespace ToadicusTools
 			}
 		}
 
+		/// <summary>
+		/// <para>Exponentiation function which uses an integer-optimized algorithm when possible,
+		/// or falls back to <see cref="Math.Pow"/>.  Uses single-precision floats in the integer case.</para>
+		/// <para>Returns b to the nth power</para>
+		/// </summary>
+		/// <param name="b">The base of the exponential</param>
+		/// <param name="n">The exponent</param>
 		public static float Pow(float b, float n)
 		{
 			int x = (int)n;
