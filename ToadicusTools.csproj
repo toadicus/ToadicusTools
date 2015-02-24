@@ -93,6 +93,7 @@
     <Compile Include="IOTools.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="GUITools.cs" />
+    <Compile Include="Math.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

@@ -79,7 +79,7 @@ namespace ToadicusTools
 
 			string prefix = string.Empty;
 
-			if (absValue < 1)
+			if (magnitude < 0 || absValue < 1)
 			{
 				decimalPlaces = 1;
 
@@ -240,7 +240,7 @@ namespace ToadicusTools
 
 			if (decimalPlaces < 0)
 			{
-				double divisor = Math.Pow(10d, -decimalPlaces);
+				double divisor = Tools.Pow(10d, -decimalPlaces);
 				value = ((int)value / divisor) * divisor;
 				decimalPlaces = 0;
 			}
