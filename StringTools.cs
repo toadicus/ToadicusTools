@@ -68,6 +68,23 @@ namespace ToadicusTools
 				return "0.0";
 			}
 
+			if (double.IsNaN(value))
+			{
+				return "NaN";
+			}
+
+			if (double.IsInfinity(value))
+			{
+				if (double.IsNegativeInfinity(value))
+				{
+					return "-∞";
+				}
+				else
+				{
+					return "-∞";
+				}
+			}
+
 			string format;
 
 			double absValue = Math.Abs(value);
