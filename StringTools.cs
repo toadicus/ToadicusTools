@@ -81,7 +81,7 @@ namespace ToadicusTools
 				}
 				else
 				{
-					return "-∞";
+					return "∞";
 				}
 			}
 
