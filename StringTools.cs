@@ -286,51 +286,51 @@ namespace ToadicusTools
 				return null;
 			}
 
-			switch (format[0])
+			if (arg is IFormattable && arg is IConvertible)
 			{
-				case 'S':
-				case 's':
-					string[] args = format.Substring(1).Split(new char[] {','}, 3);
+				switch (format[0])
+				{
+					case 'S':
+					case 's':
+						string[] args = format.Substring(1).Split(new char[] { ',' }, 3);
 
-					double d = Convert.ToDouble(arg);
+						double d = Convert.ToDouble(arg);
 
-					int digits = 3;
-					int MinMagnitude = 0;
-					int MaxMagnitude = int.MaxValue;
+						int digits = 3;
+						int MinMagnitude = 0;
+						int MaxMagnitude = int.MaxValue;
 
-					if (args.Length > 0)
-					{
-						digits = int.Parse(args[0]);
-					}
+						if (args.Length > 0)
+						{
+							digits = int.Parse(args[0]);
+						}
 
-					if (args.Length == 1)
-					{
-						return ToSI(d, digits);
-					}
+						if (args.Length == 1)
+						{
+							return ToSI(d, digits);
+						}
 
-					if (args.Length > 1)
-					{
-						MinMagnitude = int.Parse(args[1]);
-					}
-					if (args.Length > 2)
-					{
-						MaxMagnitude = int.Parse(args[2]);
-					}
+						if (args.Length > 1)
+						{
+							MinMagnitude = int.Parse(args[1]);
+						}
+						if (args.Length > 2)
+						{
+							MaxMagnitude = int.Parse(args[2]);
+						}
 
-					return Tools.MuMech_ToSI(d, digits, MinMagnitude, MaxMagnitude);
-				default:
-					if (arg is IFormattable)
-					{
+						return Tools.MuMech_ToSI(d, digits, MinMagnitude, MaxMagnitude);
+					default:
 						return ((IFormattable)arg).ToString(format, System.Globalization.CultureInfo.CurrentCulture);
-					}
-					else if (arg != null)
-					{
-						return arg.ToString();
-					}
-					else
-					{
-						return string.Empty;
-					}
+				}
+			}
+			else if (arg != null)
+			{
+				return arg.ToString();
+			}
+			else
+			{
+				return "NULL";
 			}
 		}
 	}
