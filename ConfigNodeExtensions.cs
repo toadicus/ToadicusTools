@@ -225,5 +225,17 @@ namespace ToadicusTools
 			value = string.Empty;
 			return false;
 		}
+
+		public static void SafeSetValue(this ConfigNode node, string name, string value)
+		{
+			if (node.HasValue(name))
+			{
+				node.SetValue(name, value);
+			}
+			else
+			{
+				node.AddValue(name, value);
+			}
+		}
 	}
 }
