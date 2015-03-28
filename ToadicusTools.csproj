@@ -94,6 +94,7 @@
     <Compile Include="Table.cs" />
     <Compile Include="GUITools.cs" />
     <Compile Include="Math.cs" />
+    <Compile Include="DebugTick.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
