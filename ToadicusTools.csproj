@@ -120,8 +120,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="PrefabDBWrapper.cs" />
-    <None Include="ModuleDBWrapper.cs" />
     <None Include="IModuleDB.cs" />
   </ItemGroup>
 </Project>
