@@ -208,5 +208,12 @@ namespace ToadicusTools
 		{
 			return hasModuleType<ModuleDockingNode>(part);
 		}
+
+		public static bool isInStagingList(this Part part)
+		{
+			part.LogDebug("isInStagingList: {0} (Staging.FindIcon(part)={1})",
+				Staging.FindIcon(part) != null, Staging.FindIcon(part));
+			return Staging.FindIcon(part) != null;
+		}
 	}
 }
