@@ -51,7 +51,7 @@ namespace ToadicusTools
 			stepMult = LoadStep<T>(stepMult);
 
 			// If our field is uninitialized...
-			if (localField == -1)
+			if (localField < 0)
 			{
 				// ...fetch it from the remote field
 				localField = centerValue;
