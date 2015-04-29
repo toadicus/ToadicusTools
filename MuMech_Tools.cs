@@ -59,9 +59,9 @@ namespace ToadicusTools
 			Vector3 bodyUp = vessel.mainBody.transform.up;
 
 			Vector3 surfaceUp = (CoM - vessel.mainBody.position).normalized;
-			Vector3 surfaceNorth = Vector3.Exclude(
-				surfaceUp,
-				(bodyPosition + bodyUp * (float)vessel.mainBody.Radius) - CoM
+			Vector3 surfaceNorth = Vector3.ProjectOnPlane(
+				(bodyPosition + bodyUp * (float)vessel.mainBody.Radius) - CoM,
+				surfaceUp
 			).normalized;
 
 			Quaternion surfaceRotation = Quaternion.LookRotation(surfaceNorth, surfaceUp);
