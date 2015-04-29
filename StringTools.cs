@@ -286,6 +286,11 @@ namespace ToadicusTools
 				return null;
 			}
 
+			if (format.Length == 0)
+			{
+				throw new FormatException("Format string is empty.");
+			}
+
 			if (arg is IFormattable && arg is IConvertible)
 			{
 				switch (format[0])
