@@ -46,6 +46,24 @@ namespace ToadicusTools
 		{
 			return string.Format(SIFormatter, format, args);
 		}
+
+		public static string ToMD5Hash(this string input, int outLength = 32)
+		{
+			var alg = System.Security.Cryptography.MD5.Create();
+			var hash = alg.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
+
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+			int byteLength = outLength / 2;
+
+			for (int idx = 0; idx < byteLength; idx++)
+			{
+				var b = hash[idx];
+				sb.Append(b.ToString("x2"));
+			}
+
+			return sb.ToString();
+		}
 	}
 
 	/// <summary>
