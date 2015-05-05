@@ -119,7 +119,4 @@
       <HintPath>..\_KSPAssemblies\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="IModuleDB.cs" />
-  </ItemGroup>
 </Project>
