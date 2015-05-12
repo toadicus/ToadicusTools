@@ -59,6 +59,11 @@ namespace ToadicusTools
 		/// <param name="vesselTwo">Another <see cref="Vessel"/></param>
 		public static double sqrDistanceTo(this Vessel vesselOne, Vessel vesselTwo)
 		{
+			if (vesselOne == null || vesselTwo == null)
+			{
+				return double.PositiveInfinity;
+			}
+
 			return (vesselOne.GetWorldPos3D() - vesselTwo.GetWorldPos3D()).sqrMagnitude;
 		}
 
@@ -69,7 +74,12 @@ namespace ToadicusTools
 		/// <param name="body">A <see cref="CelestialBody"/></param>
 		public static double sqrDistanceTo(this Vessel vessel, CelestialBody body)
 		{
-			return (vessel.GetWorldPos3D() - body.position).sqrMagnitude;
+			if (vessel == null || body == null)
+			{
+				return double.PositiveInfinity;
+			}
+
+			return (vessel.GetWorldPos3D() - body.position).sqrMagnitude - body.Radius * body.Radius;
 		}
 
 		/// <summary>

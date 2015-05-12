@@ -198,7 +198,7 @@ namespace ToadicusTools
 			Msg = string.Format(
 				"{0}:\n\t{1}",
 				Sender.GetType().Name,
-				string.Join("\n\t", args.Select(a => (string)a).ToArray())
+				string.Join("\n\t", args.Select(a => a.ToString()).ToArray())
 			);
 
 			PostDebugMessage(Msg);
@@ -294,6 +294,11 @@ namespace ToadicusTools
 			public void Print()
 			{
 				this.Print(true);
+			}
+			[System.Diagnostics.Conditional("DEBUG")]
+			public void Clear()
+			{
+				this.stringBuilder.Length = 0;
 			}
 		}
 		#endregion
