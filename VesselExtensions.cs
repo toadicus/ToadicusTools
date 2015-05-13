@@ -79,7 +79,7 @@ namespace ToadicusTools
 				return double.PositiveInfinity;
 			}
 
-			return (vessel.GetWorldPos3D() - body.position).sqrMagnitude - body.Radius * body.Radius;
+			return (vessel.GetWorldPos3D() - body.position).sqrMagnitude;
 		}
 
 		/// <summary>
