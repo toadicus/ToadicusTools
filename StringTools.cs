@@ -25,6 +25,7 @@
 
 using KSP;
 using System;
+using System.Text;
 using UnityEngine;
 
 namespace ToadicusTools
@@ -63,6 +64,11 @@ namespace ToadicusTools
 			}
 
 			return sb.ToString();
+		}
+
+		public static void Print(this StringBuilder sb)
+		{
+			Tools.PostLogMessage(sb.ToString());
 		}
 	}
 

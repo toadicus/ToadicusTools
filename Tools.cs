@@ -177,8 +177,7 @@ namespace ToadicusTools
 		#region DEBUG_TOOLS
 		private static ScreenMessage debugmsg = new ScreenMessage("", 4f, ScreenMessageStyle.UPPER_RIGHT);
 
-		[System.Diagnostics.Conditional("DEBUG")]
-		public static void PostDebugMessage(string Msg)
+		public static void PostMessageWithScreenMsg(string Msg)
 		{
 			if (HighLogic.LoadedScene > GameScenes.SPACECENTER)
 			{
@@ -188,6 +187,12 @@ namespace ToadicusTools
 			}
 
 			PostLogMessage(Msg, LogChannel.Log);
+		}
+
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void PostDebugMessage(string Msg)
+		{
+			PostMessageWithScreenMsg(Msg);
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
@@ -201,7 +206,7 @@ namespace ToadicusTools
 				string.Join("\n\t", args.Select(a => a.ToString()).ToArray())
 			);
 
-			PostDebugMessage(Msg);
+			PostMessageWithScreenMsg(Msg);
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
@@ -218,7 +223,7 @@ namespace ToadicusTools
 
 			sb.AppendFormat(Format, args);
 
-			PostDebugMessage(sb.ToString());
+			PostMessageWithScreenMsg(sb.ToString());
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
@@ -234,11 +239,7 @@ namespace ToadicusTools
 		{
 			public static DebugLogger New(object caller)
 			{
-				#if DEBUG
 				return new DebugLogger(caller.GetType());
-				#else
-				return null;
-				#endif
 			}
 
 			public static DebugLogger New(Type callingType)
@@ -280,7 +281,7 @@ namespace ToadicusTools
 			{
 				if (postToScreen)
 				{
-					PostDebugMessage(this.stringBuilder.ToString());
+					PostMessageWithScreenMsg(this.stringBuilder.ToString());
 				}
 				else
 				{
@@ -293,7 +294,7 @@ namespace ToadicusTools
 			[System.Diagnostics.Conditional("DEBUG")]
 			public void Print()
 			{
-				this.Print(true);
+				PostMessageWithScreenMsg(this.stringBuilder.ToString());
 			}
 			[System.Diagnostics.Conditional("DEBUG")]
 			public void Clear()
