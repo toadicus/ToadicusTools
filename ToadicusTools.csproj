@@ -78,7 +78,6 @@
     <Compile Include="PartExtensions.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="TweakableAnimationWrapper.cs" />
-    <Compile Include="TweakableTools.cs" />
     <Compile Include="VesselExtensions.cs" />
     <Compile Include="WindowTools.cs" />
     <Compile Include="Wrapper\ToolbarWrapper.cs">
@@ -118,5 +117,8 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\_KSPAssemblies\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TweakableTools.cs" />
   </ItemGroup>
 </Project>

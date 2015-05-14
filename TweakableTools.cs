@@ -28,14 +28,15 @@ using KSP.IO;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using ToadicusTools;
 using UnityEngine;
 
-namespace ToadicusTools
+namespace TweakableEverything
 {
-	public static partial class Tools
+	public static class TweakableTools
 	{
 		public static void InitializeTweakable<T>(
-			UI_FloatRange floatRange,
+			object floatTweakable,
 			ref float localField,
 			ref float remoteField,
 			float centerValue,
@@ -46,6 +47,8 @@ namespace ToadicusTools
 		)
 		{
 			Vector2 bounds;
+
+			float minValue, maxValue, stepIncrement;
 
 			bounds = LoadBounds<T>();
 			stepMult = LoadStep<T>(stepMult);
@@ -63,19 +66,44 @@ namespace ToadicusTools
 			// Set the bounds and increment for our tweakable range.
 			if (centerValue < 0)
 			{
-				floatRange.maxValue = centerValue * lowerMult;
-				floatRange.minValue = centerValue * upperMult;
+				maxValue = centerValue * lowerMult;
+				minValue = centerValue * upperMult;
 			}
 			else
 			{
-				floatRange.minValue = centerValue * lowerMult;
-				floatRange.maxValue = centerValue * upperMult;
+				minValue = centerValue * lowerMult;
+				maxValue = centerValue * upperMult;
 			}
 
-			floatRange.stepIncrement = Mathf.Pow(10f, Mathf.RoundToInt(Mathf.Log10(Mathf.Abs(centerValue))) - 1);
-			floatRange.stepIncrement *= stepMult;
+			stepIncrement = Mathf.Pow(10f, Mathf.RoundToInt(Mathf.Log10(Mathf.Abs(centerValue))) - 1);
+			stepIncrement *= stepMult;
 
-			localField = Mathf.Clamp(localField, floatRange.minValue, floatRange.maxValue);
+			#if USE_KSPAPIEXTENSIONS
+			if (floatTweakable is KSPAPIExtensions.UI_FloatEdit)
+			{
+				KSPAPIExtensions.UI_FloatEdit floatEdit = floatTweakable as KSPAPIExtensions.UI_FloatEdit;
+
+				floatEdit.maxValue = maxValue;
+				floatEdit.minValue = minValue;
+				floatEdit.incrementSlide = stepIncrement;
+			}
+			else
+			#endif
+			if (floatTweakable is UI_FloatRange)
+			{
+				UI_FloatRange floatRange = floatTweakable as UI_FloatRange;
+
+				floatRange.maxValue = maxValue;
+				floatRange.minValue = minValue;
+				floatRange.stepIncrement = stepIncrement;
+			}
+			else
+			{
+				throw new NotImplementedException("InitializeTweakable can only be used with Squad's UI_FloatRange or" +
+					" KSPAPIExtension's UI_FloatEdit.");
+			}
+
+			localField = Mathf.Clamp(localField, minValue, maxValue);
 
 			if (HighLogic.LoadedSceneIsFlight || clobberEverywhere)
 			{
@@ -135,6 +163,60 @@ namespace ToadicusTools
 		{
 			InitializeTweakable<T>(floatRange, ref localField, ref remoteField, remoteField, clobberEverywhere);
 		}
+
+		#if USE_KSPAPIEXTENSIONS
+		public static void InitializeTweakable<T>(
+			KSPAPIExtensions.UI_FloatEdit floatRange,
+			ref float localField,
+			ref float remoteField,
+			float centerValue,
+			float lowerMult,
+			float upperMult,
+			bool clobberEverywhere = false
+		)
+		{
+			InitializeTweakable<T>(
+				floatRange,
+				ref localField,
+				ref remoteField,
+				centerValue,
+				lowerMult,
+				upperMult,
+				1f,
+				false
+			);
+		}
+
+		public static void InitializeTweakable<T>(
+			KSPAPIExtensions.UI_FloatEdit floatRange,
+			ref float localField,
+			ref float remoteField,
+			float centerValue,
+			bool clobberEverywhere = false
+		)
+		{
+			InitializeTweakable<T>(
+				floatRange,
+				ref localField,
+				ref remoteField,
+				centerValue,
+				0f,
+				2f,
+				1f,
+				clobberEverywhere
+			);
+		}
+
+		public static void InitializeTweakable<T>(
+			KSPAPIExtensions.UI_FloatEdit floatRange,
+			ref float localField,
+			ref float remoteField,
+			bool clobberEverywhere = false
+		)
+		{
+			InitializeTweakable<T>(floatRange, ref localField, ref remoteField, remoteField, clobberEverywhere);
+		}
+		#endif
 
 		public static Vector2 LoadBounds<T>()
 		{
