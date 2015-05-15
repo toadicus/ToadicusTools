@@ -87,7 +87,6 @@
     <Compile Include="StringTools.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="DebugPartModule.cs" />
-    <Compile Include="SecurePartModule.cs" />
     <Compile Include="AppLauncherTools.cs" />
     <Compile Include="IOTools.cs" />
     <Compile Include="Table.cs" />

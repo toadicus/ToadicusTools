@@ -50,8 +50,10 @@ public class Table
 		{
 			float width = 0f;
 
-			foreach (Column column in this.columns)
+			Column column;
+			for (int idx = 0; idx < this.columns.Count; idx++)
 			{
+				column = this.columns[idx];
 				width += column.Width;
 			}
 
@@ -66,16 +68,20 @@ public class Table
 
 	public void ApplyCellStyle(GUIStyle style)
 	{
-		foreach (Column column in this.columns)
+		Column column;
+		for (int idx = 0; idx < this.columns.Count; idx++)
 		{
+			column = this.columns[idx];
 			column.CellStyle = style;
 		}
 	}
 
 	public void ApplyHeaderStyle(GUIStyle style)
 	{
-		foreach (Column column in this.columns)
+		Column column;
+		for (int idx = 0; idx < this.columns.Count; idx++)
 		{
+			column = this.columns[idx];
 			column.HeaderStyle = style;
 		}
 	}
@@ -88,8 +94,10 @@ public class Table
 
 	public void ClearColumns()
 	{
-		foreach (Column column in this.columns)
+		Column column;
+		for (int idx = 0; idx < this.columns.Count; idx++)
 		{
+			column = this.columns[idx];
 			column.Clear();
 		}
 	}
@@ -98,8 +106,10 @@ public class Table
 	{
 		GUILayout.BeginHorizontal(GUILayout.MinWidth(this.Width));
 
-		foreach (Column column in this.columns)
+		Column column;
+		for (int idx = 0; idx < this.columns.Count; idx++)
 		{
+			column = this.columns[idx];
 			column.Render(renderHeader);
 		}
 
@@ -115,8 +125,10 @@ public class Table
 	{
 		GUILayout.BeginHorizontal(GUILayout.MinWidth(this.Width));
 
-		foreach (Column column in this.columns)
+		Column column;
+		for (int idx = 0; idx < this.columns.Count; idx++)
 		{
+			column = this.columns[idx];
 			column.RenderHeader(doVertical);
 		}
 
@@ -229,8 +241,10 @@ public class Table
 				this.RenderHeader();
 			}
 
-			foreach (T cell in this.cells)
+			T cell;
+			for (int idx = 0; idx < this.cells.Count; idx++)
 			{
+				cell = this.cells[idx];
 				string cellContents;
 
 				if (cell is IFormattable && this.format != null && this.format != string.Empty)

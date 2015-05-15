@@ -229,8 +229,10 @@ namespace ToadicusTools
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void DebugFieldsActivate(this PartModule partModule)
 		{
-			foreach (BaseField field in partModule.Fields)
+			BaseField field;
+			for (int idx = 0; idx < partModule.Fields.Count; idx++)
 			{
+				field = partModule.Fields[idx];
 				field.guiActive = field.guiActiveEditor = true;
 			}
 		}
@@ -307,8 +309,10 @@ namespace ToadicusTools
 		#region Array_Tools
 		public static bool Contains(this GameScenes[] haystack, GameScenes needle)
 		{
-			foreach (GameScenes item in haystack)
+			GameScenes item;
+			for (int idx = 0; idx < haystack.Length; idx++)
 			{
+				item = haystack[idx];
 				if (item == needle)
 				{
 					return true;
@@ -320,8 +324,10 @@ namespace ToadicusTools
 
 		public static bool Contains(this CelestialBody[] haystack, CelestialBody needle)
 		{
-			foreach (CelestialBody item in haystack)
+			CelestialBody item;
+			for (int idx = 0; idx < haystack.Length; idx++)
 			{
+				item = haystack[idx];
 				if (item == needle)
 				{
 					return true;

@@ -108,8 +108,11 @@ namespace ToadicusTools
 
 			if (FlightGlobals.Bodies != null)
 			{
-				foreach (CelestialBody body in FlightGlobals.Bodies)
+				CelestialBody body;
+				for (int idx = 0; idx < FlightGlobals.Bodies.Count; idx++)
 				{
+					body = FlightGlobals.Bodies[idx];
+
 					if (excludedBodies != null && excludedBodies.Contains(body))
 					{
 						continue;
@@ -256,8 +259,11 @@ namespace ToadicusTools
 		{
 			VesselCommand currentCommand = VesselCommand.None;
 
-			foreach (PartModule module in vessel.getModulesOfType<PartModule>())
+			IList<PartModule> modules = vessel.getModulesOfType<PartModule>();
+			PartModule module;
+			for (int idx  = 0; idx < modules.Count; idx++)
 			{
+				module = modules[idx];
 				if (module is ModuleCommand)
 				{
 					ModuleCommand commandModule = module as ModuleCommand;
@@ -307,7 +313,7 @@ namespace ToadicusTools
 		/// <returns>a list of PartModules of type T within this vessel, or an empty list if none</returns>
 		/// <param name="vessel"></param>
 		/// <typeparam name="T">PartModule type paramter</typeparam>
-		public static List<T> getModulesOfType<T>(this Vessel vessel) where T : PartModule
+		public static IList<T> getModulesOfType<T>(this Vessel vessel) where T : PartModule
 		{
 			if (vessel == null)
 			{
@@ -321,10 +327,17 @@ namespace ToadicusTools
 
 			List<T> modulesInVessel = new List<T>();
 
-			foreach (Part part in vessel.Parts)
+			Part part;
+			PartModule module;
+
+			for (int pIdx = 0; pIdx < vessel.Parts.Count; pIdx++)
 			{
-				foreach (PartModule module in part.Modules)
+				part = vessel.Parts[pIdx];
+
+				for (int mIdx = 0; mIdx < part.Modules.Count; mIdx++)
 				{
+					module = part.Modules[mIdx];
+
 					if (module is T)
 					{
 						modulesInVessel.Add((T)module);
@@ -332,7 +345,7 @@ namespace ToadicusTools
 				}
 			}
 
-			return modulesInVessel;
+			return modulesInVessel.AsReadOnly();
 		}
 
 		public static bool tryGetFirstModuleOfType<T>(this Vessel vessel, out T module) where T : PartModule
@@ -354,8 +367,10 @@ namespace ToadicusTools
 				return false;
 			}
 
-			foreach (Part part in vessel.Parts)
+			Part part;
+			for (int idx = 0; idx < vessel.Parts.Count; idx++)
 			{
+				part = vessel.Parts[idx];
 				if (part.tryGetFirstModuleOfType<T>(out module))
 				{
 					return true;

@@ -51,8 +51,10 @@ namespace ToadicusTools
 				Debug.Log("[hasModuleType]: Part.modules is defined; checking PartModule subtypes.");
 				#endif
 
-				foreach (PartModule module in part.Modules)
+				PartModule module;
+				for (int mIdx = 0; mIdx < part.Modules.Count; mIdx++)
 				{
+					module = part.Modules[mIdx];
 					if (module is T)
 					{
 						return true;
@@ -65,8 +67,10 @@ namespace ToadicusTools
 				Debug.Log("[hasModuleType]: Part.modules is not defined; trying ModuleInfo search.");
 				#endif
 
-				foreach (var moduleInfo in part.partInfo.moduleInfos)
+				AvailablePart.ModuleInfo moduleInfo;
+				for (int idx = 0; idx < part.partInfo.moduleInfos.Count; idx++)
 				{
+					moduleInfo = part.partInfo.moduleInfos[idx];
 					if (moduleInfo.moduleName == typeof(T).Name)
 					{
 						return true;
@@ -108,8 +112,10 @@ namespace ToadicusTools
 
 			if (part.Modules != null)
 			{
-				foreach (PartModule module in part.Modules)
+				PartModule module;
+				for (int mIdx = 0; mIdx < part.Modules.Count; mIdx++)
 				{
+					module = part.Modules[mIdx];
 					if (module is T)
 					{
 						returnList.Add(module as T);
@@ -140,8 +146,10 @@ namespace ToadicusTools
 				return null;
 			}
 
-			foreach (PartModule module in part.Modules)
+			PartModule module;
+			for (int mIdx = 0; mIdx < part.Modules.Count; mIdx++)
 			{
+				module = part.Modules[mIdx];
 				if (module is T)
 				{
 					return module as T;

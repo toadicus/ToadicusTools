@@ -26,6 +26,7 @@
 using KSP;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 
@@ -36,8 +37,10 @@ namespace ToadicusTools
 	{
 		public override void OnAwake()
 		{
-			foreach (BaseField field in this.Fields)
+			BaseField field;
+			for (int idx = 0; idx < this.Fields.Count; idx++)
 			{
+				field = this.Fields[idx];
 				field.guiActive = field.guiActiveEditor = true;
 			}
 
@@ -96,8 +99,11 @@ namespace ToadicusTools
 
 			if (this.part.Modules != null)
 			{
-				foreach (var module in this.part.Modules)
+				PartModule module;
+				for (int idx = 0; idx < this.part.Modules.Count; idx++)
 				{
+					module = this.part.Modules[idx];
+
 					DumpClassObject(module);
 				}
 			}
@@ -116,13 +122,17 @@ namespace ToadicusTools
 			sb.Append(obj.GetType().Name);
 			sb.Append(":\n");
 
-			foreach (var fieldInfo in obj.GetType().GetFields(
-				System.Reflection.BindingFlags.Public |
-				System.Reflection.BindingFlags.NonPublic |
-				System.Reflection.BindingFlags.Instance |
-				System.Reflection.BindingFlags.FlattenHierarchy
-			))
+			FieldInfo[] fieldInfos = obj.GetType().GetFields(
+				                 System.Reflection.BindingFlags.Public |
+				                 System.Reflection.BindingFlags.NonPublic |
+				                 System.Reflection.BindingFlags.Instance |
+				                 System.Reflection.BindingFlags.FlattenHierarchy
+			                 );
+
+			FieldInfo fieldInfo;
+			for (int idx = 0; idx < fieldInfos.Length; idx++)
 			{
+				fieldInfo = fieldInfos[idx];
 				try
 				{
 					sb.AppendFormat("{0}: {1}\n", fieldInfo.Name, fieldInfo.GetValue(obj));
@@ -133,13 +143,16 @@ namespace ToadicusTools
 				}
 			}
 
-			foreach (var propInfo in obj.GetType().GetProperties(
-				System.Reflection.BindingFlags.Public |
-				System.Reflection.BindingFlags.NonPublic |
-				System.Reflection.BindingFlags.Instance |
-				System.Reflection.BindingFlags.FlattenHierarchy
-			))
+			PropertyInfo[] propInfos = obj.GetType().GetProperties(
+				                           System.Reflection.BindingFlags.Public |
+				                           System.Reflection.BindingFlags.NonPublic |
+				                           System.Reflection.BindingFlags.Instance |
+				                           System.Reflection.BindingFlags.FlattenHierarchy
+			                           );
+			PropertyInfo propInfo;
+			for (int idx = 0; idx < propInfos.Length; idx++)
 			{
+				propInfo = propInfos[idx];
 				try
 				{
 					sb.AppendFormat("{0}: {1}\n", propInfo.Name, propInfo.GetValue(obj, null));
@@ -150,13 +163,17 @@ namespace ToadicusTools
 				}
 			}
 
-			foreach (var methodInfo in obj.GetType().GetMethods(
-				System.Reflection.BindingFlags.Public |
-				System.Reflection.BindingFlags.NonPublic |
-				System.Reflection.BindingFlags.Instance |
-				System.Reflection.BindingFlags.FlattenHierarchy
-			))
+			MethodInfo[] methodInfos = obj.GetType().GetMethods(
+				                           System.Reflection.BindingFlags.Public |
+				                           System.Reflection.BindingFlags.NonPublic |
+				                           System.Reflection.BindingFlags.Instance |
+				                           System.Reflection.BindingFlags.FlattenHierarchy
+			                           );
+
+			MethodInfo methodInfo;
+			for (int idx = 0; idx < methodInfos.Length; idx++)
 			{
+				methodInfo = methodInfos[idx];
 				try
 				{
 					if (methodInfo.ReturnType != typeof(void) && methodInfo.GetParameters().Length == 0)
