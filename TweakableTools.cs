@@ -25,6 +25,9 @@
 
 using KSP;
 using KSP.IO;
+#if USE_KSPAPIEXTENSIONS
+using KSPAPIEL;
+#endif
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -79,9 +82,9 @@ namespace TweakableEverything
 			stepIncrement *= stepMult;
 
 			#if USE_KSPAPIEXTENSIONS
-			if (floatTweakable is KSPAPIExtensions.UI_FloatEdit)
+			if (floatTweakable is UI_FloatEdit)
 			{
-				KSPAPIExtensions.UI_FloatEdit floatEdit = floatTweakable as KSPAPIExtensions.UI_FloatEdit;
+				UI_FloatEdit floatEdit = floatTweakable as UI_FloatEdit;
 
 				floatEdit.maxValue = maxValue;
 				floatEdit.minValue = minValue;
@@ -166,7 +169,7 @@ namespace TweakableEverything
 
 		#if USE_KSPAPIEXTENSIONS
 		public static void InitializeTweakable<T>(
-			KSPAPIExtensions.UI_FloatEdit floatRange,
+			UI_FloatEdit floatRange,
 			ref float localField,
 			ref float remoteField,
 			float centerValue,
@@ -188,7 +191,7 @@ namespace TweakableEverything
 		}
 
 		public static void InitializeTweakable<T>(
-			KSPAPIExtensions.UI_FloatEdit floatRange,
+			UI_FloatEdit floatRange,
 			ref float localField,
 			ref float remoteField,
 			float centerValue,
@@ -208,7 +211,7 @@ namespace TweakableEverything
 		}
 
 		public static void InitializeTweakable<T>(
-			KSPAPIExtensions.UI_FloatEdit floatRange,
+			UI_FloatEdit floatRange,
 			ref float localField,
 			ref float remoteField,
 			bool clobberEverywhere = false
