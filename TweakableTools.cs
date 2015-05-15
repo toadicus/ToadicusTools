@@ -29,7 +29,6 @@ using KSP.IO;
 using KSPAPIEL;
 #endif
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using ToadicusTools;
 using UnityEngine;
