@@ -25,8 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-// @TODO: Remove Linq.
-using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -199,15 +197,18 @@ namespace ToadicusTools
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void PostDebugMessage(object Sender, params object[] args)
 		{
-			string Msg;
+			StringBuilder sb = new StringBuilder();
+			sb.AppendFormat("{0}:", Sender.GetType().Name);
 
-			Msg = string.Format(
-				"{0}:\n\t{1}",
-				Sender.GetType().Name,
-				string.Join("\n\t", args.Select(a => a.ToString()).ToArray())
-			);
+			object arg;
+			for (int idx = 0; idx < args.Length; idx++)
+			{
+				arg = args[idx];
 
-			PostMessageWithScreenMsg(Msg);
+				sb.AppendFormat("\n\t{0}", arg.ToString());
+			}
+
+			PostMessageWithScreenMsg(sb.ToString());
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
