@@ -337,6 +337,20 @@ namespace ToadicusTools
 			}
 			return false;
 		}
+
+		public static bool Contains<T>(this T[] haystack, T needle)
+		{
+			T item;
+			for (int idx = 0; idx < haystack.Length; idx++)
+			{
+				item = haystack[idx];
+				if (object.Equals(item, needle))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 		#endregion
 
 		#region Enum_Tools

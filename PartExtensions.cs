@@ -178,6 +178,38 @@ namespace ToadicusTools
 			return true;
 		}
 
+		public static PartModule getFirstModuleByName(this Part part, string moduleName)
+		{
+			PartModule module;
+			if (part.tryGetFirstModuleByName(moduleName, out module))
+			{
+				return module;
+			}
+
+			return null;
+		}
+
+		public static bool tryGetFirstModuleByName(this Part part, string moduleName, out PartModule module)
+		{
+			if (part == null)
+			{
+				throw new ArgumentNullException("Part.getFirstModuleByName: 'part' argument must not be null");
+			}
+
+			for (int idx = 0; idx < part.Modules.Count; idx++)
+			{
+				module = part.Modules[idx];
+
+				if (module.moduleName == moduleName)
+				{
+					return true;
+				}
+			}
+
+			module = null;
+			return false;
+		}
+
 		public static bool hasAncestorPart(this Part part, Part checkPart)
 		{
 			if (part == null)
