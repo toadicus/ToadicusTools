@@ -30,6 +30,8 @@ using UnityEngine;
 
 namespace ToadicusTools
 {
+	using VectorTools;
+
 	public static partial class Tools
 	{
 		/// <summary>
@@ -101,47 +103,13 @@ namespace ToadicusTools
 			double sqrRatio = 1d
 		)
 		{
-			// Line X = A + tN
-			Vector3d a = vessel.GetWorldPos3D();
-			Vector3d dFroma = distantPoint - a;
-			Vector3d n = dFroma.normalized;
-
-			if (FlightGlobals.Bodies != null)
-			{
-				CelestialBody body;
-				for (int idx = 0; idx < FlightGlobals.Bodies.Count; idx++)
-				{
-					body = FlightGlobals.Bodies[idx];
-
-					if (excludedBodies != null && excludedBodies.Contains(body))
-					{
-						continue;
-					}
-
-					// Point p
-					Vector3d p = body.position;
-
-					Vector3d pFroma = a - p;
-
-					double pFromaDotn = Vector3d.Dot(pFroma, n);
-
-					// Shortest distance d from point p to line X
-					Vector3d d = pFroma - pFromaDotn * n;
-
-					if (
-						d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio) &&
-						pFromaDotn < 0 &&
-						dFroma.sqrMagnitude > pFroma.sqrMagnitude
-					)
-					{
-						firstOccludingBody = body;
-						return false;
-					}
-				}
-			}
-
-			firstOccludingBody = null;
-			return true;
+			return IsLineOfSightBetween(
+				vessel.GetWorldPos3D(),
+				distantPoint,
+				out firstOccludingBody,
+				excludedBodies,
+				sqrRatio
+			);
 		}
 
 		/// <summary>

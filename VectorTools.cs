@@ -29,6 +29,88 @@ namespace ToadicusTools
 	public static class VectorTools
 	{
 		/// <summary>
+		/// Returns true if no CelestialBody occludes the distant point from the local point, false otherwise.
+		/// Includes a 5% "fudge factor".
+		/// </summary>
+		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
+		/// <param name="localPoint">local point</param>
+		/// <param name="distantPoint">target point</param>
+		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
+		/// if any, otherwise null.</param>
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
+		public static bool IsLineOfSightBetween(
+			Vector3d localPoint,
+			Vector3d distantPoint,
+			out CelestialBody firstOccludingBody,
+			CelestialBody[] excludedBodies = null,
+			double sqrRatio = 1d
+		)
+		{
+			// Line X = A + tN
+			Vector3d dFroma = distantPoint - localPoint;
+			Vector3d n = dFroma.normalized;
+
+			if (FlightGlobals.Bodies != null)
+			{
+				CelestialBody body;
+				for (int idx = 0; idx < FlightGlobals.Bodies.Count; idx++)
+				{
+					body = FlightGlobals.Bodies[idx];
+
+					if (excludedBodies != null && excludedBodies.Contains(body))
+					{
+						continue;
+					}
+
+					// Point p
+					Vector3d p = body.position;
+
+					Vector3d pFroma = localPoint - p;
+
+					double pFromaDotn = Vector3d.Dot(pFroma, n);
+
+					// Shortest distance d from point p to line X
+					Vector3d d = pFroma - pFromaDotn * n;
+
+					if (
+						d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio) &&
+						pFromaDotn < 0 &&
+						dFroma.sqrMagnitude > pFroma.sqrMagnitude
+					)
+					{
+						firstOccludingBody = body;
+						return false;
+					}
+				}
+			}
+
+			firstOccludingBody = null;
+			return true;
+		}
+
+		/// <summary>
+		/// Returns true if no CelestialBody occludes the distant point from the local point, false otherwise.
+		/// Includes a 5% "fudge factor".
+		/// </summary>
+		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
+		/// <param name="localPoint">local point</param>
+		/// <param name="distantPoint">target point</param>
+		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
+		/// if any, otherwise null.</param>
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
+		public static bool IsLineOfSightBetween(
+			Vector3d localPoint,
+			Vector3d distantPoint,
+			out CelestialBody firstOccludingBody,
+			double sqrRatio = 1d
+		)
+		{
+			return IsLineOfSightBetween(localPoint, distantPoint, out firstOccludingBody, sqrRatio);
+		}
+
+		/// <summary>
 		/// Finds the shortest distance from point "P" to line "X = A + tN".
 		/// </summary>
 		/// <returns>Distance from point "P" to line "A + tN"</returns></returns>
