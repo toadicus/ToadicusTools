@@ -116,7 +116,7 @@ namespace ToadicusTools
 
 		public static void DumpClassObject(object obj)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = Tools.GetStringBuilder();
 
 			sb.Append(obj.GetType().Name);
 			sb.Append(":\n");
@@ -187,6 +187,8 @@ namespace ToadicusTools
 			}
 
 			Debug.Log(sb.ToString());
+
+			Tools.PutStringBuilder(sb);
 		}
 	}
 }

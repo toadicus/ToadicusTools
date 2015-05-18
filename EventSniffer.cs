@@ -23,6 +23,8 @@
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#define DEBUG
+
 using KSP;
 using System;
 using System.Collections.Generic;
@@ -103,6 +105,8 @@ namespace ToadicusTools
 				Enum.GetName(typeof(ConstructionEventType), type), part);
 
 			Debug.Log(sb.ToString());
+
+			Tools.PutStringBuilder(sb);
 		}
 
 		public void onCrewOnEva(GameEvents.FromToAction<Part, Part> data)
@@ -252,6 +256,8 @@ namespace ToadicusTools
 			this.appendPartAncestry(sb, data.to);
 
 			Debug.Log(sb.ToString());
+
+			Tools.PutStringBuilder(sb);
 		}
 
 		internal void FromModuleToModuleHelper(StringBuilder sb, GameEvents.FromToAction<PartModule, PartModule> data)
@@ -265,6 +271,8 @@ namespace ToadicusTools
 			this.appendModuleAncestry(sb, data.to);
 
 			Debug.Log(sb.ToString());
+
+			Tools.PutStringBuilder(sb);
 		}
 
 		internal void HostedFromPartToPartHelper(StringBuilder sb, GameEvents.HostedFromToAction<Part, Part> data)
@@ -322,6 +330,8 @@ namespace ToadicusTools
 			}
 
 			Debug.Log(sb.ToString());
+
+			Tools.PutStringBuilder(sb);
 		}
 
 		internal StringBuilder appendModuleAncestry(StringBuilder sb, PartModule module, uint tabs = 1)
@@ -395,7 +405,7 @@ namespace ToadicusTools
 
 		internal StringBuilder getStringBuilder()
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = Tools.GetStringBuilder();
 			sb.AppendFormat("{0}: called {1} ",
 				this.GetType().Name,
 				new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name

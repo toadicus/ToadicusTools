@@ -68,7 +68,7 @@ namespace ToadicusTools
 			}
 			else
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = Tools.GetStringBuilder();
 
 				sb.AppendFormat("ToadicusTools.IOTools.LoadTexture: specified file '{0}' did not exist.", path);
 
@@ -99,6 +99,8 @@ namespace ToadicusTools
 					sb.Append(success ? " success!" : " failed!");
 
 					Debug.LogWarning(sb.ToString());
+
+					Tools.PutStringBuilder(sb);
 				}
 			}
 

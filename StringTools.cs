@@ -25,6 +25,7 @@
 
 using KSP;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
@@ -69,6 +70,61 @@ namespace ToadicusTools
 		public static void Print(this StringBuilder sb)
 		{
 			Tools.PostLogMessage(sb.ToString());
+		}
+
+		public static string SPrint<T>(this T[] array, string delimiter = ", ")
+		{
+			StringBuilder sb = GetStringBuilder();
+			T item;
+			string s;
+
+			for (int idx = 0; idx < array.Length; idx++)
+			{
+				if (idx > 0)
+				{
+					sb.Append(delimiter);
+				}
+
+				item = array[idx];
+
+				sb.Append(item == null ? "null" : item.ToString());
+			}
+
+			s = sb.ToString();
+
+			PutStringBuilder(sb);
+
+			return s;
+		}
+
+		public static string SPrint<T>(this List<T> list, string delimiter = ", ")
+		{
+			return SPrint<T>(list as IList<T>, delimiter);
+		}
+
+		public static string SPrint<T>(this IList<T> list, string delimiter = ", ")
+		{
+			StringBuilder sb = GetStringBuilder();
+			T item;
+			string s;
+
+			for (int idx = 0; idx < list.Count; idx++)
+			{
+				if (idx > 0)
+				{
+					sb.Append(delimiter);
+				}
+
+				item = list[idx];
+
+				sb.Append(item == null ? "null" : item.ToString());
+			}
+
+			s = sb.ToString();
+
+			PutStringBuilder(sb);
+
+			return s;
 		}
 	}
 

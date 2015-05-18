@@ -197,7 +197,7 @@ namespace ToadicusTools
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void PostDebugMessage(object Sender, params object[] args)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = GetStringBuilder();
 			sb.AppendFormat("{0}:", Sender.GetType().Name);
 
 			object arg;
@@ -209,12 +209,14 @@ namespace ToadicusTools
 			}
 
 			PostMessageWithScreenMsg(sb.ToString());
+
+			PutStringBuilder(sb);
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void PostDebugMessage(object Sender, string Format, params object[] args)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = GetStringBuilder();
 
 			if (Sender != null)
 			{
@@ -226,6 +228,8 @@ namespace ToadicusTools
 			sb.AppendFormat(Format, args);
 
 			PostMessageWithScreenMsg(sb.ToString());
+
+			PutStringBuilder(sb);
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
@@ -239,7 +243,7 @@ namespace ToadicusTools
 			}
 		}
 
-		public class DebugLogger
+		public class DebugLogger : IDisposable
 		{
 			public static DebugLogger New(object caller)
 			{
@@ -257,7 +261,9 @@ namespace ToadicusTools
 
 			private DebugLogger(Type caller)
 			{
-				this.stringBuilder = new StringBuilder(caller.Name);
+				this.stringBuilder = GetStringBuilder();
+
+				this.stringBuilder.Append(caller.Name);
 				this.stringBuilder.Append(": ");
 			}
 
@@ -305,8 +311,39 @@ namespace ToadicusTools
 			{
 				this.stringBuilder.Length = 0;
 			}
+
+			public void Dispose()
+			{
+				PutStringBuilder(this.stringBuilder);
+			}
+
+			~DebugLogger()
+			{
+				this.Dispose();
+			}
 		}
 		#endregion
+
+		private static Stack<StringBuilder> sbStack = new Stack<StringBuilder>();
+
+		public static StringBuilder GetStringBuilder()
+		{
+			if (sbStack.Count > 0)
+			{
+				StringBuilder sb = sbStack.Pop();
+				sb.Length = 0;
+				return sb;
+			}
+			else
+			{
+				return new StringBuilder();
+			}
+		}
+
+		public static void PutStringBuilder(StringBuilder sb)
+		{
+			sbStack.Push(sb);
+		}
 
 		#region Array_Tools
 		public static bool Contains(this GameScenes[] haystack, GameScenes needle)
