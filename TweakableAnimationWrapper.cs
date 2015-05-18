@@ -23,6 +23,8 @@
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+	#if false
+
 using KSP;
 using System;
 using ToadicusTools;
@@ -83,11 +85,16 @@ namespace ToadicusTools
 				{
 					if (this.module != null && this.module is ModuleAnimateGeneric)
 					{
-						(this.module as ModuleAnimateGeneric).animTime = value;
-						(this.module as ModuleAnimateGeneric).SetScalar(value);
+						// (this.module as ModuleAnimateGeneric).SetScalar(value);
+						// (this.module as ModuleAnimateGeneric).animTime = value;
+					}
+					else
+					{
+						this.animationState.normalizedTime = value;
 					}
 
 					this.animationState.normalizedTime = value;
+
 					return;
 				}
 				Debug.LogWarning("Tried to set normalizedTime for uninitialized TweakableAnimationWrapper.");
@@ -276,17 +283,6 @@ namespace ToadicusTools
 		{
 			this.animation.Play(this.animationState.name);
 		}
-
-		public enum PlayPosition
-		{
-			Beginning = 0,
-			End = 1
-		}
-
-		public enum PlayDirection
-		{
-			Forward = 1,
-			Backward = -1
-		}
 	}
 }
+#endif
