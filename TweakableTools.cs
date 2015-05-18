@@ -38,7 +38,7 @@ namespace TweakableEverything
 	public static class TweakableTools
 	{
 		public static void InitializeTweakable<T>(
-			object floatTweakable,
+			UI_Control floatTweakable,
 			ref float localField,
 			ref float remoteField,
 			float centerValue,
@@ -48,6 +48,14 @@ namespace TweakableEverything
 			bool clobberEverywhere = false
 		)
 		{
+			if (floatTweakable == null)
+			{
+				Tools.PostErrorMessage("Got null Control during InitializeTweakable for type {0}; bailing out.",
+					typeof(T).FullName);
+
+				return;
+			}
+
 			Vector2 bounds;
 
 			float minValue, maxValue, stepIncrement;
@@ -101,8 +109,19 @@ namespace TweakableEverything
 			}
 			else
 			{
-				throw new NotImplementedException("InitializeTweakable can only be used with Squad's UI_FloatRange or" +
-					" KSPAPIExtension's UI_FloatEdit.");
+				Tools.PostErrorMessage("InitializeTweakable<{0}>: Got floatTweakable of type {1}, expected {2}"
+						#if USE_KSPAPIEXTENSIONS
+						+ " or {3}"
+						#endif
+						, typeof(T).FullName,
+						floatTweakable.GetType().FullName,
+						typeof(UI_FloatRange).FullName
+						#if USE_KSPAPIEXTENSIONS
+						, typeof(UI_FloatEdit).FullName
+						#endif
+					);
+
+				return;
 			}
 
 			localField = Mathf.Clamp(localField, minValue, maxValue);
@@ -115,7 +134,7 @@ namespace TweakableEverything
 		}
 
 		public static void InitializeTweakable<T>(
-			UI_FloatRange floatRange,
+			UI_Control floatRange,
 			ref float localField,
 			ref float remoteField,
 			float centerValue,
@@ -137,7 +156,7 @@ namespace TweakableEverything
 		}
 
 		public static void InitializeTweakable<T>(
-			UI_FloatRange floatRange,
+			UI_Control floatRange,
 			ref float localField,
 			ref float remoteField,
 			float centerValue,
@@ -157,7 +176,7 @@ namespace TweakableEverything
 		}
 
 		public static void InitializeTweakable<T>(
-			UI_FloatRange floatRange,
+			UI_Control floatRange,
 			ref float localField,
 			ref float remoteField,
 			bool clobberEverywhere = false
@@ -165,60 +184,6 @@ namespace TweakableEverything
 		{
 			InitializeTweakable<T>(floatRange, ref localField, ref remoteField, remoteField, clobberEverywhere);
 		}
-
-		#if USE_KSPAPIEXTENSIONS
-		public static void InitializeTweakable<T>(
-			UI_FloatEdit floatRange,
-			ref float localField,
-			ref float remoteField,
-			float centerValue,
-			float lowerMult,
-			float upperMult,
-			bool clobberEverywhere = false
-		)
-		{
-			InitializeTweakable<T>(
-				floatRange,
-				ref localField,
-				ref remoteField,
-				centerValue,
-				lowerMult,
-				upperMult,
-				1f,
-				false
-			);
-		}
-
-		public static void InitializeTweakable<T>(
-			UI_FloatEdit floatRange,
-			ref float localField,
-			ref float remoteField,
-			float centerValue,
-			bool clobberEverywhere = false
-		)
-		{
-			InitializeTweakable<T>(
-				floatRange,
-				ref localField,
-				ref remoteField,
-				centerValue,
-				0f,
-				2f,
-				1f,
-				clobberEverywhere
-			);
-		}
-
-		public static void InitializeTweakable<T>(
-			UI_FloatEdit floatRange,
-			ref float localField,
-			ref float remoteField,
-			bool clobberEverywhere = false
-		)
-		{
-			InitializeTweakable<T>(floatRange, ref localField, ref remoteField, remoteField, clobberEverywhere);
-		}
-		#endif
 
 		public static Vector2 LoadBounds<T>()
 		{
