@@ -93,6 +93,7 @@
     <Compile Include="GUITools.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="DebugTick.cs" />
+    <Compile Include="RandomTools.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
