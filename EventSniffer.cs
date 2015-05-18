@@ -61,6 +61,8 @@ namespace ToadicusTools
 			GameEvents.onPartCouple.Add(this.onPartCouple);
 			GameEvents.onPartJointBreak.Add(this.onPartJointBreak);
 
+			GameEvents.onEditorPartEvent.Add(this.onEditorPartEvent);
+
 			Tools.PostDebugMessage(this, "Awake.");
 		}
 
@@ -88,7 +90,19 @@ namespace ToadicusTools
 			GameEvents.onPartCouple.Remove(this.onPartCouple);
 			GameEvents.onPartJointBreak.Remove(this.onPartJointBreak);
 
+			GameEvents.onEditorPartEvent.Remove(this.onEditorPartEvent);
+
 			Tools.PostDebugMessage(this, "Destroyed.");
+		}
+
+		public void onEditorPartEvent(ConstructionEventType type, Part part)
+		{
+			StringBuilder sb = this.getStringBuilder();
+
+			sb.AppendFormat("ConstructionEventType={0}, Part={1}",
+				Enum.GetName(typeof(ConstructionEventType), type), part);
+
+			Debug.Log(sb.ToString());
 		}
 
 		public void onCrewOnEva(GameEvents.FromToAction<Part, Part> data)
