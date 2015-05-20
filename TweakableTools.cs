@@ -26,7 +26,7 @@
 using KSP;
 using KSP.IO;
 #if USE_KSPAPIEXTENSIONS
-using KSPAPIEL;
+using KSPAPIExtensions;
 #endif
 using System;
 using System.Collections.Generic;
