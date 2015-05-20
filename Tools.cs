@@ -328,21 +328,36 @@ namespace ToadicusTools
 
 		public static StringBuilder GetStringBuilder()
 		{
-			if (sbStack.Count > 0)
+			lock (sbStack)
 			{
-				StringBuilder sb = sbStack.Pop();
-				sb.Length = 0;
-				return sb;
-			}
-			else
-			{
-				return new StringBuilder();
+				if (sbStack.Count > 0)
+				{
+					StringBuilder sb = sbStack.Pop();
+
+					if (sb == null)
+					{
+						sb = new StringBuilder();
+					}
+					else
+					{
+						sb.Length = 0;
+					}
+				
+					return sb;
+				}
+				else
+				{
+					return new StringBuilder();
+				}
 			}
 		}
 
 		public static void PutStringBuilder(StringBuilder sb)
 		{
-			sbStack.Push(sb);
+			lock (sbStack)
+			{
+				sbStack.Push(sb);
+			}
 		}
 
 		#region Array_Tools
