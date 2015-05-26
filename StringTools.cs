@@ -67,12 +67,25 @@ namespace ToadicusTools
 			return sb.ToString();
 		}
 
-		public static void Print(this StringBuilder sb)
+		public static StringBuilder Print(this StringBuilder sb)
 		{
 			Tools.PostLogMessage(sb.ToString());
+
+			return sb;
 		}
 
-		public static string SPrint<T>(this T[] array, string delimiter = ", ")
+		public static StringBuilder AddIntendedLine(this StringBuilder sb, string line, int indent = 0)
+		{
+			if (indent > 0) {
+				sb.Append(' ', indent * 4);
+			}
+
+			sb.AppendLine(line);
+
+			return sb;
+		}
+
+		public static string SPrint<T>(this T[] array, string delimiter, Func<T, string> stringFunc)
 		{
 			StringBuilder sb = GetStringBuilder();
 			T item;
@@ -87,7 +100,7 @@ namespace ToadicusTools
 
 				item = array[idx];
 
-				sb.Append(item == null ? "null" : item.ToString());
+				sb.Append(item == null ? "null" : stringFunc == null ? item.ToString() : stringFunc(item));
 			}
 
 			s = sb.ToString();
@@ -97,12 +110,17 @@ namespace ToadicusTools
 			return s;
 		}
 
-		public static string SPrint<T>(this List<T> list, string delimiter = ", ")
+		public static string SPrint<T>(this T[] array, Func<T, string> stringFunc, string delimiter = ", ")
 		{
-			return SPrint<T>(list as IList<T>, delimiter);
+			return SPrint(array, delimiter, stringFunc);
 		}
 
-		public static string SPrint<T>(this IList<T> list, string delimiter = ", ")
+		public static string SPrint<T>(this T[] array, string delimiter = ", ")
+		{
+			return array.SPrint(delimiter, null);
+		}
+
+		public static string SPrint<T>(this IList<T> list, string delimiter, Func<T, string> stringFunc)
 		{
 			StringBuilder sb = GetStringBuilder();
 			T item;
@@ -117,7 +135,7 @@ namespace ToadicusTools
 
 				item = list[idx];
 
-				sb.Append(item == null ? "null" : item.ToString());
+				sb.Append(item == null ? "null" : stringFunc == null ? item.ToString() : stringFunc(item));
 			}
 
 			s = sb.ToString();
@@ -125,6 +143,31 @@ namespace ToadicusTools
 			PutStringBuilder(sb);
 
 			return s;
+		}
+
+		public static string SPrint<T>(this List<T> list, string delimiter, Func<T, string> stringFunc)
+		{
+			return SPrint<T>(list as IList<T>, delimiter, stringFunc);
+		}
+
+		public static string SPrint<T>(this List<T> list, Func<T, string> stringFunc, string delimiter = ", ")
+		{
+			return SPrint(list, delimiter, stringFunc);
+		}
+
+		public static string SPrint<T>(this IList<T> list, Func<T, string> stringFunc, string delimiter = ", ")
+		{
+			return SPrint(list, delimiter, stringFunc);
+		}
+
+		public static string SPrint<T>(this List<T> list, string delimiter = ", ")
+		{
+			return list.SPrint(delimiter, null);
+		}
+
+		public static string SPrint<T>(this IList<T> list, string delimiter = ", ")
+		{
+			return list.SPrint(delimiter, null);
 		}
 	}
 
