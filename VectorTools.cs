@@ -107,7 +107,7 @@ namespace ToadicusTools
 			double sqrRatio = 1d
 		)
 		{
-			return IsLineOfSightBetween(localPoint, distantPoint, out firstOccludingBody, sqrRatio);
+			return IsLineOfSightBetween(localPoint, distantPoint, out firstOccludingBody, null, sqrRatio);
 		}
 
 		/// <summary>
