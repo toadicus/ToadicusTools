@@ -93,21 +93,23 @@ namespace ToadicusTools
 		/// <param name="distantPoint">target point</param>
 		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
 		/// if any, otherwise null.</param>
+		/// <param name="excludedBody">CelestialBody to exclude from the LOS check</param>
 		/// <param name="sqrRatio">The square of the "grace" ratio to apply
 		/// to the radius of potentially excluding bodies.</param>
+		[Obsolete("This overload has no calls; it may be removed in the future", false)]
 		public static bool hasLineOfSightTo(
 			this Vessel vessel,
 			Vector3d distantPoint,
 			out CelestialBody firstOccludingBody,
-			CelestialBody[] excludedBodies = null,
+			CelestialBody excludedBody,
 			double sqrRatio = 1d
 		)
 		{
-			return IsLineOfSightBetween(
+			return VectorTools.IsLineOfSightBetween(
 				vessel.GetWorldPos3D(),
 				distantPoint,
 				out firstOccludingBody,
-				excludedBodies,
+				excludedBody,
 				sqrRatio
 			);
 		}
@@ -119,17 +121,24 @@ namespace ToadicusTools
 		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
 		/// <param name="vessel">this Vessel</param>
 		/// <param name="distantPoint">target point</param>
+		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
+		/// if any, otherwise null.</param>
 		/// <param name="sqrRatio">The square of the "grace" ratio to apply
 		/// to the radius of potentially excluding bodies.</param>
+		[Obsolete("This overload has no calls; it may be removed in the future", false)]
 		public static bool hasLineOfSightTo(
 			this Vessel vessel,
 			Vector3d distantPoint,
-			CelestialBody[] excludedBodies = null,
+			out CelestialBody firstOccludingBody,
 			double sqrRatio = 1d
 		)
 		{
-			CelestialBody _;
-			return hasLineOfSightTo(vessel, distantPoint, out _, excludedBodies, sqrRatio);
+			return VectorTools.IsLineOfSightBetween(
+				vessel.GetWorldPos3D(),
+				distantPoint,
+				out firstOccludingBody,
+				sqrRatio
+			);
 		}
 
 		/// <summary>
@@ -150,7 +159,12 @@ namespace ToadicusTools
 			double sqrRatio = 1d
 		)
 		{
-			return vessel.hasLineOfSightTo(targetVessel.GetWorldPos3D(), out firstOccludingBody, null, sqrRatio);
+			return VectorTools.IsLineOfSightBetween(
+				vessel.GetWorldPos3D(),
+				targetVessel.GetWorldPos3D(),
+				out firstOccludingBody,
+				sqrRatio
+			);
 		}
 
 		/// <summary>
@@ -161,13 +175,20 @@ namespace ToadicusTools
 		/// <param name="targetVessel">target Vessel</param>
 		/// <param name="sqrRatio">The square of the "grace" ratio to apply
 		/// to the radius of potentially excluding bodies.</param>
+		[Obsolete("This overload has no calls; it may be removed in the future", false)]
 		public static bool hasLineOfSightTo(
 			this Vessel vessel,
 			Vessel targetVessel,
 			double sqrRatio = 1d
 		)
 		{
-			return vessel.hasLineOfSightTo(targetVessel.GetWorldPos3D(), null, sqrRatio);
+			CelestialBody _;
+			return VectorTools.IsLineOfSightBetween(
+				vessel.GetWorldPos3D(),
+				targetVessel.GetWorldPos3D(),
+				out _,
+				sqrRatio
+			);
 		}
 
 		/// <summary>
@@ -187,8 +208,13 @@ namespace ToadicusTools
 			double sqrRatio = 1d
 		)
 		{
-			return vessel.hasLineOfSightTo(
-				targetBody.position, out firstOccludingBody, new CelestialBody[] {targetBody});
+			return VectorTools.IsLineOfSightBetween(
+				vessel.GetWorldPos3D(),
+				targetBody.position,
+				out firstOccludingBody,
+				targetBody,
+				sqrRatio
+			);
 		}
 
 		/// <summary>
@@ -199,13 +225,85 @@ namespace ToadicusTools
 		/// <param name="targetBody">target CelestialBody</param>
 		/// <param name="sqrRatio">The square of the "grace" ratio to apply
 		/// to the radius of potentially excluding bodies.</param>
+		[Obsolete("This overload has no calls; it may be removed in the future", false)]
 		public static bool hasLineOfSightTo(
 			this Vessel vessel,
 			CelestialBody targetBody,
 			double sqrRatio = 1d
 		)
 		{
-			return vessel.hasLineOfSightTo(targetBody.position, new CelestialBody[] {targetBody});
+			CelestialBody _;
+
+			return VectorTools.IsLineOfSightBetween(
+				vessel.GetWorldPos3D(),
+				targetBody.position,
+				out _,
+				targetBody,
+				sqrRatio
+			);
+		}
+
+		/// <summary>
+		/// Returns true if no CelestialBody occludes the target point from this Vessel, false otherwise.
+		/// Includes a 5% "fudge factor".
+		/// </summary>
+		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
+		/// <param name="vessel">this Vessel</param>
+		/// <param name="distantPoint">target point</param>
+		/// <param name="firstOccludingBody">Set to the first body found to be blocking line of sight,
+		/// if any, otherwise null.</param>
+		/// <param name="excludedBody">Array of CelestialBodies to exclude from the LOS check</param>
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
+		[Obsolete("Call to obsolete hasLineOfSightTo overload with CelestialBody[] excludedBodies.", true)]
+		public static bool hasLineOfSightTo(
+			this Vessel vessel,
+			Vector3d distantPoint,
+			out CelestialBody firstOccludingBody,
+			CelestialBody[] excludedBodies = null,
+			double sqrRatio = 1d
+		)
+		{
+			CelestialBody body;
+
+			if (excludedBodies != null && excludedBodies.Length > 0)
+			{
+				body = excludedBodies[0];
+			}
+			else
+			{
+				body = null;
+			}
+
+			return VectorTools.IsLineOfSightBetween(
+				vessel.GetWorldPos3D(),
+				distantPoint,
+				out firstOccludingBody,
+				body,
+				sqrRatio
+			);
+		}
+
+		/// <summary>
+		/// Returns true if no CelestialBody occludes the target point from this Vessel, false otherwise.
+		/// Includes a 5% "fudge factor".
+		/// </summary>
+		/// <returns><c>true</c>, if this Vessel has line of sight to the target Vessel, <c>false</c> otherwise.</returns>
+		/// <param name="vessel">this Vessel</param>
+		/// <param name="distantPoint">target point</param>
+		/// <param name="excludedBody">Array of CelestialBodies to exclude from the LOS check</param>
+		/// <param name="sqrRatio">The square of the "grace" ratio to apply
+		/// to the radius of potentially excluding bodies.</param>
+		[Obsolete("Call to obsolete hasLineOfSightTo overload with CelestialBody[] excludedBodies.", true)]
+		public static bool hasLineOfSightTo(
+			this Vessel vessel,
+			Vector3d distantPoint,
+			CelestialBody[] excludedBodies = null,
+			double sqrRatio = 1d
+		)
+		{
+			CelestialBody _;
+			return hasLineOfSightTo(vessel, distantPoint, out _, excludedBodies, sqrRatio);
 		}
 
 		/// <summary>

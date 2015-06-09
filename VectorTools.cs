@@ -43,7 +43,7 @@ namespace ToadicusTools
 			Vector3d localPoint,
 			Vector3d distantPoint,
 			out CelestialBody firstOccludingBody,
-			CelestialBody[] excludedBodies = null,
+			CelestialBody excludedBody,
 			double sqrRatio = 1d
 		)
 		{
@@ -58,7 +58,7 @@ namespace ToadicusTools
 				{
 					body = FlightGlobals.Bodies[idx];
 
-					if (excludedBodies != null && excludedBodies.Contains(body))
+					if (excludedBody != null && body == excludedBody)
 					{
 						continue;
 					}
@@ -74,8 +74,8 @@ namespace ToadicusTools
 					Vector3d d = pFroma - pFromaDotn * n;
 
 					if (
-						d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio) &&
 						pFromaDotn < 0 &&
+						d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio) &&
 						dFroma.sqrMagnitude > pFroma.sqrMagnitude
 					)
 					{
@@ -107,7 +107,64 @@ namespace ToadicusTools
 			double sqrRatio = 1d
 		)
 		{
-			return IsLineOfSightBetween(localPoint, distantPoint, out firstOccludingBody, null, sqrRatio);
+			// Line X = A + tN
+			Vector3d dFroma = distantPoint - localPoint;
+			Vector3d n = dFroma.normalized;
+
+			if (FlightGlobals.Bodies != null)
+			{
+				CelestialBody body;
+				for (int idx = 0; idx < FlightGlobals.Bodies.Count; idx++)
+				{
+					body = FlightGlobals.Bodies[idx];
+
+					// Point p
+					Vector3d p = body.position;
+
+					Vector3d pFroma = localPoint - p;
+
+					double pFromaDotn = Vector3d.Dot(pFroma, n);
+
+					// Shortest distance d from point p to line X
+					Vector3d d = pFroma - pFromaDotn * n;
+
+					if (
+						pFromaDotn < 0 &&
+						d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio) &&
+						dFroma.sqrMagnitude > pFroma.sqrMagnitude
+					)
+					{
+						firstOccludingBody = body;
+						return false;
+					}
+				}
+			}
+
+			firstOccludingBody = null;
+			return true;
+		}
+
+		[Obsolete("Call to obsolete IsLineOfSight overload with CelestialBody[] excludedBodies.", true)]
+		public static bool IsLineOfSightBetween(
+			Vector3d localPoint,
+			Vector3d distantPoint,
+			out CelestialBody firstOccludingBody,
+			CelestialBody[] excludedBodies = null,
+			double sqrRatio = 1d
+		)
+		{
+			CelestialBody body;
+
+			if (excludedBodies != null && excludedBodies.Length > 0)
+			{
+				body = excludedBodies[0];
+			}
+			else
+			{
+				body = null;
+			}
+
+			return IsLineOfSightBetween(localPoint, distantPoint, out firstOccludingBody, body, sqrRatio);
 		}
 
 		/// <summary>
@@ -132,9 +189,9 @@ namespace ToadicusTools
 		public static string ToString(this Vector3d vector, string format)
 		{
 			return string.Format("{0}, {1}, {2}",
-				vector.x.ToString(format),
-				vector.y.ToString(format),
-				vector.z.ToString(format)
+				vector.x.ToString(format, Tools.SIFormatter),
+				vector.y.ToString(format, Tools.SIFormatter),
+				vector.z.ToString(format, Tools.SIFormatter)
 			);
 		}
 	}
