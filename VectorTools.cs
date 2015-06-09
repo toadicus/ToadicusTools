@@ -51,36 +51,37 @@ namespace ToadicusTools
 			Vector3d dFroma = distantPoint - localPoint;
 			Vector3d n = dFroma.normalized;
 
-			if (FlightGlobals.Bodies != null)
+			CelestialBody body;
+			for (int idx = 0; idx < FlightGlobals.Bodies.Count; idx++)
 			{
-				CelestialBody body;
-				for (int idx = 0; idx < FlightGlobals.Bodies.Count; idx++)
+				body = FlightGlobals.Bodies[idx];
+
+				if (excludedBody != null && body == excludedBody)
 				{
-					body = FlightGlobals.Bodies[idx];
+					continue;
+				}
 
-					if (excludedBody != null && body == excludedBody)
-					{
-						continue;
-					}
+				// Point p
+				Vector3d p = body.position;
 
-					// Point p
-					Vector3d p = body.position;
+				Vector3d pFroma = localPoint - p;
 
-					Vector3d pFroma = localPoint - p;
-
+				// If this body is closer than the point, it's a candidate, so keep looking
+				if (pFroma.sqrMagnitude < dFroma.sqrMagnitude)
+				{
 					double pFromaDotn = Vector3d.Dot(pFroma, n);
 
-					// Shortest distance d from point p to line X
-					Vector3d d = pFroma - pFromaDotn * n;
-
-					if (
-						pFromaDotn < 0 &&
-						d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio) &&
-						dFroma.sqrMagnitude > pFroma.sqrMagnitude
-					)
+					// 
+					if (pFromaDotn < 0)
 					{
-						firstOccludingBody = body;
-						return false;
+						// Shortest distance d from point p to line X
+						Vector3d d = pFroma - pFromaDotn * n;
+
+						if (d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio))
+						{
+							firstOccludingBody = body;
+							return false;
+						}
 					}
 				}
 			}
@@ -111,31 +112,33 @@ namespace ToadicusTools
 			Vector3d dFroma = distantPoint - localPoint;
 			Vector3d n = dFroma.normalized;
 
-			if (FlightGlobals.Bodies != null)
+			CelestialBody body;
+			for (int idx = 0; idx < FlightGlobals.Bodies.Count; idx++)
 			{
-				CelestialBody body;
-				for (int idx = 0; idx < FlightGlobals.Bodies.Count; idx++)
+				body = FlightGlobals.Bodies[idx];
+
+				// Point p
+				Vector3d p = body.position;
+
+				Vector3d pFroma = localPoint - p;
+
+				// If this body is closer than the point, it's a candidate, so keep looking
+				if (pFroma.sqrMagnitude < dFroma.sqrMagnitude)
 				{
-					body = FlightGlobals.Bodies[idx];
-
-					// Point p
-					Vector3d p = body.position;
-
-					Vector3d pFroma = localPoint - p;
-
 					double pFromaDotn = Vector3d.Dot(pFroma, n);
 
-					// Shortest distance d from point p to line X
-					Vector3d d = pFroma - pFromaDotn * n;
-
-					if (
-						pFromaDotn < 0 &&
-						d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio) &&
-						dFroma.sqrMagnitude > pFroma.sqrMagnitude
-					)
+					// If this body is not behind us, keep looking
+					if (pFromaDotn < 0)
 					{
-						firstOccludingBody = body;
-						return false;
+						// Shortest distance d from point p to line X
+						Vector3d d = pFroma - pFromaDotn * n;
+
+						// If the shortest distance to our line is less than the radius, the planet is blocking us
+						if (d.sqrMagnitude < (body.Radius * body.Radius * sqrRatio))
+						{
+							firstOccludingBody = body;
+							return false;
+						}
 					}
 				}
 			}
