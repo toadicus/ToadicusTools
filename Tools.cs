@@ -32,6 +32,10 @@ namespace ToadicusTools
 {
 	public static partial class Tools
 	{
+		#if !HAS_SIFORMMATER
+		public static readonly IFormatProvider SIFormatter = System.Globalization.CultureInfo.CurrentCulture;
+		#endif
+
 		#region LOGGING_TOOLS
 		public static void PostLogMessage(LogChannel channel, string Msg)
 		{
@@ -57,7 +61,7 @@ namespace ToadicusTools
 
 		public static void PostLogMessage(LogChannel channel, string Format, params object[] args)
 		{
-			string message = string.Format(Format, args);
+			string message = string.Format(Tools.SIFormatter, Format, args);
 
 			PostLogMessage(message);
 		}
@@ -99,18 +103,18 @@ namespace ToadicusTools
 
 			if (componentType == typeof(Vessel))
 			{
-				name = string.Format("{0} ({1})", componentType.Name, (component as Vessel).vesselName);
+				name = string.Format(Tools.SIFormatter, "{0} ({1})", componentType.Name, (component as Vessel).vesselName);
 			}
 			else if (componentType == typeof(Part))
 			{
-				name = string.Format("{0} ({1})", componentType.Name, (component as Part).partInfo.name);
+				name = string.Format(Tools.SIFormatter, "{0} ({1})", componentType.Name, (component as Part).partInfo.name);
 			}
 			else
 			{
 				name = componentType.Name;
 			}
 
-			string message = string.Format("[{0}] {1}", name, Msg);
+			string message = string.Format(Tools.SIFormatter, "[{0}] {1}", name, Msg);
 
 			PostLogMessage(channel, message);
 		}
@@ -122,7 +126,7 @@ namespace ToadicusTools
 
 		public static void Log(this Component component, string format, params object[] args)
 		{
-			string message = string.Format(format, args);
+			string message = string.Format(Tools.SIFormatter, format, args);
 
 			component.Log(message);
 		}
@@ -134,7 +138,7 @@ namespace ToadicusTools
 
 		public static void LogWarning(this Component component, string format, params object[] args)
 		{
-			string message = string.Format(format, args);
+			string message = string.Format(Tools.SIFormatter, format, args);
 
 			component.LogWarning(message);
 		}
@@ -146,7 +150,7 @@ namespace ToadicusTools
 
 		public static void LogError(this Component component, string format, params object[] args)
 		{
-			string message = string.Format(format, args);
+			string message = string.Format(Tools.SIFormatter, format, args);
 
 			component.LogError(message);
 		}
@@ -160,7 +164,7 @@ namespace ToadicusTools
 		[System.Diagnostics.Conditional("DEBUG")]
 		public static void LogDebug(this Component component, string format, params object[] args)
 		{
-			string message = string.Format(format, args);
+			string message = string.Format(Tools.SIFormatter, format, args);
 
 			component.Log(message);
 		}
@@ -421,7 +425,7 @@ namespace ToadicusTools
 			}
 			catch (Exception e)
 			{
-				Debug.LogWarning(string.Format("[{0}] failed to parse value '{1}': {2}",
+				Debug.LogWarning(string.Format(Tools.SIFormatter, "[{0}] failed to parse value '{1}': {2}",
 					typeof(enumType).Name,
 					value,
 					e.Message
