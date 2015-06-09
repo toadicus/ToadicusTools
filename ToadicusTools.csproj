@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;HAS_SIFORMMATER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -41,13 +41,14 @@
         <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\" />
       </CustomCommands>
     </CustomCommands>
+    <DefineConstants>HAS_SIFORMMATER</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_linux|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;HAS_SIFORMMATER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -68,6 +69,7 @@
       </CustomCommands>
     </CustomCommands>
     <ConsolePause>false</ConsolePause>
+    <DefineConstants>HAS_SIFORMMATER</DefineConstants>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -95,6 +97,7 @@
     <Compile Include="RandomTools.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="AnimationWrapper.cs" />
+    <Compile Include="RollingAverage.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
