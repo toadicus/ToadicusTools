@@ -404,6 +404,21 @@ namespace ToadicusTools
 
 		public string Format(string format, object arg, IFormatProvider formatProvider)
 		{
+			if (format == null)
+			{
+				return arg == null ? "null" : arg.ToString();
+			}
+
+			if (arg == null)
+			{
+				return "null";
+			}
+
+			if (formatProvider == null)
+			{
+				throw new ArgumentNullException("formatProvider");
+			}
+
 			if (!this.Equals(formatProvider))
 			{
 				return null;
