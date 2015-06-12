@@ -30,8 +30,6 @@ using UnityEngine;
 
 namespace ToadicusTools
 {
-	using VectorTools;
-
 	public static partial class Tools
 	{
 		/// <summary>

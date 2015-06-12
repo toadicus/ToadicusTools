@@ -44,6 +44,7 @@ namespace ToadicusTools
 			}
 
 			this.Events["DumpModule"].guiName = string.Format("Dump {0}", this.GetType().Name);
+			this.Events["DumpPart"].guiName = string.Format("Dump {0}", this.part.partInfo.name);
 
 			base.OnAwake();
 		}
