@@ -237,5 +237,18 @@ namespace ToadicusTools
 				node.AddValue(name, value);
 			}
 		}
+
+		public static void SafeSetValue(this ConfigNode node, string name, bool value)
+		{
+			string saveValue = value ? bool.TrueString : bool.FalseString;
+			if (node.HasValue(name))
+			{
+				node.SetValue(name, saveValue);
+			}
+			else
+			{
+				node.AddValue(name, saveValue);
+			}
+		}
 	}
 }
