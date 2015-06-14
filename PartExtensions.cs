@@ -241,7 +241,25 @@ namespace ToadicusTools
 
 		public static bool isDecoupler(this Part part)
 		{
-			return part.hasModuleType<ModuleDecouple>() | part.hasModuleType<ModuleAnchoredDecoupler>();
+			bool isDecoupler = part.hasModuleType<ModuleDecouple>() || part.hasModuleType<ModuleAnchoredDecoupler>();
+
+			if (isDecoupler)
+			{
+				return true;
+			}
+			else
+			{
+				if (
+					part.hasModuleByName("ModuleDockingNode") &&
+					part.hasModuleByName("ModuleStagingToggle") &&
+					part.isInStagingList()
+				)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public static bool isDockingNode(this Part part)
