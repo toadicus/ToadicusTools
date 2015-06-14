@@ -32,30 +32,53 @@ namespace ToadicusTools
 {
 	public static partial class Tools
 	{
+		[Obsolete("Deprecated, please use hasModuleByType.")]
 		public static bool hasModuleType<T>(this Part part) where T : PartModule
+		{
+			return part.hasModuleByType<T>();
+		}
+
+		public static bool hasModuleByType<T>(this Part part) where T : PartModule
+		{
+			return part.hasModuleByType(typeof(T));
+		}
+
+		public static bool hasModuleByType(this Part part, Type type)
 		{
 			if (part == null)
 			{
-				throw new ArgumentNullException(
-					string.Format("Part.hasModuleType<{0}>: 'part' argument must not be null", typeof(T).Name)
+				throw new ArgumentNullException("part");
+			}
+
+			if (type == null)
+			{
+				throw new ArgumentNullException("type");
+			}
+
+			if (!typeof(PartModule).IsAssignableFrom(type))
+			{
+				Tools.PostWarningMessage(
+					"[ToadicusTools] Part.hasModuleByType: '{0}' is not a derivative of PartModule",
+					type.FullName
 				);
+				return false;
 			}
 
 			#if DEBUG
-			Debug.Log("[hasModuleType]: Falling back to linear search.");
+			Debug.Log("[hasModuleByType]: Falling back to linear search.");
 			#endif
 
 			if (part.Modules != null)
 			{
 				#if DEBUG
-				Debug.Log("[hasModuleType]: Part.modules is defined; checking PartModule subtypes.");
+				Debug.Log("[hasModuleByType]: Part.modules is defined; checking PartModule subtypes.");
 				#endif
 
 				PartModule module;
 				for (int mIdx = 0; mIdx < part.Modules.Count; mIdx++)
 				{
 					module = part.Modules[mIdx];
-					if (module is T)
+					if (type.IsAssignableFrom(module.GetType()))
 					{
 						return true;
 					}
@@ -64,14 +87,14 @@ namespace ToadicusTools
 			else
 			{
 				#if DEBUG
-				Debug.Log("[hasModuleType]: Part.modules is not defined; trying ModuleInfo search.");
+				Debug.Log("[hasModuleByType]: Part.modules is not defined; trying ModuleInfo search.");
 				#endif
 
 				AvailablePart.ModuleInfo moduleInfo;
 				for (int idx = 0; idx < part.partInfo.moduleInfos.Count; idx++)
 				{
 					moduleInfo = part.partInfo.moduleInfos[idx];
-					if (moduleInfo.moduleName == typeof(T).Name)
+					if (moduleInfo.moduleName == type.Name)
 					{
 						return true;
 					}
@@ -88,14 +111,49 @@ namespace ToadicusTools
 				throw new ArgumentNullException("Part.hasModuleByName: 'part' argument must not be null");
 			}
 
+			if (string.IsNullOrEmpty(moduleName))
+			{
+				Tools.PostWarningMessage("[ToadicusTools]: Part.hasModuleByName: moduleName argument is null or empty");
+				return false;
+			}
+
 			#if DEBUG
 			Debug.Log(string.Format("Checking if part {0} has module(s) named {1}", part.partInfo.name, moduleName));
 			#endif
 
-			Type moduleType = Type.GetType(moduleName);
+			PartModule module;
 
-			return (bool)typeof(Tools).GetMethod("hasModuleType").MakeGenericMethod(moduleType)
-				.Invoke(null, new object[] {part});
+			if (part.Modules != null)
+			{
+				for (int mIdx = 0; mIdx < part.Modules.Count; mIdx++)
+				{
+					module = part.Modules[mIdx];
+
+					if (module == null)
+					{
+						continue;
+					}
+
+					if (module.moduleName == moduleName)
+					{
+						return true;
+					}
+				}
+			}
+			else
+			{
+				AvailablePart.ModuleInfo moduleInfo;
+				for (int idx = 0; idx < part.partInfo.moduleInfos.Count; idx++)
+				{
+					moduleInfo = part.partInfo.moduleInfos[idx];
+					if (moduleInfo.moduleName == moduleName)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		public static List<T> getModulesOfType<T>(this Part part) where T : PartModule
@@ -241,9 +299,7 @@ namespace ToadicusTools
 
 		public static bool isDecoupler(this Part part)
 		{
-			bool isDecoupler = part.hasModuleType<ModuleDecouple>() || part.hasModuleType<ModuleAnchoredDecoupler>();
-
-			if (isDecoupler)
+			if (part.hasModuleByType<ModuleDecouple>() || part.hasModuleByType<ModuleAnchoredDecoupler>())
 			{
 				return true;
 			}
@@ -264,7 +320,7 @@ namespace ToadicusTools
 
 		public static bool isDockingNode(this Part part)
 		{
-			return hasModuleType<ModuleDockingNode>(part);
+			return hasModuleByType<ModuleDockingNode>(part);
 		}
 
 		public static bool isInStagingList(this Part part)
