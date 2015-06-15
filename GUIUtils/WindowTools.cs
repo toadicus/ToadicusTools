@@ -27,9 +27,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ToadicusTools
+namespace ToadicusTools.GUIUtils
 {
-	public static partial class Tools
+	public static class WindowTools
 	{
 		public static Rect ClampRectToScreen(Rect window, int topMargin, int rgtMargin, int botMargin, int lftMargin)
 		{
@@ -72,7 +72,7 @@ namespace ToadicusTools
 					break;
 			}
 
-			return Tools.ClampRectToScreen(window, 30, 30, 30, (int)lftMargin);
+			return ClampRectToScreen(window, 30, 30, 30, (int)lftMargin);
 		}
 
 		public static Vector2 ClampV2ToScreen(Vector2 vec, uint xMargin, uint yMargin)

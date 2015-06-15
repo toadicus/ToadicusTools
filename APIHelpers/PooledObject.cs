@@ -1,6 +1,6 @@
 ﻿// ToadicusTools
 //
-// Enums.cs
+// PooledObject.cs
 //
 // Copyright © 2015, toadicus
 // All rights reserved.
@@ -22,34 +22,45 @@
 // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 using System;
+using System.Collections.Generic;
 
 namespace ToadicusTools
 {
-	public enum LogChannel
+	public abstract class PooledObject<T> where T : PooledObject<T>, new()
 	{
-		Log,
-		Warning,
-		Error
-	}
+		private static Stack<T> pool = new Stack<T>();
 
-	public enum PlayPosition
-	{
-		Beginning = 0,
-		End = 1
-	}
+		public static T Get()
+		{
+			lock (pool)
+			{
+				if (pool.Count > 0)
+				{
+					T obj = pool.Pop();
+					obj.onGet();
+					return obj;
+				}
+				else
+				{
+					return new T();
+				}
+			}
+		}
 
-	public enum PlayDirection
-	{
-		Forward = 1,
-		Backward = -1
-	}
+		public static void Put(T psb)
+		{
+			if (psb != null)
+			{
+				lock (pool)
+				{
+					pool.Push(psb);
+				}
+			}
+		}
 
-	public enum VesselCommand
-	{
-		None = 0,
-		Probe = 1,
-		Crew = 2
+		protected abstract void onGet();
 	}
 }
 

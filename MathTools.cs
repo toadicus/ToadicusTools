@@ -27,8 +27,35 @@ using System;
 
 namespace ToadicusTools
 {
-	public static partial class Tools
+	public static class MathTools
 	{
+		/// <summary>
+		/// Returns the minimum from among the given values
+		/// </summary>
+		/// <param name="values">Values</param>
+		/// <typeparam name="T">Any type implementing IComparable<T></typeparam>
+		public static T Min<T>(params T[] values) where T : IComparable<T>
+		{
+			if (values.Length < 2)
+			{
+				throw new ArgumentException("Min must be called with at least two arguments.");
+			}
+
+			IComparable<T> minValue = values[0];
+
+			for (long i = 1; i < values.LongLength; i++)
+			{
+				IComparable<T> value = values[i];
+
+				if (value.CompareTo((T)minValue) < 0)
+				{
+					minValue = value;
+				}
+			}
+
+			return (T)minValue;
+		}
+
 		/// <summary>
 		/// <para>Exponentiation function optimized for arbitrary integer exponents.</para>
 		/// <para>Returns b to the nth power</para>

@@ -1,6 +1,6 @@
 ﻿// ToadicusTools
 //
-// Enums.cs
+// BaseFieldExtensions.cs
 //
 // Copyright © 2015, toadicus
 // All rights reserved.
@@ -24,32 +24,25 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 
-namespace ToadicusTools
+namespace ToadicusTools.Extensions
 {
-	public enum LogChannel
+	public static class BaseFieldExtensions
 	{
-		Log,
-		Warning,
-		Error
-	}
-
-	public enum PlayPosition
-	{
-		Beginning = 0,
-		End = 1
-	}
-
-	public enum PlayDirection
-	{
-		Forward = 1,
-		Backward = -1
-	}
-
-	public enum VesselCommand
-	{
-		None = 0,
-		Probe = 1,
-		Crew = 2
+		public static UI_Control uiControlCurrent(this BaseField field)
+		{
+			if (HighLogic.LoadedSceneIsFlight)
+			{
+				return field.uiControlFlight;
+			}
+			else if (HighLogic.LoadedSceneIsEditor)
+			{
+				return field.uiControlEditor;
+			}
+			else
+			{
+				return null;
+			}
+		}
 	}
 }
 

@@ -27,9 +27,9 @@ using KSP;
 using System;
 using UnityEngine;
 
-namespace ToadicusTools
+namespace ToadicusTools.Extensions
 {
-	public static class AppLauncherTools
+	public static class AppLauncherExtensions
 	{
 		private static void Dummy() {}
 
@@ -143,7 +143,7 @@ namespace ToadicusTools
 				case GameScenes.PSYSTEM:
 				case GameScenes.SETTINGS:
 				default:
-					Tools.PostLogMessage(Tools.LogChannel.Warning,
+					Logging.PostLogMessage(LogChannel.Warning,
 						"Cannot convert GameScenes.{0}: no acceptable AppScenes analog.",
 						Enum.GetName(typeof(GameScenes), gameScene)
 					);

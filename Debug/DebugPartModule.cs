@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using ToadicusTools.Text;
 using UnityEngine;
 
 namespace ToadicusTools
@@ -117,79 +118,78 @@ namespace ToadicusTools
 
 		public static void DumpClassObject(object obj)
 		{
-			StringBuilder sb = Tools.GetStringBuilder();
-
-			sb.Append(obj.GetType().Name);
-			sb.Append(":\n");
-
-			FieldInfo[] fieldInfos = obj.GetType().GetFields(
-				                 System.Reflection.BindingFlags.Public |
-				                 System.Reflection.BindingFlags.NonPublic |
-				                 System.Reflection.BindingFlags.Instance |
-				                 System.Reflection.BindingFlags.FlattenHierarchy
-			                 );
-
-			FieldInfo fieldInfo;
-			for (int idx = 0; idx < fieldInfos.Length; idx++)
+			using (PooledStringBuilder sb = PooledStringBuilder.Get())
 			{
-				fieldInfo = fieldInfos[idx];
-				try
-				{
-					sb.AppendFormat("{0}: {1}\n", fieldInfo.Name, fieldInfo.GetValue(obj));
-				}
-				catch
-				{
-					// Do nothing
-				}
-			}
+				sb.Append(obj.GetType().Name);
+				sb.Append(":\n");
 
-			PropertyInfo[] propInfos = obj.GetType().GetProperties(
-				                           System.Reflection.BindingFlags.Public |
-				                           System.Reflection.BindingFlags.NonPublic |
-				                           System.Reflection.BindingFlags.Instance |
-				                           System.Reflection.BindingFlags.FlattenHierarchy
-			                           );
-			PropertyInfo propInfo;
-			for (int idx = 0; idx < propInfos.Length; idx++)
-			{
-				propInfo = propInfos[idx];
-				try
-				{
-					sb.AppendFormat("{0}: {1}\n", propInfo.Name, propInfo.GetValue(obj, null));
-				}
-				catch
-				{
-					// Do nothing
-				}
-			}
+				FieldInfo[] fieldInfos = obj.GetType().GetFields(
+					                        System.Reflection.BindingFlags.Public |
+					                        System.Reflection.BindingFlags.NonPublic |
+					                        System.Reflection.BindingFlags.Instance |
+					                        System.Reflection.BindingFlags.FlattenHierarchy
+				                        );
 
-			MethodInfo[] methodInfos = obj.GetType().GetMethods(
-				                           System.Reflection.BindingFlags.Public |
-				                           System.Reflection.BindingFlags.NonPublic |
-				                           System.Reflection.BindingFlags.Instance |
-				                           System.Reflection.BindingFlags.FlattenHierarchy
-			                           );
-
-			MethodInfo methodInfo;
-			for (int idx = 0; idx < methodInfos.Length; idx++)
-			{
-				methodInfo = methodInfos[idx];
-				try
+				FieldInfo fieldInfo;
+				for (int idx = 0; idx < fieldInfos.Length; idx++)
 				{
-					if (methodInfo.ReturnType != typeof(void) && methodInfo.GetParameters().Length == 0)
+					fieldInfo = fieldInfos[idx];
+					try
 					{
-						sb.AppendFormat("{0} returns: '''{1}'''\n", methodInfo.Name, methodInfo.Invoke(obj, null));
+						sb.AppendFormat("{0}: {1}\n", fieldInfo.Name, fieldInfo.GetValue(obj));
+					}
+					catch
+					{
+						// Do nothing
 					}
 				}
-				catch
+
+				PropertyInfo[] propInfos = obj.GetType().GetProperties(
+					                          System.Reflection.BindingFlags.Public |
+					                          System.Reflection.BindingFlags.NonPublic |
+					                          System.Reflection.BindingFlags.Instance |
+					                          System.Reflection.BindingFlags.FlattenHierarchy
+				                          );
+				PropertyInfo propInfo;
+				for (int idx = 0; idx < propInfos.Length; idx++)
 				{
-					// Do nothing
+					propInfo = propInfos[idx];
+					try
+					{
+						sb.AppendFormat("{0}: {1}\n", propInfo.Name, propInfo.GetValue(obj, null));
+					}
+					catch
+					{
+						// Do nothing
+					}
 				}
+
+				MethodInfo[] methodInfos = obj.GetType().GetMethods(
+					                          System.Reflection.BindingFlags.Public |
+					                          System.Reflection.BindingFlags.NonPublic |
+					                          System.Reflection.BindingFlags.Instance |
+					                          System.Reflection.BindingFlags.FlattenHierarchy
+				                          );
+
+				MethodInfo methodInfo;
+				for (int idx = 0; idx < methodInfos.Length; idx++)
+				{
+					methodInfo = methodInfos[idx];
+					try
+					{
+						if (methodInfo.ReturnType != typeof(void) && methodInfo.GetParameters().Length == 0)
+						{
+							sb.AppendFormat("{0} returns: '''{1}'''\n", methodInfo.Name, methodInfo.Invoke(obj, null));
+						}
+					}
+					catch
+					{
+						// Do nothing
+					}
+				}
+
+				Debug.Log(sb.ToString());
 			}
-
-			Debug.Log(sb.ToString());
-
-			Tools.PutStringBuilder(sb);
 		}
 	}
 }

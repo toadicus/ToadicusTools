@@ -1,6 +1,6 @@
 ﻿// ToadicusTools
 //
-// Enums.cs
+// Tools.cs
 //
 // Copyright © 2015, toadicus
 // All rights reserved.
@@ -24,32 +24,37 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 
-namespace ToadicusTools
+namespace ToadicusTools.Text
 {
-	public enum LogChannel
+	public static class TextTools
 	{
-		Log,
-		Warning,
-		Error
-	}
+		/// <summary>
+		/// <para>Replaces the format items in a specified string with the string representation of corresponding objects in a
+		/// specified array.</para>
+		/// <para>&#160;</para>
+		/// <para>Uses the custom SIFormatter format provider, to facilitate SI formats for double and double-like numbers, as
+		/// MuMech_ToSI.</para>
+		/// </summary>
+		/// <param name="format">A composite format string.</param>
+		/// <param name="args">An object array that contains zero or more objects to format.</param>
+		public static string Format(IFormatProvider provider, string format, params object[] args)
+		{
+			return string.Format(provider, format, args);
+		}
 
-	public enum PlayPosition
-	{
-		Beginning = 0,
-		End = 1
-	}
+		public static string Format(string format, params object[] args)
+		{
+			return string.Format(SIFormatProvider.SIFormatter, format, args);
+		}
 
-	public enum PlayDirection
-	{
-		Forward = 1,
-		Backward = -1
-	}
+		public static string ToString(IFormattable arg, string format, IFormatProvider provider)
+		{
+			return arg.ToString(format, provider);
+		}
 
-	public enum VesselCommand
-	{
-		None = 0,
-		Probe = 1,
-		Crew = 2
+		public static string ToString(IFormattable arg, string format)
+		{
+			return arg.ToString(format, SIFormatProvider.SIFormatter);
+		}
 	}
 }
-

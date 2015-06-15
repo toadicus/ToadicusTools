@@ -1,6 +1,6 @@
 ﻿// ToadicusTools
 //
-// GUITools.cs
+// Layout.cs
 //
 // Copyright © 2015, toadicus
 // All rights reserved.
@@ -23,15 +23,13 @@
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using KSP;
 using System;
 using UnityEngine;
 
-namespace ToadicusTools
+namespace ToadicusTools.GUIUtils
 {
-	public static class GUITools
+	public static class Layout
 	{
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(
 			bool value,
 			GUIContent content,
@@ -40,10 +38,27 @@ namespace ToadicusTools
 			GUIStyle labelStyle
 		)
 		{
-			return GUIUtils.Layout.Toggle(value, content, expandWidth, toggleStyle, labelStyle);
+			if (toggleStyle == null)
+			{
+				toggleStyle = GUI.skin.toggle;
+			}
+
+			if (labelStyle == null)
+			{
+				labelStyle = GUI.skin.label;
+			}
+
+			GUILayout.BeginHorizontal(GUILayout.ExpandWidth(expandWidth));
+
+			value = GUILayout.Toggle(value, GUIContent.none, GUILayout.ExpandWidth(false));
+
+			GUILayout.Label(content, GUILayout.ExpandWidth(expandWidth));
+
+			GUILayout.EndHorizontal();
+
+			return value;
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(
 			bool value,
 			string text,
@@ -52,10 +67,9 @@ namespace ToadicusTools
 			GUIStyle labelStyle
 		)
 		{
-			return GUIUtils.Layout.Toggle(value, new GUIContent(text), expandWidth, toggleStyle, toggleStyle);
+			return Toggle(value, new GUIContent(text), expandWidth, toggleStyle, toggleStyle);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(
 			bool value,
 			GUIContent content,
@@ -63,10 +77,9 @@ namespace ToadicusTools
 			GUIStyle labelStyle
 		)
 		{
-			return GUIUtils.Layout.Toggle(value, content, true, toggleStyle, toggleStyle);
+			return Toggle(value, content, true, toggleStyle, toggleStyle);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(
 			bool value,
 			string text,
@@ -74,57 +87,48 @@ namespace ToadicusTools
 			GUIStyle labelStyle
 		)
 		{
-			return GUIUtils.Layout.Toggle(value, new GUIContent(text), true, toggleStyle, toggleStyle);
+			return Toggle(value, new GUIContent(text), true, toggleStyle, toggleStyle);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(bool value, GUIContent content, bool expandWidth, GUIStyle labelStyle)
 		{
-			return GUIUtils.Layout.Toggle(value, content, expandWidth, null, labelStyle);
+			return Toggle(value, content, expandWidth, null, labelStyle);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(bool value, string text, bool expandWidth, GUIStyle labelStyle)
 		{
-			return GUIUtils.Layout.Toggle(value, new GUIContent(text), expandWidth, labelStyle);
+			return Toggle(value, new GUIContent(text), expandWidth, labelStyle);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(bool value, GUIContent content, GUIStyle labelStyle)
 		{
-			return GUIUtils.Layout.Toggle(value, content, true, null, labelStyle);
+			return Toggle(value, content, true, null, labelStyle);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(bool value, string text, GUIStyle labelStyle)
 		{
-			return GUIUtils.Layout.Toggle(value, new GUIContent(text), true, labelStyle);
+			return Toggle(value, new GUIContent(text), true, labelStyle);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(bool value, GUIContent content, bool expandWidth)
 		{
-			return GUIUtils.Layout.Toggle(value, content, expandWidth, null, null);
+			return Toggle(value, content, expandWidth, null, null);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(bool value, string text, bool expandWidth)
 		{
-			return GUIUtils.Layout.Toggle(value, new GUIContent(text), expandWidth);
+			return Toggle(value, new GUIContent(text), expandWidth);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(bool value, GUIContent content)
 		{
-			return GUIUtils.Layout.Toggle(value, content, true, null, null);
+			return Toggle(value, content, true, null, null);
 		}
 
-		[Obsolete("Deprecated; use method from GUIUtils.Layout instead")]
 		public static bool Toggle(bool value, string text)
 		{
-			return GUIUtils.Layout.Toggle(value, new GUIContent(text), true);
+			return Toggle(value, new GUIContent(text), true);
 		}
-
 	}
 }
 

@@ -22,12 +22,13 @@
 // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+#define DEBUG
 using KSP;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ToadicusTools;
+using ToadicusTools.Extensions;
+using ToadicusTools.Text;
 using UnityEngine;
 
 #if DEBUG
@@ -63,7 +64,7 @@ namespace ToadicusTools
 
 			GameEvents.onEditorPartEvent.Add(this.onEditorPartEvent);
 
-			Tools.PostDebugMessage(this, "Awake.");
+			this.LogDebug("Awake.");
 		}
 
 		public void OnDestroy()
@@ -92,97 +93,124 @@ namespace ToadicusTools
 
 			GameEvents.onEditorPartEvent.Remove(this.onEditorPartEvent);
 
-			Tools.PostDebugMessage(this, "Destroyed.");
+			this.LogDebug("Destroyed.");
 		}
 
 		public void onEditorPartEvent(ConstructionEventType type, Part part)
 		{
-			StringBuilder sb = this.getStringBuilder();
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				sb.AppendFormat("ConstructionEventType={0}, Part={1}",
+					Enum.GetName(typeof(ConstructionEventType), type), part);
 
-			sb.AppendFormat("ConstructionEventType={0}, Part={1}",
-				Enum.GetName(typeof(ConstructionEventType), type), part);
-
-			Debug.Log(sb.ToString());
-
-			Tools.PutStringBuilder(sb);
+				Debug.Log(sb.ToString());
+			}
 		}
 
 		public void onCrewOnEva(GameEvents.FromToAction<Part, Part> data)
 		{
-			this.FromPartToPartHelper(
-				this.getStringBuilder(),
-				data
-			);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.FromPartToPartHelper(
+					sb,
+					data
+				);
+			}
 		}
 
 		public void onCrewBoardVessel(GameEvents.FromToAction<Part, Part> data)
 		{
-			this.FromPartToPartHelper(
-				this.getStringBuilder(),
-				data
-			);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.FromPartToPartHelper(
+					sb,
+					data
+				);
+			}
 		}
 
 		public void onKerbalStatusChange(ProtoCrewMember kerbal, ProtoCrewMember.RosterStatus fromStatus, ProtoCrewMember.RosterStatus toStatus)
 		{
-			StringBuilder sb = this.getStringBuilder();
-
-			string item;
-
-			if (kerbal != null)
+			using (PooledStringBuilder sb = this.getStringBuilder())
 			{
-				item = kerbal.name;
+				string item;
+
+				if (kerbal != null)
+				{
+					item = kerbal.name;
+				}
+				else
+				{
+					item = "null";
+				}
+
+				sb.AppendFormat("\n\tKerbal: {0}", item);
+
+				sb.AppendFormat("\n\tfromStatus: {0}", Enum.GetName(typeof(ProtoCrewMember.RosterStatus), fromStatus));
+
+				sb.AppendFormat("\n\ttoStatus: {0}", Enum.GetName(typeof(ProtoCrewMember.RosterStatus), toStatus));
+
+				Debug.Log(sb.ToString());
 			}
-			else
-			{
-				item = "null";
-			}
-
-			sb.AppendFormat("\n\tKerbal: {0}", item);
-
-			sb.AppendFormat("\n\tfromStatus: {0}", Enum.GetName(typeof(ProtoCrewMember.RosterStatus), fromStatus));
-
-			sb.AppendFormat("\n\ttoStatus: {0}", Enum.GetName(typeof(ProtoCrewMember.RosterStatus), toStatus));
-
-			Debug.Log(sb.ToString());
 		}
 
 		public void onPartPack(Part data)
 		{
-			this.PartEventHelper(this.getStringBuilder(), data);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.PartEventHelper(sb, data);
+			}
 		}
 
 		public void onPartUnpack(Part data)
 		{
-			this.PartEventHelper(this.getStringBuilder(), data);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.PartEventHelper(sb, data);
+			}
 		}
 
 		public void onSameVesselDockUndock(GameEvents.FromToAction<ModuleDockingNode, ModuleDockingNode> data)
 		{
-			this.FromModuleToModuleHelper(
-				this.getStringBuilder(),
-				new GameEvents.FromToAction<PartModule, PartModule>(data.from, data.to)
-			);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.FromModuleToModuleHelper(
+					sb,
+					new GameEvents.FromToAction<PartModule, PartModule>(data.from, data.to)
+				);
+			}
 		}
 
 		public void onPartJointBreak(PartJoint joint)
 		{
-			this.PartJointHelper(this.getStringBuilder(), joint);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.PartJointHelper(sb, joint);
+			}
 		}
 
 		public void onPartUndock(Part part)
 		{
-			this.PartEventHelper(this.getStringBuilder(), part);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.PartEventHelper(sb, part);
+			}
 		}
 
 		public void onReportEvent(EventReport data)
 		{
-			this.EventReportHelper(this.getStringBuilder(), data);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.EventReportHelper(sb, data);
+			}
 		}
 
 		public void onPartCouple(GameEvents.FromToAction<Part, Part> data)
 		{
-			this.FromPartToPartHelper(this.getStringBuilder(), data);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.FromPartToPartHelper(sb, data);
+			}
 		}
 
 		public void onVesselCreate(Vessel data)
@@ -192,34 +220,46 @@ namespace ToadicusTools
 
 		public void onVesselDestroy(Vessel data)
 		{
-			this.VesselEventHelper(this.getStringBuilder(), data);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.VesselEventHelper(sb, data);
+			}
 		}
 
 		public void onVesselGoOffRails(Vessel data)
 		{
-			this.VesselEventHelper(this.getStringBuilder(), data);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.VesselEventHelper(sb, data);
+			}
 		}
 
 		public void onVesselGoOnRails(Vessel data)
 		{
-			this.VesselEventHelper(this.getStringBuilder(), data);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.VesselEventHelper(sb, data);
+			}
 		}
 
 
 		public void onVesselLoaded(Vessel data)
 		{
-			this.VesselEventHelper(this.getStringBuilder(), data);
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				this.VesselEventHelper(sb, data);
+			}
 		}
 
 
-		internal void VesselEventHelper(StringBuilder sb, Vessel data)
+		internal void VesselEventHelper(PooledStringBuilder sb, Vessel data)
 		{
 			this.appendVessel(sb, data);
 
 			Debug.Log(sb.ToString());
 		}
 
-		internal void EventReportHelper(StringBuilder sb, EventReport data)
+		internal void EventReportHelper(PooledStringBuilder sb, EventReport data)
 		{
 			sb.Append("\n\tOrigin Part:");
 			this.appendPartAncestry(sb, data.origin);
@@ -236,14 +276,14 @@ namespace ToadicusTools
 			Debug.Log(sb.ToString());
 		}
 
-		internal void PartEventHelper(StringBuilder sb, Part part)
+		internal void PartEventHelper(PooledStringBuilder sb, Part part)
 		{
 			this.appendPartAncestry(sb, part);
 
 			Debug.Log(sb.ToString());
 		}
 
-		internal void FromPartToPartHelper(StringBuilder sb, GameEvents.FromToAction<Part, Part> data)
+		internal void FromPartToPartHelper(PooledStringBuilder sb, GameEvents.FromToAction<Part, Part> data)
 		{
 			sb.Append("\n\tFrom:");
 
@@ -254,11 +294,9 @@ namespace ToadicusTools
 			this.appendPartAncestry(sb, data.to);
 
 			Debug.Log(sb.ToString());
-
-			Tools.PutStringBuilder(sb);
 		}
 
-		internal void FromModuleToModuleHelper(StringBuilder sb, GameEvents.FromToAction<PartModule, PartModule> data)
+		internal void FromModuleToModuleHelper(PooledStringBuilder sb, GameEvents.FromToAction<PartModule, PartModule> data)
 		{
 			sb.Append("\n\tFrom:");
 
@@ -269,11 +307,9 @@ namespace ToadicusTools
 			this.appendModuleAncestry(sb, data.to);
 
 			Debug.Log(sb.ToString());
-
-			Tools.PutStringBuilder(sb);
 		}
 
-		internal void HostedFromPartToPartHelper(StringBuilder sb, GameEvents.HostedFromToAction<Part, Part> data)
+		internal void HostedFromPartToPartHelper(PooledStringBuilder sb, GameEvents.HostedFromToAction<Part, Part> data)
 		{
 			sb.AppendLine("Caught onCrewOnEva");
 
@@ -314,7 +350,7 @@ namespace ToadicusTools
 			sb.AppendFormat("To: {0}\n", item);
 		}
 
-		internal void PartJointHelper(StringBuilder sb, PartJoint joint)
+		internal void PartJointHelper(PooledStringBuilder sb, PartJoint joint)
 		{
 			sb.Append("PartJoint: ");
 			if (joint != null)
@@ -328,11 +364,9 @@ namespace ToadicusTools
 			}
 
 			Debug.Log(sb.ToString());
-
-			Tools.PutStringBuilder(sb);
 		}
 
-		internal StringBuilder appendModuleAncestry(StringBuilder sb, PartModule module, uint tabs = 1)
+		internal PooledStringBuilder appendModuleAncestry(PooledStringBuilder sb, PartModule module, uint tabs = 1)
 		{
 			sb.Append('\n');
 			for (ushort i=0; i < tabs; i++)
@@ -354,7 +388,7 @@ namespace ToadicusTools
 			return sb;
 		}
 
-		internal StringBuilder appendPartAncestry(StringBuilder sb, Part part, uint tabs = 1)
+		internal PooledStringBuilder appendPartAncestry(PooledStringBuilder sb, Part part, uint tabs = 1)
 		{
 			sb.Append('\n');
 			for (ushort i=0; i < tabs; i++)
@@ -376,7 +410,7 @@ namespace ToadicusTools
 			return sb;
 		}
 
-		internal StringBuilder appendVessel(StringBuilder sb, Vessel vessel, uint tabs = 1)
+		internal PooledStringBuilder appendVessel(PooledStringBuilder sb, Vessel vessel, uint tabs = 1)
 		{
 			sb.Append('\n');
 			for (ushort i=0; i < tabs; i++)
@@ -401,9 +435,9 @@ namespace ToadicusTools
 			return sb;
 		}
 
-		internal StringBuilder getStringBuilder()
+		internal PooledStringBuilder getStringBuilder()
 		{
-			StringBuilder sb = Tools.GetStringBuilder();
+			PooledStringBuilder sb = PooledStringBuilder.Get();
 			sb.AppendFormat("{0}: called {1} ",
 				this.GetType().Name,
 				new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name

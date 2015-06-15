@@ -73,31 +73,46 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="ConfigNodeExtensions.cs" />
-    <Compile Include="EventSniffer.cs" />
     <Compile Include="IntCollection.cs" />
-    <Compile Include="MuMech_Tools.cs" />
-    <Compile Include="PartExtensions.cs" />
-    <Compile Include="Tools.cs" />
-    <Compile Include="VesselExtensions.cs" />
-    <Compile Include="WindowTools.cs" />
     <Compile Include="Wrapper\ToolbarWrapper.cs">
-      <Link>ToolbarWrapper.cs</Link>
+      <Link>Wrappers\ToolbarWrapper.cs</Link>
     </Compile>
     <Compile Include="VectorTools.cs" />
-    <Compile Include="StringTools.cs" />
-    <Compile Include="Singleton.cs" />
-    <Compile Include="DebugPartModule.cs" />
-    <Compile Include="AppLauncherTools.cs" />
     <Compile Include="IOTools.cs" />
-    <Compile Include="Table.cs" />
-    <Compile Include="GUITools.cs" />
-    <Compile Include="Math.cs" />
-    <Compile Include="DebugTick.cs" />
     <Compile Include="RandomTools.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="AnimationWrapper.cs" />
     <Compile Include="RollingAverage.cs" />
+    <Compile Include="Compat\Tools.cs" />
+    <Compile Include="Extensions\ConfigNodeExtensions.cs" />
+    <Compile Include="MuMechTools\MuMech_Tools.cs" />
+    <Compile Include="Text\PooledStringBuilder.cs" />
+    <Compile Include="Text\SIFormatProvider.cs" />
+    <Compile Include="Extensions\PartExtensions.cs" />
+    <Compile Include="Extensions\VesselExtensions.cs" />
+    <Compile Include="MathTools.cs" />
+    <Compile Include="Extensions\AppLauncherExtensions.cs" />
+    <Compile Include="Compat\AppLauncherExtensions.cs" />
+    <Compile Include="Debug\DebugPartModule.cs" />
+    <Compile Include="Text\TextTools.cs" />
+    <Compile Include="GUIUtils\WindowTools.cs" />
+    <Compile Include="Debug\DebugTick.cs" />
+    <Compile Include="Debug\EventSniffer.cs" />
+    <Compile Include="GUITools.cs" />
+    <Compile Include="Logging.cs" />
+    <Compile Include="Extensions\ComponentExtensions.cs" />
+    <Compile Include="Extensions\PartModuleExtensions.cs" />
+    <Compile Include="EnumTools.cs" />
+    <Compile Include="Extensions\StopwatchExtensions.cs" />
+    <Compile Include="Extensions\BaseFieldExtensions.cs" />
+    <Compile Include="APIHelpers\PooledObject.cs" />
+    <Compile Include="APIHelpers\Singleton.cs" />
+    <Compile Include="GUIUtils\Table.cs" />
+    <Compile Include="GUIUtils\Layout.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
+    <Compile Include="Compat\ClassStubs.cs" />
+    <Compile Include="Debug\PooledDebugLogger.cs" />
+    <Compile Include="Text\Extensions.cs" />
+    <Compile Include="Enums.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -123,6 +138,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TweakableTools.cs" />
+    <None Include="TweakableTools\TweakableTools.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Compat\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="MuMechTools\" />
+    <Folder Include="Text\" />
+    <Folder Include="Debug\" />
+    <Folder Include="GUIUtils\" />
+    <Folder Include="TweakableTools\" />
+    <Folder Include="APIHelpers\" />
+    <Folder Include="Wrappers\" />
   </ItemGroup>
 </Project>

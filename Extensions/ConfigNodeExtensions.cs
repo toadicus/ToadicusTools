@@ -26,9 +26,9 @@
 using KSP;
 using System;
 
-namespace ToadicusTools
+namespace ToadicusTools.Extensions
 {
-	public static partial class Tools
+	public static class ConfigNodeExtensions
 	{
 		/// <summary>
 		/// Gets the value of key "name" in <see cref="ConfigNode"/> "node" as a <see cref="string"/>,

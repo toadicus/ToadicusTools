@@ -1,6 +1,6 @@
 ﻿// ToadicusTools
 //
-// Enums.cs
+// PartModuleExtensions.cs
 //
 // Copyright © 2015, toadicus
 // All rights reserved.
@@ -24,32 +24,20 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 
-namespace ToadicusTools
+namespace ToadicusTools.Extensions
 {
-	public enum LogChannel
+	public static class PartModuleExtensions
 	{
-		Log,
-		Warning,
-		Error
-	}
-
-	public enum PlayPosition
-	{
-		Beginning = 0,
-		End = 1
-	}
-
-	public enum PlayDirection
-	{
-		Forward = 1,
-		Backward = -1
-	}
-
-	public enum VesselCommand
-	{
-		None = 0,
-		Probe = 1,
-		Crew = 2
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void DebugFieldsActivate(this PartModule partModule)
+		{
+			BaseField field;
+			for (int idx = 0; idx < partModule.Fields.Count; idx++)
+			{
+				field = partModule.Fields[idx];
+				field.guiActive = field.guiActiveEditor = true;
+			}
+		}
 	}
 }
 

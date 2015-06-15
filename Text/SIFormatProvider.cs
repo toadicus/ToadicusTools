@@ -1,8 +1,8 @@
 ﻿// ToadicusTools
 //
-// StringTools.cs
+// SIFormatProvider.cs
 //
-// Copyright © 2014-2015, toadicus
+// Copyright © 2015, toadicus
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
@@ -22,155 +22,10 @@
 // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-using KSP;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 
-namespace ToadicusTools
+namespace ToadicusTools.Text
 {
-	public static partial class Tools
-	{
-		public static readonly SIFormatProvider SIFormatter = new SIFormatProvider();
-
-		/// <summary>
-		/// <para>Replaces the format items in a specified string with the string representation of corresponding objects in a
-		/// specified array.</para>
-		/// <para>&#160;</para>
-		/// <para>Uses the custom SIFormatter format provider, to facilitate SI formats for double and double-like numbers, as
-		/// MuMech_ToSI.</para>
-		/// </summary>
-		/// <param name="format">A composite format string.</param>
-		/// <param name="args">An object array that contains zero or more objects to format.</param>
-		public static string Format(string format, params object[] args)
-		{
-			return string.Format(SIFormatter, format, args);
-		}
-
-		public static string ToMD5Hash(this string input, int outLength = 32)
-		{
-			var alg = System.Security.Cryptography.MD5.Create();
-			var hash = alg.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
-
-			System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-			int byteLength = outLength / 2;
-
-			for (int idx = 0; idx < byteLength; idx++)
-			{
-				var b = hash[idx];
-				sb.Append(b.ToString("x2"));
-			}
-
-			return sb.ToString();
-		}
-
-		public static StringBuilder Print(this StringBuilder sb)
-		{
-			Tools.PostLogMessage(sb.ToString());
-
-			return sb;
-		}
-
-		public static StringBuilder AddIntendedLine(this StringBuilder sb, string line, int indent = 0)
-		{
-			if (indent > 0) {
-				sb.Append(' ', indent * 4);
-			}
-
-			sb.AppendLine(line);
-
-			return sb;
-		}
-
-		public static string SPrint<T>(this T[] array, string delimiter, Func<T, string> stringFunc)
-		{
-			StringBuilder sb = GetStringBuilder();
-			T item;
-			string s;
-
-			for (int idx = 0; idx < array.Length; idx++)
-			{
-				if (idx > 0)
-				{
-					sb.Append(delimiter);
-				}
-
-				item = array[idx];
-
-				sb.Append(item == null ? "null" : stringFunc == null ? item.ToString() : stringFunc(item));
-			}
-
-			s = sb.ToString();
-
-			PutStringBuilder(sb);
-
-			return s;
-		}
-
-		public static string SPrint<T>(this T[] array, Func<T, string> stringFunc, string delimiter = ", ")
-		{
-			return SPrint(array, delimiter, stringFunc);
-		}
-
-		public static string SPrint<T>(this T[] array, string delimiter = ", ")
-		{
-			return array.SPrint(delimiter, null);
-		}
-
-		public static string SPrint<T>(this IList<T> list, string delimiter, Func<T, string> stringFunc)
-		{
-			StringBuilder sb = GetStringBuilder();
-			T item;
-			string s;
-
-			for (int idx = 0; idx < list.Count; idx++)
-			{
-				if (idx > 0)
-				{
-					sb.Append(delimiter);
-				}
-
-				item = list[idx];
-
-				sb.Append(item == null ? "null" : stringFunc == null ? item.ToString() : stringFunc(item));
-			}
-
-			s = sb.ToString();
-
-			PutStringBuilder(sb);
-
-			return s;
-		}
-
-		public static string SPrint<T>(this List<T> list, string delimiter, Func<T, string> stringFunc)
-		{
-			return SPrint<T>(list as IList<T>, delimiter, stringFunc);
-		}
-
-		public static string SPrint<T>(this List<T> list, Func<T, string> stringFunc, string delimiter = ", ")
-		{
-			return SPrint(list, delimiter, stringFunc);
-		}
-
-		public static string SPrint<T>(this IList<T> list, Func<T, string> stringFunc, string delimiter = ", ")
-		{
-			return SPrint(list, delimiter, stringFunc);
-		}
-
-		public static string SPrint<T>(this List<T> list, string delimiter = ", ")
-		{
-			return list.SPrint(delimiter, null);
-		}
-
-		public static string SPrint<T>(this IList<T> list, string delimiter = ", ")
-		{
-			return list.SPrint(delimiter, null);
-		}
-	}
-
 	/// <summary>
 	/// <para>Facilitates a new "SI prefixed" string format for doubles and double-like numbers, "S[x[,y[,z]]]" where:</para>
 	/// <list type="bullet">
@@ -184,6 +39,13 @@ namespace ToadicusTools
 	/// </summary>
 	public class SIFormatProvider : IFormatProvider, ICustomFormatter
 	{
+		public static SIFormatProvider SIFormatter;
+
+		static SIFormatProvider()
+		{
+			SIFormatter = new SIFormatProvider();
+		}
+
 		public static string ToSI(double value, int sigFigs)
 		{
 			if (value == 0)
@@ -380,7 +242,7 @@ namespace ToadicusTools
 
 			if (decimalPlaces < 0)
 			{
-				double divisor = Tools.Pow(10d, -decimalPlaces);
+				double divisor = MathTools.Pow(10d, -decimalPlaces);
 				value = ((int)value / divisor) * divisor;
 				decimalPlaces = 0;
 			}
@@ -462,9 +324,10 @@ namespace ToadicusTools
 							MaxMagnitude = int.Parse(args[2]);
 						}
 
-						return Tools.MuMech_ToSI(d, digits, MinMagnitude, MaxMagnitude);
+						return MuMechTools.MuMechTools.MuMech_ToSI(d, digits, MinMagnitude, MaxMagnitude);
 					default:
-						return ((IFormattable)arg).ToString(format, System.Globalization.CultureInfo.CurrentCulture);
+						// return ((IFormattable)arg).ToString(format, System.Globalization.CultureInfo.CurrentCulture);
+						return string.Format(format, arg);
 				}
 			}
 			else if (arg != null)
@@ -477,5 +340,4 @@ namespace ToadicusTools
 			}
 		}
 	}
-
 }

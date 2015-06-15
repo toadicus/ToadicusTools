@@ -28,9 +28,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ToadicusTools
+namespace ToadicusTools.Extensions
 {
-	public static partial class Tools
+	public static class PartExtensions
 	{
 		[Obsolete("Deprecated, please use hasModuleByType.")]
 		public static bool hasModuleType<T>(this Part part) where T : PartModule
@@ -57,7 +57,7 @@ namespace ToadicusTools
 
 			if (!typeof(PartModule).IsAssignableFrom(type))
 			{
-				Tools.PostWarningMessage(
+				Logging.PostWarningMessage(
 					"[ToadicusTools] Part.hasModuleByType: '{0}' is not a derivative of PartModule",
 					type.FullName
 				);
@@ -113,7 +113,7 @@ namespace ToadicusTools
 
 			if (string.IsNullOrEmpty(moduleName))
 			{
-				Tools.PostWarningMessage("[ToadicusTools]: Part.hasModuleByName: moduleName argument is null or empty");
+				Logging.PostWarningMessage("[ToadicusTools]: Part.hasModuleByName: moduleName argument is null or empty");
 				return false;
 			}
 

@@ -1,4 +1,4 @@
-﻿// ToadicusTools, a TweakableEverything module
+﻿// TweakableEverything
 //
 // TweakableTools.cs
 //

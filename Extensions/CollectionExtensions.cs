@@ -1,6 +1,6 @@
 ﻿// ToadicusTools
 //
-// Enums.cs
+// ArrayExtensions.cs
 //
 // Copyright © 2015, toadicus
 // All rights reserved.
@@ -24,32 +24,52 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 
-namespace ToadicusTools
+namespace ToadicusTools.Extensions
 {
-	public enum LogChannel
+	public static class CollectionExtensions
 	{
-		Log,
-		Warning,
-		Error
-	}
+		public static bool Contains(this GameScenes[] haystack, GameScenes needle)
+		{
+			GameScenes item;
+			for (int idx = 0; idx < haystack.Length; idx++)
+			{
+				item = haystack[idx];
+				if (item == needle)
+				{
+					return true;
+				}
+			}
 
-	public enum PlayPosition
-	{
-		Beginning = 0,
-		End = 1
-	}
+			return false;
+		}
 
-	public enum PlayDirection
-	{
-		Forward = 1,
-		Backward = -1
-	}
+		public static bool Contains(this CelestialBody[] haystack, CelestialBody needle)
+		{
+			CelestialBody item;
+			for (int idx = 0; idx < haystack.Length; idx++)
+			{
+				item = haystack[idx];
+				if (item == needle)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 
-	public enum VesselCommand
-	{
-		None = 0,
-		Probe = 1,
-		Crew = 2
+		public static bool Contains<T>(this T[] haystack, T needle)
+		{
+			T item;
+			for (int idx = 0; idx < haystack.Length; idx++)
+			{
+				item = haystack[idx];
+				if (object.Equals(item, needle))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }
 

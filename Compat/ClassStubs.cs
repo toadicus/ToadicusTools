@@ -1,6 +1,6 @@
 ﻿// ToadicusTools
 //
-// Enums.cs
+// ClassStubs.cs
 //
 // Copyright © 2015, toadicus
 // All rights reserved.
@@ -22,34 +22,17 @@
 // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Table = ToadicusTools.GUIUtils.Table;
 
 namespace ToadicusTools
 {
-	public enum LogChannel
+	[Obsolete("Deprecated; use ToadicusTools.DebugLogger instead")]
+	public class SIFormatProvider : Text.SIFormatProvider
 	{
-		Log,
-		Warning,
-		Error
-	}
-
-	public enum PlayPosition
-	{
-		Beginning = 0,
-		End = 1
-	}
-
-	public enum PlayDirection
-	{
-		Forward = 1,
-		Backward = -1
-	}
-
-	public enum VesselCommand
-	{
-		None = 0,
-		Probe = 1,
-		Crew = 2
+		new public static readonly SIFormatProvider SIFormatter = new SIFormatProvider();
 	}
 }
-
