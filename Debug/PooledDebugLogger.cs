@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using UnityEngine;
 
-namespace ToadicusTools
+namespace ToadicusTools.DebugTools
 {
 	public class PooledDebugLogger : PooledObject<PooledDebugLogger>, IDisposable
 	{

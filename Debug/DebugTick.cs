@@ -29,7 +29,7 @@ using KSP;
 using System;
 using UnityEngine;
 
-namespace ToadicusTools
+namespace ToadicusTools.DebugTools
 {
 	[KSPAddon(KSPAddon.Startup.EveryScene, false)]
 	public class DebugTick : MonoBehaviour

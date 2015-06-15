@@ -50,7 +50,7 @@ namespace TweakableEverything
 		{
 			if (floatTweakable == null)
 			{
-				Tools.PostErrorMessage("Got null Control during InitializeTweakable for type {0}; bailing out.",
+				Logging.PostErrorMessage("Got null Control during InitializeTweakable for type {0}; bailing out.",
 					typeof(T).FullName);
 
 				return;
@@ -109,7 +109,7 @@ namespace TweakableEverything
 			}
 			else
 			{
-				Tools.PostErrorMessage("InitializeTweakable<{0}>: Got floatTweakable of type {1}, expected {2}"
+				Logging.PostErrorMessage("InitializeTweakable<{0}>: Got floatTweakable of type {1}, expected {2}"
 						#if USE_KSPAPIEXTENSIONS
 						+ " or {3}"
 						#endif
@@ -201,7 +201,7 @@ namespace TweakableEverything
 			}
 			catch (Exception e)
 			{
-				Tools.PostErrorMessage(
+				Logging.PostErrorMessage(
 					"{0} handled while loading PluginData for type {1}: do you have a malformed XML file?",
 					e.GetType().FullName,
 					typeof(T).Name
@@ -233,7 +233,7 @@ namespace TweakableEverything
 			}
 			catch (Exception e)
 			{
-				Tools.PostErrorMessage(
+				Logging.PostErrorMessage(
 					"{0} handled while loading PluginData for type {1}: do you have a malformed XML file?",
 					e.GetType().FullName,
 					typeof(T).Name

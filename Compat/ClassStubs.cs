@@ -35,4 +35,6 @@ namespace ToadicusTools
 	{
 		new public static readonly SIFormatProvider SIFormatter = new SIFormatProvider();
 	}
+
+	public class DebugPartModule : DebugTools.DebugPartModule {}
 }

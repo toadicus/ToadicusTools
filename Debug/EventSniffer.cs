@@ -33,7 +33,7 @@ using UnityEngine;
 
 #if DEBUG
 
-namespace ToadicusTools
+namespace ToadicusTools.DebugTools
 {
 	[KSPAddon(KSPAddon.Startup.EveryScene, false)]
 	public class EventSniffer : MonoBehaviour

@@ -31,7 +31,7 @@ using System.Text;
 using ToadicusTools.Text;
 using UnityEngine;
 
-namespace ToadicusTools
+namespace ToadicusTools.DebugTools
 {
 	public class DebugPartModule : PartModule
 	{
