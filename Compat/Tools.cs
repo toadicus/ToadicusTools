@@ -1038,6 +1038,26 @@ namespace ToadicusTools
 
 			return false;
 		}
+		
+		
+		public static Part GetSceneRootPart()
+		{
+			Part rootPart;
+			switch (HighLogic.LoadedScene)
+			{
+				case GameScenes.EDITOR:
+					rootPart = EditorLogic.RootPart;
+					break;
+				case GameScenes.FLIGHT:
+					rootPart = FlightGlobals.ActiveVessel != null ? FlightGlobals.ActiveVessel.rootPart : null;
+					break;
+				default:
+					rootPart = null;
+					break;
+			}
+
+			return rootPart;
+		}
 		#endregion
 	}
 }
