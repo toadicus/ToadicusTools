@@ -30,8 +30,9 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 
+#pragma warning disable 0618
 
-namespace ToadicusTools.Wrappers {
+namespace ToadicusTools {
 
 
 
@@ -52,10 +53,12 @@ namespace ToadicusTools.Wrappers {
 	/// <summary>
 	/// The global tool bar manager.
 	/// </summary>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public partial class ToolbarManager : IToolbarManager {
 		/// <summary>
 		/// Whether the Toolbar Plugin is available.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public static bool ToolbarAvailable {
 			get {
 				if (toolbarAvailable == null) {
@@ -68,6 +71,7 @@ namespace ToadicusTools.Wrappers {
 		/// <summary>
 		/// The global tool bar manager instance.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public static IToolbarManager Instance {
 			get {
 				if ((toolbarAvailable != false) && (instance_ == null)) {
@@ -87,6 +91,7 @@ namespace ToadicusTools.Wrappers {
 	/// <summary>
 	/// A toolbar manager.
 	/// </summary>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public interface IToolbarManager {
 		/// <summary>
 		/// Adds a new button.
@@ -98,12 +103,14 @@ namespace ToadicusTools.Wrappers {
 		/// <param name="ns">The new button's namespace. This is usually the plugin's name. Must not include special characters like '.'</param>
 		/// <param name="id">The new button's ID. This ID must be unique across all buttons in the namespace. Must not include special characters like '.'</param>
 		/// <returns>The button created.</returns>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		IButton add(string ns, string id);
 	}
 
 	/// <summary>
 	/// Represents a clickable button.
 	/// </summary>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public interface IButton {
 		/// <summary>
 		/// The text displayed on the button. Set to null to hide text.
@@ -113,6 +120,7 @@ namespace ToadicusTools.Wrappers {
 		/// modify the button's size, this feature should be used sparingly, if at all.
 		/// </remarks>
 		/// <seealso cref="TexturePath"/>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		string Text {
 			set;
 			get;
@@ -124,6 +132,7 @@ namespace ToadicusTools.Wrappers {
 		/// <remarks>
 		/// The text color can be changed at any time to modify the button's appearance.
 		/// </remarks>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		Color TextColor {
 			set;
 			get;
@@ -149,6 +158,7 @@ namespace ToadicusTools.Wrappers {
 		/// </para>
 		/// </remarks>
 		/// <seealso cref="Text"/>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		string TexturePath {
 			set;
 			get;
@@ -160,6 +170,7 @@ namespace ToadicusTools.Wrappers {
 		/// <remarks>
 		/// Tool Tip Text Should Always Use Headline Style Like This.
 		/// </remarks>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		string ToolTip {
 			set;
 			get;
@@ -172,6 +183,7 @@ namespace ToadicusTools.Wrappers {
 		/// Setting this property to true does not affect the player's ability to hide the button using the configuration.
 		/// Conversely, setting this property to false does not enable the player to show the button using the configuration.
 		/// </remarks>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		bool Visible {
 			set;
 			get;
@@ -184,6 +196,7 @@ namespace ToadicusTools.Wrappers {
 		/// The return value from IVisibility.Visible is subject to the same rules as outlined for
 		/// <see cref="Visible"/>.
 		/// </remarks>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		IVisibility Visibility {
 			set;
 			get;
@@ -198,6 +211,7 @@ namespace ToadicusTools.Wrappers {
 		/// does not reflect button invisibility in those scenes. In addition, this property does not reflect the
 		/// player's configuration of the button's visibility.
 		/// </remarks>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		bool EffectivelyVisible {
 			get;
 		}
@@ -206,6 +220,7 @@ namespace ToadicusTools.Wrappers {
 		/// Whether this button is currently enabled (clickable) or not. This does not affect the player's ability to
 		/// position the button on their toolbar.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		bool Enabled {
 			set;
 			get;
@@ -233,6 +248,7 @@ namespace ToadicusTools.Wrappers {
 		/// screen even when it normally wouldn't.
 		/// </para>
 		/// </remarks>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		bool Important {
 			set;
 			get;
@@ -242,6 +258,7 @@ namespace ToadicusTools.Wrappers {
 		/// A drawable that is tied to the current button. This can be anything from a popup menu to
 		/// an informational window. Set to null to hide the drawable.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		IDrawable Drawable {
 			set;
 			get;
@@ -258,6 +275,7 @@ namespace ToadicusTools.Wrappers {
 		/// };
 		/// </code>
 		/// </example>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		event ClickHandler OnClick;
 
 		/// <summary>
@@ -271,6 +289,7 @@ namespace ToadicusTools.Wrappers {
 		/// };
 		/// </code>
 		/// </example>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		event MouseEnterHandler OnMouseEnter;
 
 		/// <summary>
@@ -284,12 +303,14 @@ namespace ToadicusTools.Wrappers {
 		/// };
 		/// </code>
 		/// </example>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		event MouseLeaveHandler OnMouseLeave;
 
 		/// <summary>
 		/// Permanently destroys this button so that it is no longer displayed.
 		/// Should be used when a plugin is stopped to remove leftover buttons.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		void Destroy();
 	}
 
@@ -297,10 +318,12 @@ namespace ToadicusTools.Wrappers {
 	/// A drawable that is tied to a particular button. This can be anything from a popup menu
 	/// to an informational window.
 	/// </summary>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public interface IDrawable {
 		/// <summary>
 		/// Update any information. This is called once per frame.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		void Update();
 
 		/// <summary>
@@ -313,6 +336,7 @@ namespace ToadicusTools.Wrappers {
 		/// </remarks>
 		/// <param name="position">The left/top position of where to draw this drawable.</param>
 		/// <returns>The current width/height of this drawable.</returns>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		Vector2 Draw(Vector2 position);
 	}
 
@@ -323,10 +347,12 @@ namespace ToadicusTools.Wrappers {
 	/// <summary>
 	/// Event describing a click on a button.
 	/// </summary>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public partial class ClickEvent : EventArgs {
 		/// <summary>
 		/// The button that has been clicked.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public readonly IButton Button;
 
 		/// <summary>
@@ -335,6 +361,7 @@ namespace ToadicusTools.Wrappers {
 		/// <remarks>
 		/// Is 0 for left mouse button, 1 for right mouse button, and 2 for middle mouse button.
 		/// </remarks>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public readonly int MouseButton;
 	}
 
@@ -342,27 +369,32 @@ namespace ToadicusTools.Wrappers {
 	/// An event handler that is invoked whenever a button has been clicked.
 	/// </summary>
 	/// <param name="e">An event describing the button click.</param>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public delegate void ClickHandler(ClickEvent e);
 
 	/// <summary>
 	/// Event describing the mouse pointer moving about a button.
 	/// </summary>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public abstract partial class MouseMoveEvent {
 		/// <summary>
 		/// The button in question.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public readonly IButton button;
 	}
 
 	/// <summary>
 	/// Event describing the mouse pointer entering a button's area.
 	/// </summary>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public partial class MouseEnterEvent : MouseMoveEvent {
 	}
 
 	/// <summary>
 	/// Event describing the mouse pointer leaving a button's area.
 	/// </summary>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public partial class MouseLeaveEvent : MouseMoveEvent {
 	}
 
@@ -370,12 +402,14 @@ namespace ToadicusTools.Wrappers {
 	/// An event handler that is invoked whenever the mouse pointer enters a button's area.
 	/// </summary>
 	/// <param name="e">An event describing the mouse pointer entering.</param>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public delegate void MouseEnterHandler(MouseEnterEvent e);
 
 	/// <summary>
 	/// An event handler that is invoked whenever the mouse pointer leaves a button's area.
 	/// </summary>
 	/// <param name="e">An event describing the mouse pointer leaving.</param>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public delegate void MouseLeaveHandler(MouseLeaveEvent e);
 
 	#endregion
@@ -386,11 +420,13 @@ namespace ToadicusTools.Wrappers {
 	/// Determines visibility of a button.
 	/// </summary>
 	/// <seealso cref="IButton.Visibility"/>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public interface IVisibility {
 		/// <summary>
 		/// Whether a button is currently visible or not.
 		/// </summary>
 		/// <seealso cref="IButton.Visible"/>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		bool Visible {
 			get;
 		}
@@ -406,7 +442,9 @@ namespace ToadicusTools.Wrappers {
 	/// </code>
 	/// </example>
 	/// <seealso cref="IButton.Visibility"/>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public class GameScenesVisibility : IVisibility {
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public bool Visible {
 			get {
 				return (bool) visibleProperty.GetValue(realGameScenesVisibility, null);
@@ -416,6 +454,7 @@ namespace ToadicusTools.Wrappers {
 		private object realGameScenesVisibility;
 		private PropertyInfo visibleProperty;
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public GameScenesVisibility(params GameScenes[] gameScenes) {
 			Type gameScenesVisibilityType = ToolbarTypes.getType("Toolbar.GameScenesVisibility");
 			realGameScenesVisibility = Activator.CreateInstance(gameScenesVisibilityType, new object[] { gameScenes });
@@ -430,10 +469,12 @@ namespace ToadicusTools.Wrappers {
 	/// <summary>
 	/// A drawable that draws a popup menu.
 	/// </summary>
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	public partial class PopupMenuDrawable : IDrawable {
 		/// <summary>
 		/// Event handler that can be registered with to receive "any menu option clicked" events.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public event Action OnAnyOptionClicked {
 			add {
 				onAnyOptionClickedEvent.AddEventHandler(realPopupMenuDrawable, value);
@@ -451,6 +492,7 @@ namespace ToadicusTools.Wrappers {
 		private MethodInfo destroyMethod;
 		private EventInfo onAnyOptionClickedEvent;
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public PopupMenuDrawable() {
 			Type popupMenuDrawableType = ToolbarTypes.getType("Toolbar.PopupMenuDrawable");
 			realPopupMenuDrawable = Activator.CreateInstance(popupMenuDrawableType, null);
@@ -462,10 +504,12 @@ namespace ToadicusTools.Wrappers {
 			onAnyOptionClickedEvent = ToolbarTypes.getEvent(popupMenuDrawableType, "OnAnyOptionClicked");
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public void Update() {
 			updateMethod.Invoke(realPopupMenuDrawable, null);
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public Vector2 Draw(Vector2 position) {
 			return (Vector2) drawMethod.Invoke(realPopupMenuDrawable, new object[] { position });
 		}
@@ -475,6 +519,7 @@ namespace ToadicusTools.Wrappers {
 		/// </summary>
 		/// <param name="text">The text of the option.</param>
 		/// <returns>A button that can be used to register clicks on the menu option.</returns>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public IButton AddOption(string text) {
 			object realButton = addOptionMethod.Invoke(realPopupMenuDrawable, new object[] { text });
 			return new Button(realButton, new ToolbarTypes());
@@ -483,6 +528,7 @@ namespace ToadicusTools.Wrappers {
 		/// <summary>
 		/// Adds a separator to the popup menu.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public void AddSeparator() {
 			addSeparatorMethod.Invoke(realPopupMenuDrawable, null);
 		}
@@ -490,6 +536,7 @@ namespace ToadicusTools.Wrappers {
 		/// <summary>
 		/// Destroys this drawable. This must always be called before disposing of this drawable.
 		/// </summary>
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public void Destroy() {
 			destroyMethod.Invoke(realPopupMenuDrawable, null);
 		}
@@ -514,6 +561,7 @@ namespace ToadicusTools.Wrappers {
 			addMethod = ToolbarTypes.getMethod(types.iToolbarManagerType, "add");
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public IButton add(string ns, string id) {
 			object realButton = addMethod.Invoke(realToolbarManager, new object[] { ns, id });
 			IButton button = new Button(realButton, types);
@@ -522,6 +570,7 @@ namespace ToadicusTools.Wrappers {
 		}
 	}
 
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	internal class Button : IButton {
 		private object realButton;
 		private ToolbarTypes types;
@@ -529,6 +578,7 @@ namespace ToadicusTools.Wrappers {
 		private Delegate realMouseEnterHandler;
 		private Delegate realMouseLeaveHandler;
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal Button(object realButton, ToolbarTypes types) {
 			this.realButton = realButton;
 			this.types = types;
@@ -545,6 +595,7 @@ namespace ToadicusTools.Wrappers {
 			return d;
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public string Text {
 			set {
 				types.button.textProperty.SetValue(realButton, value, null);
@@ -554,6 +605,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public Color TextColor {
 			set {
 				types.button.textColorProperty.SetValue(realButton, value, null);
@@ -563,6 +615,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public string TexturePath {
 			set {
 				types.button.texturePathProperty.SetValue(realButton, value, null);
@@ -572,6 +625,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public string ToolTip {
 			set {
 				types.button.toolTipProperty.SetValue(realButton, value, null);
@@ -581,6 +635,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public bool Visible {
 			set {
 				types.button.visibleProperty.SetValue(realButton, value, null);
@@ -590,6 +645,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public IVisibility Visibility {
 			set {
 				object functionVisibility = null;
@@ -605,12 +661,14 @@ namespace ToadicusTools.Wrappers {
 		}
 		private IVisibility visibility_;
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public bool EffectivelyVisible {
 			get {
 				return (bool) types.button.effectivelyVisibleProperty.GetValue(realButton, null);
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public bool Enabled {
 			set {
 				types.button.enabledProperty.SetValue(realButton, value, null);
@@ -620,6 +678,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public bool Important {
 			set {
 				types.button.importantProperty.SetValue(realButton, value, null);
@@ -629,6 +688,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public IDrawable Drawable {
 			set {
 				object functionDrawable = null;
@@ -647,6 +707,7 @@ namespace ToadicusTools.Wrappers {
 		}
 		private IDrawable drawable_;
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public event ClickHandler OnClick;
 
 		private void clicked(object realEvent) {
@@ -655,6 +716,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public event MouseEnterHandler OnMouseEnter;
 
 		private void mouseEntered(object realEvent) {
@@ -663,6 +725,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public event MouseLeaveHandler OnMouseLeave;
 
 		private void mouseLeft(object realEvent) {
@@ -671,6 +734,7 @@ namespace ToadicusTools.Wrappers {
 			}
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		public void Destroy() {
 			detachEventHandler(types.button.onClickEvent, realClickHandler, realButton);
 			detachEventHandler(types.button.onMouseEnterEvent, realMouseEnterHandler, realButton);
@@ -685,6 +749,7 @@ namespace ToadicusTools.Wrappers {
 	}
 
 	public partial class ClickEvent : EventArgs {
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal ClickEvent(object realEvent, IButton button) {
 			Type type = realEvent.GetType();
 			Button = button;
@@ -693,29 +758,38 @@ namespace ToadicusTools.Wrappers {
 	}
 
 	public abstract partial class MouseMoveEvent : EventArgs {
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal MouseMoveEvent(IButton button) {
 			this.button = button;
 		}
 	}
 
 	public partial class MouseEnterEvent : MouseMoveEvent {
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal MouseEnterEvent(IButton button)
 			: base(button) {
 		}
 	}
 
 	public partial class MouseLeaveEvent : MouseMoveEvent {
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal MouseLeaveEvent(IButton button)
 			: base(button) {
 		}
 	}
 
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	internal class ToolbarTypes {
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal readonly Type iToolbarManagerType;
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal readonly Type functionVisibilityType;
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal readonly Type functionDrawableType;
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal readonly ButtonTypes button;
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal ToolbarTypes() {
 			iToolbarManagerType = getType("Toolbar.IToolbarManager");
 			functionVisibilityType = getType("Toolbar.FunctionVisibility");
@@ -725,29 +799,35 @@ namespace ToadicusTools.Wrappers {
 			button = new ButtonTypes(iButtonType);
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal static Type getType(string name) {
 			return AssemblyLoader.loadedAssemblies
 				.SelectMany(a => a.assembly.GetExportedTypes())
 				.SingleOrDefault(t => t.FullName == name);
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal static PropertyInfo getProperty(Type type, string name) {
 			return type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal static PropertyInfo getStaticProperty(Type type, string name) {
 			return type.GetProperty(name, BindingFlags.Public | BindingFlags.Static);
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal static EventInfo getEvent(Type type, string name) {
 			return type.GetEvent(name, BindingFlags.Public | BindingFlags.Instance);
 		}
 
+		[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 		internal static MethodInfo getMethod(Type type, string name) {
 			return type.GetMethod(name, BindingFlags.Public | BindingFlags.Instance);
 		}
 	}
 
+	[Obsolete("Deprecated; use version in ToadicusTools.Wrappers instead")]
 	internal class ButtonTypes {
 		internal readonly Type iButtonType;
 		internal readonly PropertyInfo textProperty;
@@ -787,3 +867,4 @@ namespace ToadicusTools.Wrappers {
 
 	#endregion
 }
+#pragma warning restore 0618

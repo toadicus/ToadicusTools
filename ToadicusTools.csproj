@@ -113,6 +113,7 @@
     <Compile Include="Debug\PooledDebugLogger.cs" />
     <Compile Include="Text\Extensions.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Compat\ToolbarWrapper.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

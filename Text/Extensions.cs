@@ -154,5 +154,14 @@ namespace ToadicusTools.Text
 		{
 			return list.SPrint(delimiter, null);
 		}
+
+		public static string ToString(this Vector3d vector, string format)
+		{
+			return string.Format("{0}, {1}, {2}",
+				vector.x.ToString(format, SIFormatProvider.SIFormatter),
+				vector.y.ToString(format, SIFormatProvider.SIFormatter),
+				vector.z.ToString(format, SIFormatProvider.SIFormatter)
+			);
+		}
 	}
 }

@@ -252,6 +252,11 @@ namespace ToadicusTools.Text
 			return string.Format(format, value, prefix);
 		}
 
+		public static string ToSI(double value)
+		{
+			return ToSI(value, 3);
+		}
+
 		public object GetFormat(Type type)
 		{
 			if (type == typeof(ICustomFormatter))

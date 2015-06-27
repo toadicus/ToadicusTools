@@ -225,13 +225,13 @@ namespace ToadicusTools.Text
 
 		public PooledStringBuilder AppendFormat(string format, object arg0, object arg1)
 		{
-			this.sb.AppendFormat(format, arg0, arg1);
+			this.sb.AppendFormat(SIFormatProvider.SIFormatter, format, arg0, arg1);
 			return this;
 		}
 
 		public PooledStringBuilder AppendFormat(string format, object arg0)
 		{
-			this.sb.AppendFormat(format, arg0);
+			this.sb.AppendFormat(SIFormatProvider.SIFormatter, format, arg0);
 			return this;
 		}
 
@@ -243,13 +243,13 @@ namespace ToadicusTools.Text
 
 		public PooledStringBuilder AppendFormat(string format, params object[] args)
 		{
-			this.sb.AppendFormat(format, args);
+			this.sb.AppendFormat(SIFormatProvider.SIFormatter, format, args);
 			return this;
 		}
 
 		public PooledStringBuilder AppendFormat(string format, object arg0, object arg1, object arg2)
 		{
-			this.sb.AppendFormat(format, arg0, arg1, arg2);
+			this.sb.AppendFormat(SIFormatProvider.SIFormatter, format, arg0, arg1, arg2);
 			return this;
 		}
 

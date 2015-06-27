@@ -191,13 +191,9 @@ namespace ToadicusTools
 			return D;
 		}
 
-		public static string ToString(this Vector3d vector, string format)
+		public static string ToString(Vector3d vector, string format)
 		{
-			return string.Format("{0}, {1}, {2}",
-				vector.x.ToString(format, Text.SIFormatProvider.SIFormatter),
-				vector.y.ToString(format, Text.SIFormatProvider.SIFormatter),
-				vector.z.ToString(format, Text.SIFormatProvider.SIFormatter)
-			);
+			return Text.Extensions.ToString(vector, format);
 		}
 	}
 }

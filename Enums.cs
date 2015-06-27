@@ -45,11 +45,14 @@ namespace ToadicusTools
 		Backward = -1
 	}
 
-	public enum VesselCommand
+	namespace Extensions
 	{
-		None = 0,
-		Probe = 1,
-		Crew = 2
+		public enum VesselCommand
+		{
+			None = 0,
+			Probe = 1,
+			Crew = 2
+		}
 	}
 }
 

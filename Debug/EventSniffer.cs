@@ -22,7 +22,10 @@
 // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#define DEBUG
+
+// TODO: Remove this after the refactor is done.
+#pragma warning disable 0618
+
 using KSP;
 using System;
 using System.Collections.Generic;
@@ -30,8 +33,6 @@ using System.Text;
 using ToadicusTools.Extensions;
 using ToadicusTools.Text;
 using UnityEngine;
-
-#if DEBUG
 
 namespace ToadicusTools.DebugTools
 {
@@ -459,4 +460,5 @@ namespace ToadicusTools.DebugTools
 		}
 	}
 }
-#endif
+
+#pragma warning restore 0618

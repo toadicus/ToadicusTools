@@ -939,7 +939,7 @@ namespace ToadicusTools
 		[Obsolete("Deprecated, please use module from Extensions.VesselExtensions instead")]
 		public static VesselCommand CurrentCommand(this Vessel vessel)
 		{
-			return Extensions.VesselExtensions.CurrentCommand(vessel);
+			return (VesselCommand)Extensions.VesselExtensions.CurrentCommand(vessel);
 		}
 
 		/// <summary>
@@ -1059,5 +1059,12 @@ namespace ToadicusTools
 			return rootPart;
 		}
 		#endregion
+	}
+
+	public enum VesselCommand
+	{
+		None = 0,
+		Probe = 1,
+		Crew = 2
 	}
 }
