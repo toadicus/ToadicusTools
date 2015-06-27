@@ -44,7 +44,8 @@ namespace ToadicusTools
 			}
 
 			this.Events["DumpModule"].guiName = string.Format("Dump {0}", this.GetType().Name);
-			this.Events["DumpPart"].guiName = string.Format("Dump {0}", this.part.partInfo.name);
+			// TODO: Fix this; part or partInfo isn't defined during OnAwake at load screen.
+			// this.Events["DumpPart"].guiName = string.Format("Dump {0}", this.part.partInfo.name);
 
 			base.OnAwake();
 		}
