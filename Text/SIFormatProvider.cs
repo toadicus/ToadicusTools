@@ -331,17 +331,14 @@ namespace ToadicusTools.Text
 
 						return MuMechTools.MuMechTools.MuMech_ToSI(d, digits, MinMagnitude, MaxMagnitude);
 					default:
-						// return ((IFormattable)arg).ToString(format, System.Globalization.CultureInfo.CurrentCulture);
-						return string.Format(format, arg);
+						return ((IFormattable)arg).ToString(format, System.Globalization.CultureInfo.CurrentCulture);
+						// TODO: Remember why I previously switched from ToString to Format.
+						// return string.Format(System.Globalization.CultureInfo.CurrentCulture, format, arg);
 				}
-			}
-			else if (arg != null)
-			{
-				return arg.ToString();
 			}
 			else
 			{
-				return "NULL";
+				return arg.ToString();
 			}
 		}
 	}
