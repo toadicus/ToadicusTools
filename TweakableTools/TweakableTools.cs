@@ -207,9 +207,7 @@ namespace TweakableEverything
 					typeof(T).Name
 				);
 
-				#if DEBUG
-				Tools.PostDebugMessage(e.ToString());
-				#endif
+				Logging.PostDebugMessage(e.ToString());
 			}
 
 			return bounds;
@@ -239,9 +237,7 @@ namespace TweakableEverything
 					typeof(T).Name
 				);
 
-				#if DEBUG
-				Tools.PostDebugMessage(e.ToString());
-				#endif
+				Logging.PostDebugMessage(e.ToString());
 			}
 
 			return (float)stepMult;
