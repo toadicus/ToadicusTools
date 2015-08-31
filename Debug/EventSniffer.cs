@@ -23,8 +23,7 @@
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// TODO: Remove this after the refactor is done.
-#pragma warning disable 0618
+#if DEBUG
 
 using KSP;
 using System;
@@ -461,4 +460,4 @@ namespace ToadicusTools.DebugTools
 	}
 }
 
-#pragma warning restore 0618
+#endif
