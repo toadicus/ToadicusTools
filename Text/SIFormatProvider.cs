@@ -271,29 +271,29 @@ namespace ToadicusTools.Text
 
 		public string Format(string format, object arg, IFormatProvider formatProvider)
 		{
-			if (format == null)
-			{
-				return arg == null ? "null" : arg.ToString();
-			}
-
 			if (arg == null)
 			{
 				return "null";
 			}
 
-			if (formatProvider == null)
+			if (format == null)
 			{
-				throw new ArgumentNullException("formatProvider");
-			}
-
-			if (!this.Equals(formatProvider))
-			{
-				return null;
+				return arg.ToString();
 			}
 
 			if (format.Length == 0)
 			{
 				throw new FormatException("Format string is empty.");
+			}
+
+			if (formatProvider == null)
+			{
+				throw new ArgumentNullException("SIFormatProvider.Format called with null formatProvider");
+			}
+
+			if (!this.Equals(formatProvider))
+			{
+				return null;
 			}
 
 			if (arg is IFormattable && arg is IConvertible)
