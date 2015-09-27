@@ -35,8 +35,8 @@ namespace ToadicusTools
 {
 	public static class IOTools
 	{
-		public static readonly string rootPath = KSPUtil.ApplicationRootPath;
-		public static readonly string gameDataPath = string.Format("{0}GameData/", rootPath);
+		public static readonly string KSPRootPath = KSPUtil.ApplicationRootPath.Replace("\\", "/");
+		public static readonly string GameDataPath = string.Format("{0}GameData/", KSPRootPath);
 
 		public static bool LoadTexture(
 			out Texture2D texture,
@@ -53,7 +53,7 @@ namespace ToadicusTools
 			if (isGameDataRelative)
 			{
 				url = path;
-				path = string.Format("{0}{1}", gameDataPath, path);
+				path = string.Format("{0}{1}", GameDataPath, path);
 			}
 
 			bool success = false;
@@ -76,7 +76,7 @@ namespace ToadicusTools
 
 					if (url == string.Empty)
 					{
-						url = path.Substring(gameDataPath.Length);
+						url = path.Substring(GameDataPath.Length);
 					}
 
 					texture = null;

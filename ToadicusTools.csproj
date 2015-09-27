@@ -114,6 +114,7 @@
     <Compile Include="Text\Extensions.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Compat\ToolbarWrapper.cs" />
+    <Compile Include="PluginConfiguration.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
