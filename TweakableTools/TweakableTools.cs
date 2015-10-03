@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using KSP;
-using KSP.IO;
+// using KSP.IO;
 #if USE_KSPAPIEXTENSIONS
 using KSPAPIExtensions;
 #endif
@@ -191,7 +191,7 @@ namespace TweakableEverything
 
 			try
 			{
-				PluginConfiguration config = PluginConfiguration.CreateForType<T>();
+				KSP.IO.PluginConfiguration config = KSP.IO.PluginConfiguration.CreateForType<T>();
 
 				config.load();
 
@@ -221,7 +221,7 @@ namespace TweakableEverything
 
 			try
 			{
-				PluginConfiguration config = PluginConfiguration.CreateForType<T>();
+				KSP.IO.PluginConfiguration config = KSP.IO.PluginConfiguration.CreateForType<T>();
 
 				config.load();
 
