@@ -84,17 +84,6 @@ namespace TweakableEverything
 			stepIncrement = Mathf.Pow(10f, Mathf.RoundToInt(Mathf.Log10(Mathf.Abs(centerValue))) - 1);
 			stepIncrement *= stepMult;
 
-			#if USE_KSPAPIEXTENSIONS
-			if (floatTweakable is UI_FloatRange)
-			{
-				UI_FloatRange floatEdit = floatTweakable as UI_FloatRange;
-
-				floatEdit.maxValue = maxValue;
-				floatEdit.minValue = minValue;
-				floatEdit.stepIncrement = stepIncrement;
-			}
-			else
-			#endif
 			if (floatTweakable is UI_FloatRange)
 			{
 				UI_FloatRange floatRange = floatTweakable as UI_FloatRange;
@@ -105,17 +94,12 @@ namespace TweakableEverything
 			}
 			else
 			{
-				Logging.PostErrorMessage("InitializeTweakable<{0}>: Got floatTweakable of type {1}, expected {2}"
-						#if USE_KSPAPIEXTENSIONS
-						+ " or {3}"
-						#endif
-						, typeof(T).FullName,
-						floatTweakable.GetType().FullName,
-						typeof(UI_FloatRange).FullName
-						#if USE_KSPAPIEXTENSIONS
-						, typeof(UI_FloatRange).FullName
-						#endif
-					);
+				Logging.PostErrorMessage(
+					"InitializeTweakable<{0}>: Got floatTweakable of type {1}, expected {2}",
+					typeof(T).FullName,
+					floatTweakable.GetType().FullName,
+					typeof(UI_FloatRange).FullName
+				);
 
 				return;
 			}
