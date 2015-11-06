@@ -63,8 +63,9 @@ namespace ToadicusTools.DebugTools
 			GameEvents.onPartJointBreak.Add(this.onPartJointBreak);
 
 			GameEvents.onEditorPartEvent.Add(this.onEditorPartEvent);
+			GameEvents.onEditorShipModified.Add(this.onEditorShipModified);
 
-			this.LogDebug("Awake.");
+			ToadicusTools.Extensions.ComponentExtensions.LogDebug(this, "Awake.");
 		}
 
 		public void OnDestroy()
@@ -93,7 +94,19 @@ namespace ToadicusTools.DebugTools
 
 			GameEvents.onEditorPartEvent.Remove(this.onEditorPartEvent);
 
-			this.LogDebug("Destroyed.");
+			GameEvents.onEditorShipModified.Remove(this.onEditorShipModified);
+
+			ToadicusTools.Extensions.ComponentExtensions.LogDebug(this, "Destroyed.");
+		}
+
+		public void onEditorShipModified(ShipConstruct construct)
+		{
+			using (PooledStringBuilder sb = this.getStringBuilder())
+			{
+				sb.AppendFormat("construct: {0}", construct.shipName);
+
+				Debug.Log(sb.ToString());
+			}
 		}
 
 		public void onEditorPartEvent(ConstructionEventType type, Part part)
