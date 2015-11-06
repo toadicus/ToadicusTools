@@ -24,10 +24,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using KSP;
-// using KSP.IO;
-#if USE_KSPAPIEXTENSIONS
-using KSPAPIExtensions;
-#endif
 using System;
 using System.Collections.Generic;
 using ToadicusTools;
@@ -89,13 +85,13 @@ namespace TweakableEverything
 			stepIncrement *= stepMult;
 
 			#if USE_KSPAPIEXTENSIONS
-			if (floatTweakable is UI_FloatEdit)
+			if (floatTweakable is UI_FloatRange)
 			{
-				UI_FloatEdit floatEdit = floatTweakable as UI_FloatEdit;
+				UI_FloatRange floatEdit = floatTweakable as UI_FloatRange;
 
 				floatEdit.maxValue = maxValue;
 				floatEdit.minValue = minValue;
-				floatEdit.incrementSlide = stepIncrement;
+				floatEdit.stepIncrement = stepIncrement;
 			}
 			else
 			#endif
@@ -117,7 +113,7 @@ namespace TweakableEverything
 						floatTweakable.GetType().FullName,
 						typeof(UI_FloatRange).FullName
 						#if USE_KSPAPIEXTENSIONS
-						, typeof(UI_FloatEdit).FullName
+						, typeof(UI_FloatRange).FullName
 						#endif
 					);
 
