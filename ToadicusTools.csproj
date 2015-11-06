@@ -82,7 +82,6 @@
     <Compile Include="RandomTools.cs" />
     <Compile Include="AnimationWrapper.cs" />
     <Compile Include="RollingAverage.cs" />
-    <Compile Include="Compat\Tools.cs" />
     <Compile Include="Extensions\ConfigNodeExtensions.cs" />
     <Compile Include="MuMechTools\MuMech_Tools.cs" />
     <Compile Include="Text\PooledStringBuilder.cs" />
@@ -91,7 +90,6 @@
     <Compile Include="Extensions\VesselExtensions.cs" />
     <Compile Include="MathTools.cs" />
     <Compile Include="Extensions\AppLauncherExtensions.cs" />
-    <Compile Include="Compat\AppLauncherExtensions.cs" />
     <Compile Include="Debug\DebugPartModule.cs" />
     <Compile Include="Text\TextTools.cs" />
     <Compile Include="GUIUtils\WindowTools.cs" />
@@ -109,11 +107,9 @@
     <Compile Include="GUIUtils\Table.cs" />
     <Compile Include="GUIUtils\Layout.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
-    <Compile Include="Compat\ClassStubs.cs" />
     <Compile Include="Debug\PooledDebugLogger.cs" />
     <Compile Include="Text\Extensions.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="Compat\ToolbarWrapper.cs" />
     <Compile Include="PluginConfiguration.cs" />
   </ItemGroup>
   <ProjectExtensions>
@@ -143,7 +139,6 @@
     <None Include="TweakableTools\TweakableTools.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Compat\" />
     <Folder Include="Extensions\" />
     <Folder Include="MuMechTools\" />
     <Folder Include="Text\" />
