@@ -149,6 +149,39 @@ namespace ToadicusTools.Extensions
 			return (vessel.CurrentCommand() & VesselCommand.Probe) == VesselCommand.Probe;
 		}
 
+		public static uint PartCrewCount(this Part part)
+		{
+			return part.PartCrewCount(false);
+		}
+
+		public static uint PartCrewCount(this Part part, bool countTourists)
+		{
+			if (part == null)
+			{
+				throw new ArgumentNullException("part.PartCrewCount: part must not be null");
+			}
+
+			if (part.protoModuleCrew == null)
+			{
+				return 0u;
+			}
+
+			uint count = 0u;
+			ProtoCrewMember member;
+
+			for (int idx = 0; idx < part.protoModuleCrew.Count; idx++)
+			{
+				member = part.protoModuleCrew[idx];
+
+				if (countTourists || member.type != ProtoCrewMember.KerbalType.Tourist)
+				{
+					count++;
+				}
+			}
+
+			return count;
+		}
+
 		public static VesselCommand CurrentCommand(this Vessel vessel)
 		{
 			VesselCommand currentCommand = VesselCommand.None;
@@ -162,11 +195,7 @@ namespace ToadicusTools.Extensions
 				{
 					ModuleCommand commandModule = module as ModuleCommand;
 
-					if (
-						commandModule.part != null &&
-						commandModule.part.protoModuleCrew != null &&
-						commandModule.part.protoModuleCrew.Count >= commandModule.minimumCrew
-					)
+					if (commandModule.part.PartCrewCount() >= commandModule.minimumCrew)
 					{
 						if (
 							commandModule.minimumCrew > 0 ||
