@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using KSP;
+using KSP.UI.Screens;
 using System;
 using UnityEngine;
 
@@ -48,10 +49,10 @@ namespace ToadicusTools.Extensions
 		*/
 
 		public static ApplicationLauncherButton AddModApplication(this ApplicationLauncher appLauncher,
-			RUIToggleButton.OnTrue onTrue,
-			RUIToggleButton.OnFalse onFalse,
-			RUIToggleButton.OnHover onHover,
-			RUIToggleButton.OnHoverOut onHoverOut,
+			Callback onTrue,
+			Callback onFalse,
+			Callback onHover,
+			Callback onHoverOut,
 			ApplicationLauncher.AppScenes visibleInScenes,
 			Texture texture
 		)
@@ -66,26 +67,8 @@ namespace ToadicusTools.Extensions
 		}
 
 		public static ApplicationLauncherButton AddModApplication(this ApplicationLauncher appLauncher,
-			RUIToggleButton.OnTrue onTrue,
-			RUIToggleButton.OnFalse onFalse,
-			RUIToggleButton.OnEnable onEnable,
-			RUIToggleButton.OnDisable onDisable,
-			ApplicationLauncher.AppScenes visibleInScenes,
-			Texture texture
-		)
-		{
-			return appLauncher.AddModApplication(
-				onTrue, onFalse,
-				Dummy, Dummy,
-				onEnable, onDisable,
-				visibleInScenes,
-				texture
-			);
-		}
-
-		public static ApplicationLauncherButton AddModApplication(this ApplicationLauncher appLauncher,
-			RUIToggleButton.OnTrue onTrue,
-			RUIToggleButton.OnFalse onFalse,
+			Callback onTrue,
+			Callback onFalse,
 			ApplicationLauncher.AppScenes visibleInScenes,
 			Texture texture
 		)

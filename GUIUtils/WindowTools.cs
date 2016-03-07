@@ -23,6 +23,7 @@
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using KSP.UI.Screens;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,17 +59,18 @@ namespace ToadicusTools.GUIUtils
 		{
 			float lftMargin = window.width;
 
+			// @TODO: Find this stuff
 			switch (EditorLogic.fetch.editorScreen)
 			{
 				case EditorScreen.Actions:
-					lftMargin += EditorPanels.Instance.actionsPanelWidth;
+					// lftMargin += EditorPanels.Instance.panelManager;
 					break;
 				case EditorScreen.Crew:
-					lftMargin += EditorPanels.Instance.crewPanelWidth;
+					// lftMargin += EditorPanels.Instance.crewPanelWidth;
 					break;
 				case EditorScreen.Parts:
 				default:
-					lftMargin += EditorPanels.Instance.partsPanelWidth;
+					// lftMargin += EditorPanels.Instance.partsPanelWidth;
 					break;
 			}
 

@@ -142,7 +142,7 @@ namespace ToadicusTools
 			{
 
 				debugmsg.message = Msg;
-				ScreenMessages.PostScreenMessage(debugmsg, true);
+				ScreenMessages.PostScreenMessage(debugmsg);
 			}
 
 			PostLogMessage(Msg, LogChannel.Log);

@@ -131,6 +131,12 @@
     <Reference Include="UnityEngine">
       <HintPath>..\_KSPAssemblies\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="KSPUtil">
+      <HintPath>..\_KSPAssemblies\KSPUtil.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\_KSPAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\_KSPAssemblies\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>

@@ -155,7 +155,7 @@ namespace ToadicusTools.Text
 			return list.SPrint(delimiter, null);
 		}
 
-		public static string ToString(this Vector3d vector, string format)
+		public static string ToString(this Vector3 vector, string format)
 		{
 			return string.Format("{0}, {1}, {2}",
 				vector.x.ToString(format, SIFormatProvider.SIFormatter),

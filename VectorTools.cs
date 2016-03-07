@@ -25,6 +25,8 @@
 
 using System;
 using ToadicusTools.Text;
+using UnityEngine;
+using KSP;
 
 namespace ToadicusTools
 {
