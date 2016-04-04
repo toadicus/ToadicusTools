@@ -59,7 +59,7 @@ namespace ToadicusTools.GUIUtils
 		{
 			float lftMargin = window.width;
 
-			// @TODO: Find this stuff
+			// TODO: Find this stuff
 			switch (EditorLogic.fetch.editorScreen)
 			{
 				case EditorScreen.Actions:
