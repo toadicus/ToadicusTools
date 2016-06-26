@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using KSP;
+using KSP.UI.Screens;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -325,9 +326,34 @@ namespace ToadicusTools.Extensions
 
 		public static bool isInStagingList(this Part part)
 		{
-			part.LogDebug("isInStagingList: {0} (Staging.FindIcon(part)={1})",
-				Staging.FindIcon(part) != null, Staging.FindIcon(part));
-			return Staging.FindIcon(part) != null;
+			if (StageManager.Instance == null || StageManager.Instance.Stages == null)
+			{
+				return false;
+			}
+
+			StageGroup currentGroup;
+			StageIcon currentIcon;
+			for (int gIdx = 0; gIdx < StageManager.Instance.Stages.Count; gIdx++)
+			{
+				currentGroup = StageManager.Instance.Stages[gIdx];
+
+				if (currentGroup == null || currentGroup.Icons == null)
+				{
+					continue;
+				}
+
+				for (int iIdx = 0; iIdx < currentGroup.Icons.Count; iIdx++)
+				{
+					currentIcon = currentGroup.Icons[iIdx];
+
+					if (currentIcon.Part == part)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 	}
 }
