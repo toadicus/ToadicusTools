@@ -26,7 +26,10 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -38,7 +41,10 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
     <DefineConstants>HAS_SIFORMMATER</DefineConstants>
@@ -54,7 +60,10 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -65,7 +74,10 @@
     <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
     <ConsolePause>false</ConsolePause>
@@ -130,9 +142,6 @@
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\_KSPAssemblies\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="KSPUtil">
-      <HintPath>..\_KSPAssemblies\KSPUtil.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\_KSPAssemblies\UnityEngine.UI.dll</HintPath>

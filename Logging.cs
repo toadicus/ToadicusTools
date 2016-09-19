@@ -97,25 +97,6 @@ namespace ToadicusTools
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]
-		public static void PostDebugMessage(object Sender, params object[] args)
-		{
-			using (PooledStringBuilder sb = PooledStringBuilder.Get())
-			{
-				sb.AppendFormat("{0}:", Sender.GetType().Name);
-
-				object arg;
-				for (int idx = 0; idx < args.Length; idx++)
-				{
-					arg = args[idx];
-
-					sb.AppendFormat("\n\t{0}", arg.ToString());
-				}
-
-				PostMessageWithScreenMsg(sb.ToString());
-			}
-		}
-
-		[System.Diagnostics.Conditional("DEBUG")]
 		public static void PostDebugMessage(object Sender, string Format, params object[] args)
 		{
 			using (PooledStringBuilder sb = PooledStringBuilder.Get())

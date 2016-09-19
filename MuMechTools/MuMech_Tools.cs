@@ -48,7 +48,7 @@ namespace ToadicusTools.MuMechTools
 
 			try
 			{
-				CoM = vessel.findWorldCenterOfMass();
+				CoM = vessel.CoM;
 			}
 			catch
 			{
