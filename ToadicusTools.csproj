@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug_win</Configuration>
@@ -26,10 +26,7 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\</command>
-        </Command>
+        <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -41,10 +38,7 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\</command>
-        </Command>
+        <Command type="AfterBuild" command="xcopy /Y ${TargetFile} ${ProjectDir}\GameData\ToadicusTools\" />
       </CustomCommands>
     </CustomCommands>
     <DefineConstants>HAS_SIFORMMATER</DefineConstants>
@@ -60,10 +54,7 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/</command>
-        </Command>
+        <Command type="AfterBuild" command="/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -74,10 +65,7 @@
     <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/</command>
-        </Command>
+        <Command type="AfterBuild" command="/usr/bin/cp -a ${TargetFile} ${ProjectDir}/GameData/ToadicusTools/" />
       </CustomCommands>
     </CustomCommands>
     <ConsolePause>false</ConsolePause>
@@ -137,11 +125,12 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\_KSPAssemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="System">
-      <HintPath>..\_KSPAssemblies\System.dll</HintPath>
-    </Reference>
+    <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\_KSPAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="KSPUtil">
+      <HintPath>..\_KSPAssemblies\KSPUtil.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\_KSPAssemblies\UnityEngine.UI.dll</HintPath>
@@ -154,13 +143,9 @@
     <None Include="TweakableTools\TweakableTools.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Extensions\" />
-    <Folder Include="MuMechTools\" />
-    <Folder Include="Text\" />
-    <Folder Include="Debug\" />
-    <Folder Include="GUIUtils\" />
-    <Folder Include="TweakableTools\" />
-    <Folder Include="APIHelpers\" />
     <Folder Include="Wrappers\" />
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y $(TargetPath) $(ProjectDir)GameData\$(ProjectName)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
