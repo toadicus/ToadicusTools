@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug_win</Configuration>
@@ -146,21 +146,11 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>..\_KSPAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\_KSPAssemblies\Assembly-CSharp-firstpass.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="TweakableTools\TweakableTools.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Extensions\" />
-    <Folder Include="MuMechTools\" />
-    <Folder Include="Text\" />
-    <Folder Include="Debug\" />
-    <Folder Include="GUIUtils\" />
-    <Folder Include="TweakableTools\" />
-    <Folder Include="APIHelpers\" />
     <Folder Include="Wrappers\" />
   </ItemGroup>
 </Project>
