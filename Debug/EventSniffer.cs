@@ -60,7 +60,7 @@ namespace ToadicusTools.DebugTools
 			GameEvents.onUndock.Add(this.onReportEvent);
 
 			GameEvents.onPartCouple.Add(this.onPartCouple);
-			GameEvents.onPartJointBreak.Add(this.onPartJointBreak);
+			// GameEvents.onPartJointBreak.Add(this.onPartJointBreak);
 
 			GameEvents.onEditorPartEvent.Add(this.onEditorPartEvent);
 			GameEvents.onEditorShipModified.Add(this.onEditorShipModified);
@@ -90,7 +90,7 @@ namespace ToadicusTools.DebugTools
 			GameEvents.onUndock.Remove(this.onReportEvent);
 
 			GameEvents.onPartCouple.Remove(this.onPartCouple);
-			GameEvents.onPartJointBreak.Remove(this.onPartJointBreak);
+			// GameEvents.onPartJointBreak.Remove(this.onPartJointBreak);
 
 			GameEvents.onEditorPartEvent.Remove(this.onEditorPartEvent);
 
